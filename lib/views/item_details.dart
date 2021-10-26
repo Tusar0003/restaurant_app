@@ -64,7 +64,7 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                       bottomRight: Radius.circular(Constants.MEDIUM_RADIUS)
                   ),
                   child: FadeInImage(
-                    image: NetworkImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg'),
+                    image: NetworkImage(Constants.DEMO_PIZZA_LINK),
                     placeholder: AssetImage('assets/images/place_holder.jpg'),
                     fit: BoxFit.fill,
                     width: MediaQuery.of(buildContext).size.width,

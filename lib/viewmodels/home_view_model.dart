@@ -5,6 +5,7 @@ class HomeViewModel extends ViewModel {
 
   int value = 0;
   int quantity = 0;
+  String orderType = 'Dine In';
 
   setCategory(bool isSelected, int index) {
     value = isSelected ? index : 0;
@@ -21,5 +22,10 @@ class HomeViewModel extends ViewModel {
       quantity -= 1;
       notifyListeners();
     }
+  }
+
+  setOrderType(String orderType) {
+    this.orderType = orderType;
+    notifyListeners();
   }
 }

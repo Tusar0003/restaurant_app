@@ -291,8 +291,16 @@ class HomeView extends StatelessView<HomeViewModel> {
           ClipRRect(
             borderRadius: BorderRadius.circular(Constants.SMALL_RADIUS),
             child: FadeInImage(
-              image: NetworkImage('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg'),
+              image: NetworkImage(Constants.DEMO_PIZZA_LINK),
               placeholder: AssetImage('assets/images/place_holder.jpg'),
+              imageErrorBuilder: (context, error, stackTrace) {
+                return Image(
+                  image: AssetImage('assets/images/place_holder.jpg'),
+                  fit: BoxFit.fill,
+                  height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+                  width: Constants.LARGE_WIDTH,
+                );
+              },
               fit: BoxFit.fill,
               width: Constants.LARGE_WIDTH,
               height: Constants.RECOMMENDED_IMAGE_HEIGHT,
@@ -348,50 +356,50 @@ class HomeView extends StatelessView<HomeViewModel> {
               Expanded(
                 flex: 2,
                 child: Column(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                        Icons.add_shopping_cart
-                    ),
-                    onPressed: () {},
-                  ),
-                  SizedBox(
-                    height: Constants.EXTRA_SMALL_PADDING,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: ColorHelper.PRIMARY_COLOR,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                          Icons.add_shopping_cart
                       ),
-                      Text(
-                        '4.3',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          fontSize: Constants.MEDIUM_FONT_SIZE,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                      onPressed: () {},
+                    ),
+                    SizedBox(
+                      height: Constants.EXTRA_SMALL_PADDING,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: ColorHelper.PRIMARY_COLOR,
                         ),
-                      )
-                    ],
-                  ),
-                  // RatingBarIndicator(
-                  //   rating: 3.5,
-                  //   itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                  //   direction: Axis.horizontal,
-                  //   unratedColor: Colors.grey[300],
-                  //   itemCount: 5,
-                  //   // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                  //   itemBuilder: (context, _) => Icon(
-                  //     Icons.star,
-                  //     color: ColorHelper.PRIMARY_COLOR,
-                  //   ),
-                  // ),
-                ],
-            )
+                        Text(
+                          '4.3',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            fontSize: Constants.MEDIUM_FONT_SIZE,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
+                    ),
+                    // RatingBarIndicator(
+                    //   rating: 3.5,
+                    //   itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                    //   direction: Axis.horizontal,
+                    //   unratedColor: Colors.grey[300],
+                    //   itemCount: 5,
+                    //   // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    //   itemBuilder: (context, _) => Icon(
+                    //     Icons.star,
+                    //     color: ColorHelper.PRIMARY_COLOR,
+                    //   ),
+                    // ),
+                  ],
+                )
               )
             ],
           )
@@ -465,9 +473,17 @@ class HomeView extends StatelessView<HomeViewModel> {
                   borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
                   child: FadeInImage(
                     image: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
+                      Constants.DEMO_BURGER_LINK,
                     ),
                     placeholder: AssetImage('assets/images/place_holder.jpg'),
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return Image(
+                        image: AssetImage('assets/images/place_holder.jpg'),
+                        fit: BoxFit.fill,
+                        height: Constants.SMALL_HEIGHT,
+                        width: Constants.SMALL_WIDTH,
+                      );
+                    },
                     fit: BoxFit.fill,
                     height: Constants.SMALL_HEIGHT,
                     width: Constants.SMALL_WIDTH,

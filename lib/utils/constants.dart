@@ -68,9 +68,25 @@ class Constants {
   static const String NOTIFICATIONS = 'Notifications';
   static const String SIGN_OUT = 'Sign out';
   static const String VERIFY_YOUR_MOBILE_NUMBER = 'Verify your Mobile Number';
-  static const String PROVIDE_YOUR_OTP = 'Please provide the OTP sent to your mobile number for verification';
+  static const String PROVIDE_YOUR_OTP = 'Please provide the OTP '
+      'sent to your mobile number for verification';
   static const String VERIFY = 'Verify';
   static const String ADD_TO_CART = 'Add to cart';
   static const String CART = 'Cart';
   static const String DESIRED_ITEMS = 'Your desired items';
+  static const String ORDER_TYPE = 'Order Type';
+  static const String DISCOUNT = 'Discount';
+  static const String DELIVERY_CHARGE = 'Delivery Charge';
+  static const String TOTAL = 'Total';
+  static const String ORDER_TIME = 'Order time';
+  static const String CONFIRM_ORDER = 'Confirm Order';
+
+  static const String DEMO_PIZZA_LINK = 'https://cdn.pixabay.com/photo/2017/'
+      '12/09/08/18/pizza-3007395__480.jpg';
+  static const String DEMO_BURGER_LINK = 'https://media.istockphoto.com/photos/'
+      'hamburger-with-cheese-and-french-fries-picture-id1188412964?k=20&m='
+      '1188412964&s=612x612&w=0&h=Ow-uMeygg90_1sxoCz-vh60SQDssmjP06uGXcZ2MzPY=';
+  // static const String DEMO_BURGER_LINK = 'https://media.istockphoto.com/photos/'
+  //     'delicious-homemade-hamburger-and-french-fries-picture-id1254672762?b=1&'
+  //     'k=20&m=1254672762&s=170667a&w=0&h=nKrG40G2jj9O8wzJ8wDD2zmUKNp00mcdVWK_f_zixug=';
 }

@@ -1,7 +1,8 @@
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:group_radio_button/group_radio_button.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
@@ -45,8 +46,8 @@ class CartView extends StatelessView<HomeViewModel> {
           color: Colors.black
         ),
       ),
-      backgroundColor: ColorHelper.TRANSPARENT_COLOR,
-      elevation: 0,
+      // backgroundColor: ColorHelper.TRANSPARENT_COLOR,
+      // elevation: 0,
     );
   }
 
@@ -54,23 +55,41 @@ class CartView extends StatelessView<HomeViewModel> {
     return Container(
       padding: EdgeInsets.all(Constants.STANDARD_PADDING),
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              Constants.DESIRED_ITEMS,
-              style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: Constants.EXTRA_LARGE_FONT_SIZE,
-                  fontWeight: FontWeight.w500
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                Constants.DESIRED_ITEMS,
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.EXTRA_LARGE_FONT_SIZE,
+                    fontWeight: FontWeight.w500
+                ),
               ),
-            ),
-            SizedBox(
-              height: Constants.SIGN_IN_PAGE_PADDING,
-            ),
-            addedItemListView(),
-          ],
-        ),
+              SizedBox(
+                height: Constants.SIGN_IN_PAGE_PADDING,
+              ),
+              addedItemListView(),
+              SizedBox(
+                height: Constants.STANDARD_PADDING,
+              ),
+              Text(
+                Constants.ORDER_TYPE,
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.MEDIUM_FONT_SIZE,
+                    fontWeight: FontWeight.w500
+                ),
+              ),
+              orderTypeListView(),
+              SizedBox(
+                height: Constants.SIGN_IN_PAGE_PADDING,
+              ),
+              totalLayout(),
+            ],
+          ),
+        )
       ),
     );
   }
@@ -104,9 +123,17 @@ class CartView extends StatelessView<HomeViewModel> {
                   borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
                   child: FadeInImage(
                     image: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
+                      Constants.DEMO_BURGER_LINK,
                     ),
                     placeholder: AssetImage('assets/images/place_holder.jpg'),
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return Image(
+                        image: AssetImage('assets/images/place_holder.jpg'),
+                        fit: BoxFit.fill,
+                        height: Constants.EXTRA_SMALL_HEIGHT,
+                        width: Constants.EXTRA_SMALL_WIDTH,
+                      );
+                    },
                     fit: BoxFit.fill,
                     height: Constants.EXTRA_SMALL_HEIGHT,
                     width: Constants.EXTRA_SMALL_WIDTH,
@@ -209,6 +236,194 @@ class CartView extends StatelessView<HomeViewModel> {
             Divider()
           ],
         )
+    );
+  }
+
+  orderTypeList() {
+    return CustomRadioButton(
+      elevation: 3,
+      autoWidth: true,
+      absoluteZeroSpacing: false,
+      enableButtonWrap: false,
+      enableShape: true,
+      wrapAlignment: WrapAlignment.start,
+      unSelectedColor: Theme.of(buildContext).canvasColor,
+      buttonLables: [
+        'Dine In',
+        'Take Away',
+      ],
+      buttonValues: [
+        "Dine In",
+        "Take Away",
+      ],
+      buttonTextStyle: ButtonTextStyle(
+        selectedColor: Colors.black,
+        unSelectedColor: Colors.black,
+        textStyle: GoogleFonts.poppins(
+          fontSize: Constants.SMALL_FONT_SIZE,
+        )
+      ),
+      radioButtonValue: (value) {
+        print(value);
+      },
+      selectedColor: ColorHelper.PRIMARY_COLOR,
+    );
+  }
+
+  orderTypeListView() {
+    return Container(
+      height: Constants.EXTRA_SMALL_HEIGHT,
+      child: ListView.builder(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: 3,
+        itemBuilder: (BuildContext context, int index) => singleOrderType(index),
+      ),
+    );
+  }
+
+  singleOrderType(int index) {
+    return Container(
+      margin: EdgeInsets.only(right: Constants.SMALL_PADDING),
+      child: ChoiceChip(
+        padding: EdgeInsets.all(Constants.SMALL_PADDING),
+        label: Text(
+          'Order Type $index',
+          style: GoogleFonts.poppins(
+            fontSize: Constants.SMALL_FONT_SIZE,
+            color: Colors.black,
+          ),
+        ),
+        selectedColor: ColorHelper.PRIMARY_COLOR,
+        selected: viewModel.value == index,
+        onSelected: (bool selected) {
+          viewModel.setCategory(selected, index);
+        },
+      ),
+    );
+  }
+
+  totalLayout() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Text(
+                Constants.DISCOUNT,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ),
+            Expanded(
+              flex: 1,
+              child: Text(
+                '10 tk',
+                textAlign: TextAlign.end,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ),
+          ],
+        ),
+        SizedBox(
+          height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+        ),
+        Row(
+          children: [
+            Expanded(
+                flex: 1,
+                child: Text(
+                  Constants.DELIVERY_CHARGE,
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.MEDIUM_FONT_SIZE,
+                  ),
+                )
+            ),
+            Expanded(
+                flex: 1,
+                child: Text(
+                  '0 tk',
+                  textAlign: TextAlign.end,
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.MEDIUM_FONT_SIZE,
+                  ),
+                )
+            ),
+          ],
+        ),
+        SizedBox(
+          height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+        ),
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Text(
+                Constants.TOTAL,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.LARGE_FONT_SIZE,
+                  fontWeight: FontWeight.w500
+                ),
+              )
+            ),
+            Expanded(
+              flex: 1,
+              child: Text(
+                '300 tk',
+                textAlign: TextAlign.end,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.LARGE_FONT_SIZE,
+                  fontWeight: FontWeight.w500
+                ),
+              )
+            ),
+          ],
+        ),
+        SizedBox(
+          height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+        ),
+        confirmOrderButton()
+      ],
+    );
+  }
+
+  confirmOrderButton() {
+    return Container(
+      width: MediaQuery.of(buildContext).size.width,
+      height: Constants.EXTRA_SMALL_HEIGHT,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
+            ),
+            primary: ColorHelper.PRIMARY_COLOR
+        ),
+        child: Center(
+            child: Text(
+              Constants.CONFIRM_ORDER,
+              style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500
+              ),
+            )
+        ),
+        onPressed: () {
+          // String number = phoneNumberTextController.text.toString();
+          // Provider.of<AuthViewModel>(context, listen: false).checkLogIn(number.replaceAll(' ', ''));
+        },
+      ),
     );
   }
 }

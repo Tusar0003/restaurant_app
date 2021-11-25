@@ -4,4 +4,7 @@ class AppRoute {
   static const String HOME = '/home';
   static const String ITEM_DETAILS = '/itemDetails';
   static const String CART = '/cart';
+  static const String MY_PROFILE = '/myProfile';
+  static const String MY_ORDERS = '/myOrders';
+  static const String NOTIFICATIONS = '/notifications';
 }

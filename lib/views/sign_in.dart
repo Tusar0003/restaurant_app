@@ -49,7 +49,7 @@ class SignInView extends StatelessView<AuthViewModel> {
             ),
             child: Image(
               image: AssetImage('assets/images/sign_in_page_image.jpg'),
-              height: Constants.LARGE_HEIGHT,
+              height: Constants.EXTRA_LARGE_HEIGHT,
               width: MediaQuery.of(buildContext).size.width,
               fit: BoxFit.fill,
             ),

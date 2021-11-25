@@ -9,27 +9,25 @@ import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/home_view_model.dart';
 
 
-late BuildContext buildContext;
-
-class Home extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    buildContext = context;
-
     return MVVM(
-      view: (_, __) => HomeView(),
+      view: (_, __) => HomePageView(),
       viewModel: HomeViewModel()
     );
   }
 }
 
 // ignore: must_be_immutable
-class HomeView extends StatelessView<HomeViewModel> {
+class HomePageView extends StatelessView<HomeViewModel> {
 
+  late BuildContext context;
   late HomeViewModel viewModel;
 
   @override
   Widget render(BuildContext context, HomeViewModel viewModel) {
+    this.context = context;
     this.viewModel = viewModel;
 
     return Scaffold(
@@ -78,52 +76,43 @@ class HomeView extends StatelessView<HomeViewModel> {
               Icons.person_outlined
             ),
             onTap: () {
-              Navigator.pop(buildContext);
+              Navigator.pushNamed(context, AppRoute.MY_PROFILE);
             },
           ),
+          // ListTile(
+          //   title: const Text(Constants.MY_ADDRESS),
+          //   leading: Icon(
+          //       Icons.location_city
+          //   ),
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
           ListTile(
-            title: const Text(Constants.MY_ADDRESS),
-            leading: Icon(
-                Icons.location_city
-            ),
-            onTap: () {
-              Navigator.pop(buildContext);
-            },
-          ),
-          ListTile(
-            title: const Text(Constants.CURRENT_ORDERS),
+            title: const Text(Constants.MY_ORDERS),
             leading: Icon(
                 Icons.fastfood
             ),
             onTap: () {
-              Navigator.pop(buildContext);
+              Navigator.pushNamed(context, AppRoute.MY_ORDERS);
             },
           ),
-          ListTile(
-            title: const Text(Constants.PREVIOUS_ORDERS),
-            leading: Icon(
-                Icons.history_outlined
-            ),
-            onTap: () {
-              Navigator.pop(buildContext);
-            },
-          ),
-          ListTile(
-            title: const Text(Constants.VOUCHERS),
-            leading: Icon(
-                Icons.card_giftcard
-            ),
-            onTap: () {
-              Navigator.pop(buildContext);
-            },
-          ),
+          // ListTile(
+          //   title: const Text(Constants.VOUCHERS),
+          //   leading: Icon(
+          //       Icons.card_giftcard
+          //   ),
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
           ListTile(
             title: const Text(Constants.NOTIFICATIONS),
             leading: Icon(
                 Icons.notifications
             ),
             onTap: () {
-              Navigator.pop(buildContext);
+              Navigator.pushNamed(context, AppRoute.NOTIFICATIONS);
             },
           ),
           ListTile(
@@ -132,7 +121,7 @@ class HomeView extends StatelessView<HomeViewModel> {
                 Icons.exit_to_app
             ),
             onTap: () {
-              Navigator.pop(buildContext);
+              Navigator.pop(context);
             },
           ),
         ],
@@ -145,8 +134,8 @@ class HomeView extends StatelessView<HomeViewModel> {
       decoration: BoxDecoration(
           color: ColorHelper.PRIMARY_COLOR,
           borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(Constants.MEDIUM_RADIUS),
-              bottomRight: Radius.circular(Constants.MEDIUM_RADIUS)
+              // bottomLeft: Radius.circular(Constants.MEDIUM_RADIUS),
+              bottomRight: Radius.circular(Constants.LARGE_RADIUS)
           )
       ),
       child: Column(
@@ -173,6 +162,14 @@ class HomeView extends StatelessView<HomeViewModel> {
                     'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
                   ),
                   placeholder: AssetImage('assets/images/place_holder.jpg'),
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Image(
+                      image: AssetImage('assets/images/place_holder.jpg'),
+                      fit: BoxFit.fill,
+                      height: Constants.SMALL_HEIGHT,
+                      width: Constants.SMALL_WIDTH,
+                    );
+                  },
                   fit: BoxFit.fill,
                   height: Constants.SMALL_HEIGHT,
                   width: Constants.SMALL_WIDTH,
@@ -221,7 +218,7 @@ class HomeView extends StatelessView<HomeViewModel> {
         color: Colors.black,
       ),
       onPressed: () {
-        Navigator.pushNamed(buildContext, AppRoute.CART);
+        Navigator.pushNamed(context, AppRoute.CART);
       },
     );
   }
@@ -263,7 +260,7 @@ class HomeView extends StatelessView<HomeViewModel> {
 
   recommended() {
     return Container(
-      height: Constants.MEDIUM_HEIGHT,
+      height: Constants.LARGE_HEIGHT,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
@@ -274,7 +271,7 @@ class HomeView extends StatelessView<HomeViewModel> {
             behavior: HitTestBehavior.opaque,
             child: singleRecommendedItem(),
             onTap: () {
-              Navigator.pushNamed(buildContext, AppRoute.ITEM_DETAILS);
+              Navigator.pushNamed(context, AppRoute.ITEM_DETAILS);
             },
           );
         },
@@ -453,7 +450,7 @@ class HomeView extends StatelessView<HomeViewModel> {
           behavior: HitTestBehavior.opaque,
           child: singleCategoryWiseItem(),
           onTap: () {
-            Navigator.pushNamed(buildContext, AppRoute.ITEM_DETAILS);
+            Navigator.pushNamed(context, AppRoute.ITEM_DETAILS);
           },
         );
       },
@@ -462,7 +459,7 @@ class HomeView extends StatelessView<HomeViewModel> {
 
   singleCategoryWiseItem() {
     return Container(
-        width: MediaQuery.of(buildContext).size.width,
+        width: MediaQuery.of(context).size.width,
         // margin: EdgeInsets.only(bottom: Constants.STANDARD_PADDING),
         child: Column(
           children: [

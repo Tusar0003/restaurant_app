@@ -35,6 +35,7 @@ dependencies:
   pin_code_fields: ^7.3.0
   group_radio_button: ^1.1.0
   custom_radio_grouped_button: ^2.1.1
+  modal_bottom_sheet: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +57,7 @@ flutter:
     - assets/images/sign_in_page_image.jpg
     - assets/images/place_holder.jpg
     - assets/images/app_icon.png
+    - assets/images/notification.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/views/cart.dart';
-import 'package:restaurant_app/views/home.dart';
+import 'package:restaurant_app/views/home_page.dart';
 import 'package:restaurant_app/views/item_details.dart';
+import 'package:restaurant_app/views/my_order_page.dart';
+import 'package:restaurant_app/views/my_profile.dart';
+import 'package:restaurant_app/views/notification_page.dart';
 import 'package:restaurant_app/views/sign_in.dart';
 import 'package:restaurant_app/views/verification.dart';
 
@@ -21,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tech Island Ltd.',
+      title: 'Tech Island Restaurant',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: ColorHelper.PRIMARY_COLOR,
@@ -30,9 +33,12 @@ class MyApp extends StatelessWidget {
       routes: {
         AppRoute.SIGN_IN: (context) => SignIn(),
         AppRoute.VERIFICATION: (context) => Verification(),
-        AppRoute.HOME: (context) => Home(),
+        AppRoute.HOME: (context) => HomePage(),
         AppRoute.ITEM_DETAILS: (context) => ItemDetails(),
         AppRoute.CART: (context) => Cart(),
+        AppRoute.MY_PROFILE: (context) => MyProfilePage(),
+        AppRoute.MY_ORDERS: (context) => MyOrderPage(),
+        AppRoute.NOTIFICATIONS: (context) => NotificationPage(),
       },
     );
   }

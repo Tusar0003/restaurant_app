@@ -5,15 +5,17 @@ class Constants {
   static const double EXTRA_SMALL_PADDING = 4.0;
   static const double SMALL_PADDING = 8.0;
   static const double MEDIUM_PADDING = 12.0;
+  static const double LARGE_PADDING = 20.0;
+  static const double EXTRA_LARGE_PADDING = 30.0;
 
   // HEIGHTS
   static const double EXTRA_EXTRA_SMALL_HEIGHT = 10;
   static const double EXTRA_SMALL_HEIGHT = 50;
   static const double SMALL_HEIGHT = 100;
-  static const double MEDIUM_HEIGHT = 210;
-  static const double LARGE_HEIGHT = 300;
-  static const double EXTRA_LARGE_HEIGHT = 500;
-  static const double EXTRA_EXTRA_LARGE_HEIGHT = 750;
+  static const double MEDIUM_HEIGHT = 160;
+  static const double LARGE_HEIGHT = 210;
+  static const double EXTRA_LARGE_HEIGHT = 300;
+  static const double EXTRA_EXTRA_LARGE_HEIGHT = 500;
   static const double RECOMMENDED_IMAGE_HEIGHT = 110;
 
   // WIDTHS
@@ -24,6 +26,7 @@ class Constants {
   static const double LARGE_WIDTH = 200;
   static const double EXTRA_LARGE_WIDTH = 300;
   static const double EXTRA_EXTRA_LARGE_WIDTH = 750;
+  static const double MY_ORDER_IMAGE_SIZE = 80;
 
   // RADIUS
   static const double EXTRA_EXTRA_SMALL_RADIUS = 2;
@@ -48,8 +51,9 @@ class Constants {
   static const double EXTRA_LARGE_ICON_SIZE = 150;
 
   // STRINGS
+  static const String MANDATORY = '*';
   static const String WELCOME_TO_RESTAURANT = 'Welcome \nto Tech Island Ltd';
-  static const String SIGN_IN_TO_YOUR_ACCOUNT = 'Please provide you mobile number to sign in';
+  static const String SIGN_IN_TO_YOUR_ACCOUNT = 'Please provide your mobile number to sign in';
   static const String USER_NAME = 'Username';
   static const String MOBILE_NUMBER = 'Mobile Number';
   static const String SEND_OTP = 'Send OTP';
@@ -62,8 +66,7 @@ class Constants {
   static const String RECOMMENDED = 'Recommended';
   static const String MY_PROFILE = 'My Profile';
   static const String MY_ADDRESS = 'My Address';
-  static const String CURRENT_ORDERS = 'Current Orders';
-  static const String PREVIOUS_ORDERS = 'Previous Orders';
+  static const String MY_ORDERS = 'My Orders';
   static const String VOUCHERS = 'Vouchers';
   static const String NOTIFICATIONS = 'Notifications';
   static const String SIGN_OUT = 'Sign out';
@@ -80,6 +83,15 @@ class Constants {
   static const String TOTAL = 'Total';
   static const String ORDER_TIME = 'Order time';
   static const String CONFIRM_ORDER = 'Confirm Order';
+  static const String FIRST_NAME = 'First Name';
+  static const String LAST_NAME = 'Last Name';
+  static const String EMAIL = 'Email';
+  static const String ADDRESS = 'Address';
+  static const String UPDATE = 'Update';
+  static const String QUANTITY = 'Quantity';
+  static const String UNIT_PRICE = 'Unit Price';
+  static const String TOTAL_PRICE = 'Total Price';
+  static const String TK_SYMBOL = '\u09F3';
 
   static const String DEMO_PIZZA_LINK = 'https://cdn.pixabay.com/photo/2017/'
       '12/09/08/18/pizza-3007395__480.jpg';

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
-import 'package:restaurant_app/views/cart.dart';
+import 'package:restaurant_app/views/apply_promo_code_page.dart';
+import 'package:restaurant_app/views/cart_page.dart';
 import 'package:restaurant_app/views/home_page.dart';
-import 'package:restaurant_app/views/item_details.dart';
+import 'package:restaurant_app/views/item_details_page.dart';
 import 'package:restaurant_app/views/my_order_page.dart';
-import 'package:restaurant_app/views/my_profile.dart';
+import 'package:restaurant_app/views/my_profile_page.dart';
 import 'package:restaurant_app/views/notification_page.dart';
-import 'package:restaurant_app/views/sign_in.dart';
-import 'package:restaurant_app/views/verification.dart';
+import 'package:restaurant_app/views/sign_in_page.dart';
+import 'package:restaurant_app/views/verification_page.dart';
 
 
 void main() {
@@ -34,11 +35,12 @@ class MyApp extends StatelessWidget {
         AppRoute.SIGN_IN: (context) => SignIn(),
         AppRoute.VERIFICATION: (context) => Verification(),
         AppRoute.HOME: (context) => HomePage(),
-        AppRoute.ITEM_DETAILS: (context) => ItemDetails(),
-        AppRoute.CART: (context) => Cart(),
+        AppRoute.ITEM_DETAILS: (context) => ItemDetailsPage(),
+        AppRoute.CART: (context) => CartPage(),
         AppRoute.MY_PROFILE: (context) => MyProfilePage(),
         AppRoute.MY_ORDERS: (context) => MyOrderPage(),
         AppRoute.NOTIFICATIONS: (context) => NotificationPage(),
+        AppRoute.APPLY_PROMO_CODE: (context) => ApplyPromoCodePage(),
       },
     );
   }

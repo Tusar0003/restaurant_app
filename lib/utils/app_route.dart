@@ -7,4 +7,5 @@ class AppRoute {
   static const String MY_PROFILE = '/myProfile';
   static const String MY_ORDERS = '/myOrders';
   static const String NOTIFICATIONS = '/notifications';
+  static const String APPLY_PROMO_CODE = '/applyPromoCode';
 }

@@ -5,7 +5,7 @@ import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/home_view_model.dart';
-import 'package:restaurant_app/widgets/common_widgets.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
 
 class MyProfilePage extends StatelessWidget {
@@ -182,7 +182,7 @@ class MyProfilePageView extends StatelessView<HomeViewModel> {
         SizedBox(
           width: Constants.EXTRA_SMALL_PADDING,
         ),
-        CommonWidgets().mandatory()
+        Widgets().mandatory()
       ],
     );
   }
@@ -249,7 +249,7 @@ class MyProfilePageView extends StatelessView<HomeViewModel> {
         SizedBox(
           width: Constants.EXTRA_SMALL_PADDING,
         ),
-        CommonWidgets().mandatory()
+        Widgets().mandatory()
       ],
     );
   }
@@ -316,7 +316,7 @@ class MyProfilePageView extends StatelessView<HomeViewModel> {
         SizedBox(
           width: Constants.EXTRA_SMALL_PADDING,
         ),
-        CommonWidgets().mandatory()
+        Widgets().mandatory()
       ],
     );
   }
@@ -383,7 +383,7 @@ class MyProfilePageView extends StatelessView<HomeViewModel> {
         SizedBox(
           width: Constants.EXTRA_SMALL_PADDING,
         ),
-        CommonWidgets().mandatory()
+        Widgets().mandatory()
       ],
     );
   }
@@ -450,7 +450,7 @@ class MyProfilePageView extends StatelessView<HomeViewModel> {
         SizedBox(
           width: Constants.EXTRA_SMALL_PADDING,
         ),
-        CommonWidgets().mandatory()
+        Widgets().mandatory()
       ],
     );
   }
@@ -517,7 +517,7 @@ class MyProfilePageView extends StatelessView<HomeViewModel> {
         SizedBox(
           width: Constants.EXTRA_SMALL_PADDING,
         ),
-        CommonWidgets().mandatory()
+        Widgets().mandatory()
       ],
     );
   }

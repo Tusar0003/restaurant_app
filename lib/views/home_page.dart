@@ -1,12 +1,20 @@
+import 'package:animations/animations.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hud/flutter_hud.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pmvvm/pmvvm.dart';
+import 'package:restaurant_app/models/category.dart';
+import 'package:restaurant_app/models/item.dart';
+import 'package:restaurant_app/utils/api_services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/home_view_model.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -30,11 +38,15 @@ class HomePageView extends StatelessView<HomeViewModel> {
     this.context = context;
     this.viewModel = viewModel;
 
-    return Scaffold(
-      appBar: appBar(),
-      drawer: drawer(),
-      body: body(),
-      floatingActionButton: floatingActionButton(),
+    return WidgetHUD(
+      showHUD: viewModel.isLoading,
+      hud: Widgets().progressBar(),
+      builder: (context) => Scaffold(
+        appBar: appBar(),
+        drawer: drawer(),
+        body: body(),
+        floatingActionButton: floatingActionButton(),
+      )
     );
   }
 
@@ -211,15 +223,56 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   floatingActionButton() {
-    return FloatingActionButton(
+    return FloatingActionButton.extended(
       backgroundColor: ColorHelper.PRIMARY_COLOR,
-      child: Icon(
-        Icons.shopping_bag_outlined,
-        color: Colors.black,
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.all(
+      //     Radius.circular(Constants.SMALL_RADIUS)
+      //   )
+      // ),
+      icon: viewModel.cartItemNumber > 0 ? floatingActionIcon() : null,
+      label: AnimatedSwitcher(
+        duration: Duration(milliseconds: 500),
+        transitionBuilder: (Widget widget, Animation<double> animation) =>
+          FadeTransition(
+            opacity: animation,
+            child: SizeTransition(
+              child: widget,
+              sizeFactor: animation,
+              axis: Axis.horizontal,
+            ),
+          ) ,
+        child: viewModel.cartItemNumber > 0 ?
+        floatingActionText() :
+        floatingActionIcon(),
       ),
-      onPressed: () {
-        Navigator.pushNamed(context, AppRoute.CART);
+      onPressed: () async {
+        if (viewModel.cartItemNumber > 0) {
+          await Navigator.pushNamed(context, AppRoute.CART);
+          viewModel.getCartItemNumber();
+        } else {
+          showEmptyCartDialog();
+        }
       },
+    );
+  }
+
+  floatingActionIcon() {
+    return Icon(
+      Icons.shopping_bag_outlined,
+      color: Colors.black,
+      size: Constants.SMALL_ICON_SIZE,
+    );
+  }
+
+  floatingActionText() {
+    return Text(
+      '${viewModel.cartItemNumber} Item/s',
+      style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w700,
+          fontSize: Constants.SMALL_FONT_SIZE,
+          color: Colors.black
+      ),
     );
   }
 
@@ -229,49 +282,71 @@ class HomePageView extends StatelessView<HomeViewModel> {
         top: Constants.SMALL_PADDING,
         left: Constants.STANDARD_PADDING
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              Constants.RECOMMENDED,
-              style: GoogleFonts.poppins(
-                  fontSize: Constants.EXTRA_LARGE_FONT_SIZE,
-                  fontWeight: FontWeight.w500
-              ),
-            ),
-            SizedBox(
-              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-            ),
-            recommended(),
-            SizedBox(
-              height: Constants.STANDARD_PADDING,
-            ),
-            categoryListView(),
-            SizedBox(
-              height: Constants.STANDARD_PADDING,
-            ),
-            categoryWiseItemListView()
-          ],
-        ),
-      ),
+      child: viewModel.isRecommendedItemEmpty ?
+              bodyWithoutRecommendedList() :
+              bodyWithRecommendedList(),
     );
   }
 
-  recommended() {
+  bodyWithRecommendedList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          Constants.RECOMMENDED,
+          style: GoogleFonts.poppins(
+              fontSize: Constants.EXTRA_LARGE_FONT_SIZE,
+              fontWeight: FontWeight.w500
+          ),
+        ),
+        SizedBox(
+          height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+        ),
+        recommendedItemListView(),
+        SizedBox(
+          height: Constants.SMALL_PADDING,
+        ),
+        categoryListView(),
+        SizedBox(
+          height: Constants.LARGE_PADDING,
+        ),
+        categoryWiseItemListView()
+      ],
+    );
+  }
+
+  bodyWithoutRecommendedList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        categoryListView(),
+        SizedBox(
+          height: Constants.LARGE_PADDING,
+        ),
+        categoryWiseItemListView()
+      ],
+    );
+  }
+
+  recommendedItemListView() {
     return Container(
       height: Constants.LARGE_HEIGHT,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: 15,
+        itemCount: viewModel.recommendedItemList.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
-            child: singleRecommendedItem(),
-            onTap: () {
-              Navigator.pushNamed(context, AppRoute.ITEM_DETAILS);
+            child: singleRecommendedItem(viewModel.recommendedItemList[index]),
+            onTap: () async {
+              await Navigator.pushNamed(
+                  context,
+                  AppRoute.ITEM_DETAILS,
+                  arguments: viewModel.recommendedItemList[index]
+              );
+              viewModel.getCartItemNumber();
             },
           );
         },
@@ -279,127 +354,119 @@ class HomePageView extends StatelessView<HomeViewModel> {
     );
   }
 
-  singleRecommendedItem() {
+  singleRecommendedItem(Item item) {
     return Container(
       width: Constants.LARGE_WIDTH,
       margin: EdgeInsets.only(right: Constants.SMALL_PADDING),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(Constants.SMALL_RADIUS),
-            child: FadeInImage(
-              image: NetworkImage(Constants.DEMO_PIZZA_LINK),
-              placeholder: AssetImage('assets/images/place_holder.jpg'),
-              imageErrorBuilder: (context, error, stackTrace) {
-                return Image(
-                  image: AssetImage('assets/images/place_holder.jpg'),
-                  fit: BoxFit.fill,
-                  height: Constants.RECOMMENDED_IMAGE_HEIGHT,
-                  width: Constants.LARGE_WIDTH,
-                );
-              },
-              fit: BoxFit.fill,
-              width: Constants.LARGE_WIDTH,
-              height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+          Container(
+            width: Constants.LARGE_WIDTH,
+            height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                  Radius.circular(Constants.SMALL_RADIUS)
+              ),
+              color: Colors.grey.shade300
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(Constants.SMALL_RADIUS),
+              child: FadeInImage(
+                image: NetworkImage(ApiServices.BASE_URL + '${item.imagePath}'),
+                placeholder: AssetImage('assets/images/place_holder.jpg'),
+                imageErrorBuilder: (context, error, stackTrace) {
+                  return Image(
+                    image: AssetImage('assets/images/place_holder.jpg'),
+                    fit: BoxFit.cover,
+                    height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+                    width: Constants.LARGE_WIDTH,
+                  );
+                },
+                fit: BoxFit.cover,
+                width: Constants.LARGE_WIDTH,
+                height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+              ),
             ),
           ),
           SizedBox(
             height: Constants.SMALL_PADDING,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 5,
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                      'Chicken Cheese Burger',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        fontSize: Constants.MEDIUM_FONT_SIZE,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      )
-                  ),
-                  SizedBox(
-                    height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(Constants.SMALL_PADDING),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(Constants.SMALL_RADIUS)
-                        ),
-                        color: Colors.grey.shade300
-                    ),
-                    child: Text(
-                        '100 tk',
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                              fontSize: Constants.SMALL_FONT_SIZE,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black
-                          ),
-                        )
-                    ),
-                  ),
-                ],
+          Text(
+              item.itemName!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                fontSize: Constants.MEDIUM_FONT_SIZE,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
               )
+          ),
+          SizedBox(
+            height: Constants.EXTRA_SMALL_PADDING,
+          ),
+          Row(
+            children: [
+              RatingBarIndicator(
+                rating: item.averageRating.toString() == 'null' ? 0 : item.averageRating!,
+                itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                direction: Axis.horizontal,
+                unratedColor: Colors.grey[300],
+                itemCount: 5,
+                // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => Icon(
+                  Icons.star,
+                  color: ColorHelper.PRIMARY_COLOR,
+                ),
               ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                          Icons.add_shopping_cart
-                      ),
-                      onPressed: () {},
-                    ),
-                    SizedBox(
-                      height: Constants.EXTRA_SMALL_PADDING,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Icon(
-                          Icons.star,
-                          color: ColorHelper.PRIMARY_COLOR,
-                        ),
-                        Text(
-                          '4.3',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.poppins(
-                            fontSize: Constants.MEDIUM_FONT_SIZE,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        )
-                      ],
-                    ),
-                    // RatingBarIndicator(
-                    //   rating: 3.5,
-                    //   itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                    //   direction: Axis.horizontal,
-                    //   unratedColor: Colors.grey[300],
-                    //   itemCount: 5,
-                    //   // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    //   itemBuilder: (context, _) => Icon(
-                    //     Icons.star,
-                    //     color: ColorHelper.PRIMARY_COLOR,
-                    //   ),
-                    // ),
-                  ],
-                )
+              SizedBox(
+                width: Constants.EXTRA_SMALL_PADDING,
+              ),
+              Text(
+                item.averageRating.toString() == 'null' ? '0.0' : item.averageRating.toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.poppins(
+                  fontSize: Constants.SMALL_FONT_SIZE,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               )
             ],
-          )
+          ),
+          Row(
+            children: [
+              Container(
+                height: 35,
+                padding: EdgeInsets.all(Constants.SMALL_PADDING),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(Constants.SMALL_RADIUS)
+                    ),
+                    color: Colors.grey.shade300
+                ),
+                child: Text(
+                    '${item.price} TK',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: Constants.SMALL_FONT_SIZE,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black
+                      ),
+                    )
+                ),
+              ),
+              Spacer(),
+              IconButton(
+                icon: Icon(
+                  Icons.add_shopping_cart,
+                ),
+                onPressed: () {
+                  viewModel.addToCart(item);
+                },
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -408,11 +475,12 @@ class HomePageView extends StatelessView<HomeViewModel> {
   categoryListView() {
     return Container(
       height: Constants.EXTRA_SMALL_HEIGHT,
+      alignment: Alignment.center,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: 15,
+        itemCount: viewModel.categoryList.length,
         itemBuilder: (BuildContext context, int index) => singleCategory(index),
       ),
     );
@@ -424,14 +492,15 @@ class HomePageView extends StatelessView<HomeViewModel> {
       child: ChoiceChip(
         padding: EdgeInsets.all(Constants.SMALL_PADDING),
         label: Text(
-          'Category $index',
+          viewModel.categoryList[index].categoryName!,
           style: GoogleFonts.poppins(
             color: Colors.black,
             fontWeight: FontWeight.w600
           ),
         ),
         selectedColor: ColorHelper.PRIMARY_COLOR,
-        selected: viewModel.value == index,
+        selected: viewModel.categoryIndex == index,
+        autofocus: true,
         onSelected: (bool selected) {
           viewModel.setCategory(selected, index);
         },
@@ -440,132 +509,165 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   categoryWiseItemListView() {
-    return ListView.builder(
-      physics: ClampingScrollPhysics(),
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: 15,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: singleCategoryWiseItem(),
-          onTap: () {
-            Navigator.pushNamed(context, AppRoute.ITEM_DETAILS);
-          },
-        );
-      },
+    return Expanded(
+      child: ListView.builder(
+        padding: EdgeInsets.only(bottom: Constants.STANDARD_PADDING),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: viewModel.itemList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: singleCategoryWiseItem(viewModel.itemList[index]),
+            onTap: () async {
+              await Navigator.pushNamed(
+                  context,
+                  AppRoute.ITEM_DETAILS,
+                  arguments: viewModel.itemList[index]
+              );
+              viewModel.getCartItemNumber();
+            },
+          );
+        },
+      )
     );
   }
 
-  singleCategoryWiseItem() {
+  singleCategoryWiseItem(Item item) {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        // margin: EdgeInsets.only(bottom: Constants.STANDARD_PADDING),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                ClipRRect(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: Constants.SMALL_HEIGHT,
+                width: Constants.SMALL_WIDTH,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Constants.LARGE_RADIUS)
+                  ),
+                  color: Colors.grey.shade300
+                ),
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
                   child: FadeInImage(
                     image: NetworkImage(
-                      Constants.DEMO_BURGER_LINK,
+                      ApiServices.BASE_URL + '${item.imagePath}',
                     ),
                     placeholder: AssetImage('assets/images/place_holder.jpg'),
                     imageErrorBuilder: (context, error, stackTrace) {
                       return Image(
                         image: AssetImage('assets/images/place_holder.jpg'),
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         height: Constants.SMALL_HEIGHT,
                         width: Constants.SMALL_WIDTH,
                       );
                     },
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     height: Constants.SMALL_HEIGHT,
                     width: Constants.SMALL_WIDTH,
                   ),
-                ),
-                SizedBox(
-                  width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                ),
-                Expanded(
-                    flex: 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                            'Item Name Test Again',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                )
+              ),
+              SizedBox(
+                width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+              ),
+              Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          item.itemName!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            fontSize: Constants.MEDIUM_FONT_SIZE,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          )
+                      ),
+                      SizedBox(
+                        height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(Constants.SMALL_PADDING),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(Constants.SMALL_RADIUS)
+                            ),
+                            color: Colors.grey.shade300
+                        ),
+                        child: Text(
+                            '${item.price} TK',
                             style: GoogleFonts.poppins(
-                              fontSize: Constants.MEDIUM_FONT_SIZE,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
+                              textStyle: TextStyle(
+                                  fontSize: Constants.SMALL_FONT_SIZE,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black
+                              ),
                             )
                         ),
-                        SizedBox(
-                          height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+                      ),
+                    ],
+                  )
+              ),
+              SizedBox(
+                width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+              ),
+              Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                            Icons.add_shopping_cart
                         ),
-                        Container(
-                          padding: EdgeInsets.all(Constants.SMALL_PADDING),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(Constants.SMALL_RADIUS)
-                              ),
-                              color: Colors.grey.shade300
-                          ),
-                          child: Text(
-                              '100 tk',
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                    fontSize: Constants.SMALL_FONT_SIZE,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black
-                                ),
-                              )
-                          ),
+                        onPressed: () {
+                          viewModel.addToCart(item);
+                        },
+                      ),
+                      SizedBox(
+                        height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+                      ),
+                      RatingBarIndicator(
+                        rating: item.averageRating.toString() == 'null' ? 0 : item.averageRating!,
+                        itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                        direction: Axis.horizontal,
+                        unratedColor: Colors.grey[300],
+                        itemCount: 5,
+                        // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: ColorHelper.PRIMARY_COLOR,
                         ),
-                      ],
-                    )
-                ),
-                SizedBox(
-                  width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                ),
-                Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                              Icons.add_shopping_cart
-                          ),
-                          onPressed: () {},
-                        ),
-                        SizedBox(
-                          height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                        ),
-                        RatingBarIndicator(
-                          rating: 3.5,
-                          itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                          direction: Axis.horizontal,
-                          unratedColor: Colors.grey[300],
-                          itemCount: 5,
-                          // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: ColorHelper.PRIMARY_COLOR,
-                          ),
-                        ),
-                      ],
-                    )
-                )
-              ],
-            ),
-            Divider()
-          ],
-        )
+                      ),
+                    ],
+                  )
+              )
+            ],
+          ),
+          Divider()
+        ],
+      )
     );
+  }
+
+  showEmptyCartDialog() {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.WARNING,
+      animType: AnimType.BOTTOMSLIDE,
+      headerAnimationLoop: false,
+      dismissOnTouchOutside: false,
+      title: Constants.CART,
+      desc: 'Your cart is empty!',
+      btnOkText: Constants.OK,
+      btnOkOnPress: () {},
+    ).show();
   }
 }

@@ -23,7 +23,7 @@ class Constants {
   static const double EXTRA_SMALL_WIDTH = 50;
   static const double SMALL_WIDTH = 100;
   static const double MEDIUM_WIDTH = 160;
-  static const double LARGE_WIDTH = 200;
+  static const double LARGE_WIDTH = 210;
   static const double EXTRA_LARGE_WIDTH = 300;
   static const double EXTRA_EXTRA_LARGE_WIDTH = 750;
   static const double MY_ORDER_IMAGE_SIZE = 80;
@@ -78,6 +78,7 @@ class Constants {
   static const String CART = 'Cart';
   static const String DESIRED_ITEMS = 'Your desired items';
   static const String ORDER_TYPE = 'Order Type';
+  static const String SUB_TOTAL = 'Sub Total';
   static const String DISCOUNT = 'Discount';
   static const String DELIVERY_CHARGE = 'Delivery Charge';
   static const String TOTAL = 'Total';
@@ -91,7 +92,21 @@ class Constants {
   static const String QUANTITY = 'Quantity';
   static const String UNIT_PRICE = 'Unit Price';
   static const String TOTAL_PRICE = 'Total Price';
+  static const String EXCEPTION_MESSAGE = 'Something went wrong! Please try again.';
+  static const String CONNECTION_MESSAGE = 'Could not establish the connection!';
+  static const String TOKEN = 'token';
+  static const String PLEASE_WAIT = 'Please wait...';
+  static const String DELETE = 'Delete';
+  static const String REMOVE = 'Remove';
+  static const String NO = 'No';
+  static const String YES = 'Yes';
+  static const String OK = 'Ok';
+  static const String APPLY_PROMO_CODE = 'Apply Promo Code';
+  static const String APPLY = 'Apply';
+  static const String PROMO_CODE = 'Promo Code';
   static const String TK_SYMBOL = '\u09F3';
+
+  static const int TIMEOUT_LIMIT = 20;
 
   static const String DEMO_PIZZA_LINK = 'https://cdn.pixabay.com/photo/2017/'
       '12/09/08/18/pizza-3007395__480.jpg';

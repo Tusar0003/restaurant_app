@@ -1,53 +1,96 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pmvvm/mvvm_builder.widget.dart';
 import 'package:pmvvm/views/stateless.view.dart';
+import 'package:restaurant_app/models/item.dart';
+import 'package:restaurant_app/utils/api_services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
-import 'package:restaurant_app/viewmodels/home_view_model.dart';
+import 'package:restaurant_app/viewmodels/item_details_view_model.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
 
-late BuildContext buildContext;
-
-class ItemDetails extends StatelessWidget {
+class ItemDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    buildContext = context;
-
     return MVVM(
-      view: (_, __) => ItemDetailsView(),
-      viewModel: HomeViewModel()
+      view: (_, __) => ItemDetailsPageView(),
+      viewModel: ItemDetailsViewModel(ModalRoute.of(context)?.settings.arguments as Item)
     );
   }
 }
 
 // ignore: must_be_immutable
-class ItemDetailsView extends StatelessView<HomeViewModel> {
+class ItemDetailsPageView extends StatelessView<ItemDetailsViewModel> {
 
-  late HomeViewModel viewModel;
+  late BuildContext context;
+  late ItemDetailsViewModel viewModel;
 
   @override
-  Widget render(BuildContext context, HomeViewModel viewModel) {
+  Widget render(BuildContext context, ItemDetailsViewModel viewModel) {
+    this.context = context;
     this.viewModel = viewModel;
 
-    return Scaffold(
-      floatingActionButton: floatingActionButton(),
-      body: body(),
+    return WidgetHUD(
+      showHUD: viewModel.isLoading,
+      hud: Widgets().progressBar(),
+      builder: (context) => Scaffold(
+        floatingActionButton: floatingActionButton(),
+        body: body(),
+      )
     );
   }
 
   floatingActionButton() {
-    return FloatingActionButton(
+    return FloatingActionButton.extended(
       backgroundColor: ColorHelper.PRIMARY_COLOR,
-      child: Icon(
-        Icons.shopping_bag_outlined,
-        color: Colors.black,
+      icon: viewModel.cartItemNumber > 0 ? floatingActionIcon() : null,
+      label: AnimatedSwitcher(
+        duration: Duration(milliseconds: 500),
+        transitionBuilder: (Widget widget, Animation<double> animation) =>
+            FadeTransition(
+              opacity: animation,
+              child: SizeTransition(
+                child: widget,
+                sizeFactor: animation,
+                axis: Axis.horizontal,
+              ),
+            ) ,
+        child: viewModel.cartItemNumber > 0 ?
+        floatingActionText() :
+        floatingActionIcon(),
       ),
-      onPressed: () {
-        Navigator.pushNamed(buildContext, AppRoute.CART);
+      onPressed: () async {
+        if (viewModel.cartItemNumber > 0) {
+          await Navigator.pushNamed(context, AppRoute.CART);
+          viewModel.getCartItemNumber();
+        } else {
+          showEmptyCartDialog();
+        }
       },
+    );
+  }
+
+  floatingActionIcon() {
+    return Icon(
+      Icons.shopping_bag_outlined,
+      color: Colors.black,
+      size: Constants.SMALL_ICON_SIZE,
+    );
+  }
+
+  floatingActionText() {
+    return Text(
+      '${viewModel.cartItemNumber} Item/s',
+      style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w700,
+          fontSize: Constants.SMALL_FONT_SIZE,
+          color: Colors.black
+      ),
     );
   }
 
@@ -64,10 +107,10 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                       bottomRight: Radius.circular(Constants.MEDIUM_RADIUS)
                   ),
                   child: FadeInImage(
-                    image: NetworkImage(Constants.DEMO_PIZZA_LINK),
+                    image: NetworkImage(ApiServices.BASE_URL + '${viewModel.item.imagePath!}'),
                     placeholder: AssetImage('assets/images/place_holder.jpg'),
                     fit: BoxFit.fill,
-                    width: MediaQuery.of(buildContext).size.width,
+                    width: MediaQuery.of(context).size.width,
                     // height: Constants.MEDIUM_HEIGHT,
                   ),
                 )
@@ -80,7 +123,7 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Item Name',
+                        viewModel.item.itemName!,
                         style: GoogleFonts.poppins(
                             color: Colors.black,
                             fontSize: Constants.LARGE_FONT_SIZE,
@@ -91,7 +134,7 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                         height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
                       ),
                       Text(
-                        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s',
+                        viewModel.item.description!,
                         style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: Constants.MEDIUM_FONT_SIZE,
@@ -129,7 +172,7 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                 size: Constants.SMALL_ICON_SIZE,
               ),
               onPressed: () {
-                Navigator.pop(buildContext);
+                Navigator.pop(context);
               },
             ),
           ),
@@ -204,7 +247,7 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                     ),
                     Spacer(),
                     Text(
-                      '120 tk',
+                      '${viewModel.price} TK',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: Constants.SMALL_FONT_SIZE,
@@ -225,12 +268,28 @@ class ItemDetailsView extends StatelessView<HomeViewModel> {
                   ),
                   primary: Colors.black
                 ),
-                onPressed: () {  },
+                onPressed: () {
+                  viewModel.addToCart();
+                },
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  showEmptyCartDialog() {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.WARNING,
+      animType: AnimType.BOTTOMSLIDE,
+      headerAnimationLoop: false,
+      dismissOnTouchOutside: false,
+      title: Constants.CART,
+      desc: 'Your cart is empty!',
+      btnOkText: Constants.OK,
+      btnOkOnPress: () {},
+    ).show();
   }
 }

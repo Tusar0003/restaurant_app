@@ -8,14 +8,9 @@ import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/auth_view_model.dart';
 
 
-late BuildContext buildContext;
-
 class SignIn extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    buildContext = context;
-
     return MVVM(
       view: (_, __) => SignInView(),
       viewModel: AuthViewModel()
@@ -26,11 +21,13 @@ class SignIn extends StatelessWidget {
 // ignore: must_be_immutable
 class SignInView extends StatelessView<AuthViewModel> {
 
+  late BuildContext context;
   late AuthViewModel viewModel;
 
   @override
   Widget render(BuildContext context, viewModel) {
 
+    this.context = context;
     this.viewModel = viewModel;
 
     return Scaffold(
@@ -50,7 +47,7 @@ class SignInView extends StatelessView<AuthViewModel> {
             child: Image(
               image: AssetImage('assets/images/sign_in_page_image.jpg'),
               height: Constants.EXTRA_LARGE_HEIGHT,
-              width: MediaQuery.of(buildContext).size.width,
+              width: MediaQuery.of(context).size.width,
               fit: BoxFit.fill,
             ),
           ),
@@ -106,7 +103,7 @@ class SignInView extends StatelessView<AuthViewModel> {
     // );
 
     return Container(
-      width: MediaQuery.of(buildContext).size.width,
+      width: MediaQuery.of(context).size.width,
       alignment: Alignment.center,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -150,7 +147,7 @@ class SignInView extends StatelessView<AuthViewModel> {
 
   signInButton() {
     return Container(
-      width: MediaQuery.of(buildContext).size.width,
+      width: MediaQuery.of(context).size.width,
       height: Constants.EXTRA_SMALL_HEIGHT,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -173,7 +170,7 @@ class SignInView extends StatelessView<AuthViewModel> {
           // String number = phoneNumberTextController.text.toString();
           // Provider.of<AuthViewModel>(context, listen: false).checkLogIn(number.replaceAll(' ', ''));
 
-          Navigator.pushNamed(buildContext, AppRoute.VERIFICATION);
+          Navigator.pushNamed(context, AppRoute.VERIFICATION);
         },
       ),
     );

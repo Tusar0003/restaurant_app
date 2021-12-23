@@ -6,6 +6,7 @@ import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/home_view_model.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
 
 class NotificationPage extends StatelessWidget {
@@ -28,21 +29,8 @@ class NotificationPageView extends StatelessView<HomeViewModel> {
     this.context = context;
 
     return Scaffold(
-      appBar: appBar(),
+      appBar: Widgets().appBar(Constants.NOTIFICATIONS),
       body: body(),
-    );
-  }
-
-  appBar() {
-    return AppBar(
-      title: Text(
-        Constants.NOTIFICATIONS,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500
-        ),
-      ),
-      backgroundColor: ColorHelper.TRANSPARENT_COLOR,
-      elevation: 0,
     );
   }
 
@@ -63,7 +51,9 @@ class NotificationPageView extends StatelessView<HomeViewModel> {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           child: singleItem(),
-          onTap: () {},
+          onTap: () {
+            showDetails();
+          },
         );
       },
     );

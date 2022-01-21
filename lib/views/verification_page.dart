@@ -78,11 +78,11 @@ class VerificationView extends StatelessView<AuthViewModel> {
                   ),
                 ),
                 SizedBox(
-                  height: Constants.SIGN_IN_PAGE_PADDING,
+                  height: Constants.LARGE_PADDING,
                 ),
                 pinCodeTextField(),
                 SizedBox(
-                  height: Constants.SIGN_IN_PAGE_PADDING,
+                  height: Constants.LARGE_PADDING,
                 ),
                 verifyButton(),
               ],

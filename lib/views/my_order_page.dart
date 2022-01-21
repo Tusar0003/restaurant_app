@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pmvvm/pmvvm.dart';
+import 'package:restaurant_app/models/order_history.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
-import 'package:restaurant_app/viewmodels/home_view_model.dart';
+import 'package:restaurant_app/viewmodels/order_history_view_model.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
 
 class MyOrderPage extends StatelessWidget {
@@ -13,63 +17,56 @@ class MyOrderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => MyOrderPageView(),
-      viewModel: HomeViewModel(),
+      viewModel: OrderHistoryViewModel(),
     );
   }
 }
 
 // ignore: must_be_immutable
-class MyOrderPageView extends StatelessView<HomeViewModel> {
+class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
 
   late BuildContext context;
+  late OrderHistoryViewModel viewModel;
 
   @override
-  Widget render(BuildContext context, HomeViewModel viewModel) {
+  Widget render(BuildContext context, OrderHistoryViewModel viewModel) {
     this.context = context;
+    this.viewModel = viewModel;
 
-    return Scaffold(
-      appBar: appBar(),
-      body: body(),
-    );
-  }
-
-  appBar() {
-    return AppBar(
-      title: Text(
-        Constants.MY_ORDERS,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500
-        ),
-      ),
-      backgroundColor: ColorHelper.TRANSPARENT_COLOR,
-      elevation: 0,
+    return WidgetHUD(
+      showHUD: viewModel.isLoading,
+      hud: Widgets().progressBar(),
+      builder: (context) => Scaffold(
+        appBar: Widgets().appBar(Constants.MY_ORDERS),
+        body: body(),
+      )
     );
   }
 
   body() {
     return Container(
       padding: EdgeInsets.all(Constants.STANDARD_PADDING),
-      child: itemListView(),
+      child: orderListView(),
     );
   }
 
-  itemListView() {
+  orderListView() {
     return ListView.builder(
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      itemCount: 15,
+      itemCount: viewModel.orderHistoryList.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          child: singleItem(),
+          child: singleOrder(viewModel.orderHistoryList[index]),
           onTap: () {},
         );
       },
     );
   }
 
-  singleItem() {
+  singleOrder(OrderData orderData) {
     return Container(
         width: MediaQuery.of(context).size.width,
         // margin: EdgeInsets.only(bottom: Constants.STANDARD_PADDING),
@@ -80,19 +77,8 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
               children: <Widget>[
                 ClipRRect(
                   borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
-                  child: FadeInImage(
-                    image: NetworkImage(
-                      Constants.DEMO_BURGER_LINK,
-                    ),
-                    placeholder: AssetImage('assets/images/place_holder.jpg'),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Image(
-                        image: AssetImage('assets/images/place_holder.jpg'),
-                        fit: BoxFit.fill,
-                        height: Constants.MY_ORDER_IMAGE_SIZE,
-                        width: Constants.MY_ORDER_IMAGE_SIZE,
-                      );
-                    },
+                  child: Image(
+                    image: AssetImage('assets/images/order_history.png'),
                     fit: BoxFit.fill,
                     height: Constants.MY_ORDER_IMAGE_SIZE,
                     width: Constants.MY_ORDER_IMAGE_SIZE,
@@ -108,8 +94,8 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                            'Item Name',
-                            maxLines: 2,
+                            orderData.orderNo!,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
                               fontSize: Constants.MEDIUM_FONT_SIZE,
@@ -131,7 +117,7 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
                                   color: Colors.grey.shade300
                               ),
                               child: Text(
-                                  '100 tk',
+                                  '${orderData.totalPrice} tk',
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         fontSize: Constants.SMALL_FONT_SIZE,
@@ -153,7 +139,7 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
                                   color: Colors.grey.shade300
                               ),
                               child: Text(
-                                  'Home Delivery',
+                                  viewModel.getOrderStatus(orderData),
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         fontSize: Constants.SMALL_FONT_SIZE,
@@ -178,6 +164,7 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
                         Icons.navigate_next_outlined,
                       ),
                       onPressed: () {
+                        viewModel.setOrderData(orderData);
                         showDetails();
                       },
                     ),
@@ -190,159 +177,215 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
     );
   }
 
+  // showDetails(OrderData orderData) {
+  //   showCupertinoModalBottomSheet(
+  //     context: context,
+  //     expand: false,
+  //     builder: (context) => Material(
+  //       child: Container(
+  //         height: Constants.EXTRA_EXTRA_LARGE_HEIGHT,
+  //         child: Stack(
+  //           children: [
+  //             Container(
+  //               padding: EdgeInsets.all(Constants.STANDARD_PADDING),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     Constants.ORDER_DETAILS,
+  //                     style: GoogleFonts.poppins(
+  //                         color: Colors.black,
+  //                         fontSize: Constants.LARGE_FONT_SIZE,
+  //                         fontWeight: FontWeight.w600
+  //                     ),
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.SMALL_PADDING,
+  //                   ),
+  //                   Divider(),
+  //                   SizedBox(
+  //                     height: Constants.SMALL_PADDING,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         '${Constants.ORDER_NO}:',
+  //                         style: GoogleFonts.poppins(
+  //                             color: Colors.black,
+  //                             fontSize: Constants.SMALL_FONT_SIZE,
+  //                             fontWeight: FontWeight.w600
+  //                         ),
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         orderData.orderNo!,
+  //                         style: GoogleFonts.poppins(
+  //                           color: Colors.black,
+  //                           fontSize: Constants.MEDIUM_FONT_SIZE,
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         '${Constants.ORDER_TYPE}:',
+  //                         style: GoogleFonts.poppins(
+  //                             color: Colors.black,
+  //                             fontSize: Constants.SMALL_FONT_SIZE,
+  //                             fontWeight: FontWeight.w600
+  //                         ),
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         orderData.orderType!,
+  //                         style: GoogleFonts.poppins(
+  //                           color: Colors.black,
+  //                           fontSize: Constants.MEDIUM_FONT_SIZE,
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         '${Constants.QUANTITY}:',
+  //                         style: GoogleFonts.poppins(
+  //                             color: Colors.black,
+  //                             fontSize: Constants.SMALL_FONT_SIZE,
+  //                             fontWeight: FontWeight.w600
+  //                         ),
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         orderData.totalQuantity.toString(),
+  //                         style: GoogleFonts.poppins(
+  //                           color: Colors.black,
+  //                           fontSize: Constants.MEDIUM_FONT_SIZE,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         '${Constants.DISCOUNT}:',
+  //                         style: GoogleFonts.poppins(
+  //                             color: Colors.black,
+  //                             fontSize: Constants.SMALL_FONT_SIZE,
+  //                             fontWeight: FontWeight.w600
+  //                         ),
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         '${Constants.TK_SYMBOL} ${orderData.totalDiscountAmount}',
+  //                         style: GoogleFonts.poppins(
+  //                           color: Colors.black,
+  //                           fontSize: Constants.MEDIUM_FONT_SIZE,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         '${Constants.DELIVERY_CHARGE}:',
+  //                         style: GoogleFonts.poppins(
+  //                             color: Colors.black,
+  //                             fontSize: Constants.SMALL_FONT_SIZE,
+  //                             fontWeight: FontWeight.w600
+  //                         ),
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         '${Constants.TK_SYMBOL} ${orderData.deliveryCharge}',
+  //                         style: GoogleFonts.poppins(
+  //                           color: Colors.black,
+  //                           fontSize: Constants.MEDIUM_FONT_SIZE,
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Text(
+  //                         '${Constants.TOTAL_PRICE}:',
+  //                         style: GoogleFonts.poppins(
+  //                             color: Colors.black,
+  //                             fontSize: Constants.SMALL_FONT_SIZE,
+  //                             fontWeight: FontWeight.w600
+  //                         ),
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         '${Constants.TK_SYMBOL} ${orderData.totalPrice}',
+  //                         style: GoogleFonts.poppins(
+  //                           color: Colors.black,
+  //                           fontSize: Constants.MEDIUM_FONT_SIZE,
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: Constants.SMALL_PADDING,
+  //                   ),
+  //                   Divider(),
+  //                 ],
+  //               ),
+  //             ),
+  //             Align(
+  //               alignment: Alignment.topRight,
+  //               child: TextButton(
+  //                   style: TextButton.styleFrom(
+  //                     backgroundColor: ColorHelper.PRIMARY_COLOR,
+  //                     shape: CircleBorder(
+  //                         side: BorderSide(
+  //                             color: Colors.transparent
+  //                         )
+  //                     ),
+  //                   ),
+  //                   child: Icon(
+  //                     CupertinoIcons.clear_thick,
+  //                     color: Colors.black,
+  //                     size: Constants.EXTRA_SMALL_ICON_SIZE,
+  //                   ),
+  //                   onPressed: () {
+  //                     Navigator.pop(context);
+  //                   }
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   showDetails() {
     showCupertinoModalBottomSheet(
       context: context,
       expand: false,
       builder: (context) => Material(
         child: Container(
-          height: Constants.EXTRA_EXTRA_LARGE_HEIGHT,
+          height: 500,
           child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: FadeInImage(
-                        image: NetworkImage(Constants.DEMO_PIZZA_LINK),
-                        placeholder: AssetImage('assets/images/place_holder.jpg'),
-                        fit: BoxFit.fill,
-                        width: MediaQuery.of(context).size.width,
-                        // height: Constants.MEDIUM_HEIGHT,
-                      )
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                        padding: EdgeInsets.all(Constants.STANDARD_PADDING),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Item Name',
-                              style: GoogleFonts.poppins(
-                                  color: Colors.black,
-                                  fontSize: Constants.LARGE_FONT_SIZE,
-                                  fontWeight: FontWeight.w600
-                              ),
-                            ),
-                            SizedBox(
-                              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'Order Type: ',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: Constants.MEDIUM_FONT_SIZE,
-                                    fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                Text(
-                                  'Home Delivery',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: Constants.MEDIUM_FONT_SIZE,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${Constants.QUANTITY}: ',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.black,
-                                      fontSize: Constants.MEDIUM_FONT_SIZE,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                Text(
-                                  '3',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: Constants.MEDIUM_FONT_SIZE,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${Constants.UNIT_PRICE}: ',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.black,
-                                      fontSize: Constants.MEDIUM_FONT_SIZE,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                Text(
-                                  '${Constants.TK_SYMBOL}100',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: Constants.MEDIUM_FONT_SIZE,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${Constants.DELIVERY_CHARGE}: ',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.black,
-                                      fontSize: Constants.MEDIUM_FONT_SIZE,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                Text(
-                                  '${Constants.TK_SYMBOL}30',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: Constants.MEDIUM_FONT_SIZE,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${Constants.TOTAL_PRICE}: ',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.black,
-                                      fontSize: Constants.MEDIUM_FONT_SIZE,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                Text(
-                                  '${Constants.TK_SYMBOL}330',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: Constants.MEDIUM_FONT_SIZE,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                  ),
-                ],
-              ),
+              detailsBody(),
               Align(
                 alignment: Alignment.topRight,
                 child: TextButton(
@@ -368,6 +411,213 @@ class MyOrderPageView extends StatelessView<HomeViewModel> {
           ),
         ),
       ),
+    );
+  }
+
+  detailsBody() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.all(Constants.STANDARD_PADDING),
+      child: orderDetails(),
+    );
+  }
+
+  orderDetails() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Lottie.asset(
+              viewModel.getLottie(),
+              width: Constants.SMALL_WIDTH,
+              height: Constants.SMALL_HEIGHT,
+              repeat: true
+          ),
+          SizedBox(
+            height: Constants.MEDIUM_PADDING,
+          ),
+          Text(
+            viewModel.orderStatus,
+            style: GoogleFonts.poppins(
+                fontSize: Constants.LARGE_FONT_SIZE,
+                fontWeight: FontWeight.w600,
+                color: Colors.black
+            ),
+          ),
+          SizedBox(
+            height: Constants.LARGE_PADDING,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.ORDER_NO}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                viewModel.orderData.orderNo!,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.STATUS}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                viewModel.orderData.isCompleted == 1 ?
+                Constants.YOUR_ORDER_IS_PENDING : Constants.PREPARING_YOUR_FOOD,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.ORDER_TYPE}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                viewModel.orderData.orderType!,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.DELIVERY_CHARGE}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${Constants.TK_SYMBOL} ${viewModel.orderData.deliveryCharge.toString()}',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.TOTAL_PRICE}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${Constants.TK_SYMBOL} ${viewModel.orderData.totalPrice}',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          Divider(),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              'Items',
+              textAlign: TextAlign.start,
+              style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                  fontWeight: FontWeight.w600
+              ),
+            ),
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          itemListView()
+        ],
+      ),
+    );
+  }
+
+  itemListView() {
+    return ListView.builder(
+      physics: AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemCount: viewModel.orderData.items!.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          child: singleItem(viewModel.orderData.items![index]),
+          onTap: () async {},
+        );
+      },
+    );
+  }
+
+  singleItem(Items item) {
+    return Row(
+      children: [
+        Text(
+          '${item.itemName} x${item.quantity}',
+          style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: Constants.SMALL_FONT_SIZE,
+              fontWeight: FontWeight.w600
+          ),
+        ),
+        Spacer(),
+        Text(
+          item.subTotalPrice.toString(),
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontSize: Constants.MEDIUM_FONT_SIZE,
+          ),
+        )
+      ],
     );
   }
 }

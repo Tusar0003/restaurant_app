@@ -1,11 +1,11 @@
-class Order {
+class ConfirmOrder {
   String? mobileNumber;
   String? orderType;
   String? deliveryCharge;
 
-  Order({this.mobileNumber, this.orderType, this.deliveryCharge});
+  ConfirmOrder({this.mobileNumber, this.orderType, this.deliveryCharge});
 
-  Order.fromJson(Map<String, dynamic> json) {
+  ConfirmOrder.fromJson(Map<String, dynamic> json) {
     mobileNumber = json['mobile_number'];
     orderType = json['order_type'];
     deliveryCharge = json['delivery_charge'];

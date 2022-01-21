@@ -5,6 +5,7 @@ import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/add_to_cart.dart';
 import 'package:restaurant_app/models/cart_item.dart';
 import 'package:restaurant_app/models/category.dart';
+import 'package:restaurant_app/models/current_order.dart';
 import 'package:restaurant_app/models/item.dart';
 import 'package:restaurant_app/repositories/cart_repository.dart';
 import 'package:restaurant_app/repositories/home_repository.dart';
@@ -20,17 +21,27 @@ class HomeViewModel extends ViewModel {
   bool isLoading = false;
   bool isRecommendedItemEmpty = true;
   int cartItemNumber = 0;
+  int currentOrderNumber = 0;
   int categoryIndex = 0;
   String categoryCode = '';
+  String currentOrderNo = '';
+  String currentOrderType = '';
+  String currentOrderTotalQuantity = '';
+  String currentOrderTotalDiscount = '';
+  String currentOrderDeliveryCharge = '';
+  String currentOrderTotalPrice = '';
 
   List<Item> recommendedItemList = [];
   List<Category> categoryList = [];
   List<Item> itemList = [];
+  List<CurrentOrder> currentOrderList = [];
+  List<CurrentOrderItems> currentOrderItemList = [];
 
   @override
   Future<void> init() async {
     showProgressBar();
     getCartItemNumber();
+    getCurrentOrderDetails();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
@@ -134,6 +145,7 @@ class HomeViewModel extends ViewModel {
         mobileNumber: Prefs.getString(Constants.MOBILE_NUMBER),
         quantity: '1',
         itemCode: item.itemCode,
+        itemName: item.itemName,
         subTotalPrice: item.price.toString(),
         unitPrice: item.price.toString()
       );
@@ -164,6 +176,24 @@ class HomeViewModel extends ViewModel {
         cartItemNumber = baseResponse.data;
       } else {
         ToastMessages().showErrorToast(baseResponse.message!);
+      }
+    } catch(e) {
+      ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
+    }
+
+    notifyListeners();
+  }
+
+  getCurrentOrderDetails() async {
+    try {
+      BaseResponse baseResponse = await homeRepository.getCurrentOrderDetails();
+
+      if (baseResponse.isSuccess && baseResponse.data.length > 0) {
+        currentOrderNumber = baseResponse.data.length;
+
+        baseResponse.data.forEach((element) {
+          currentOrderList.add(CurrentOrder.fromJson(element));
+        });
       }
     } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);

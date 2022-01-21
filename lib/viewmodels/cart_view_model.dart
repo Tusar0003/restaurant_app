@@ -3,7 +3,7 @@ import 'package:pmvvm/pmvvm.dart';
 import 'package:prefs/prefs.dart';
 import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/cart_item.dart';
-import 'package:restaurant_app/models/order.dart';
+import 'package:restaurant_app/models/confirm_order.dart';
 import 'package:restaurant_app/models/order_type.dart';
 import 'package:restaurant_app/models/promo_details.dart';
 import 'package:restaurant_app/models/update_cart_item.dart';
@@ -194,7 +194,7 @@ class CartViewModel extends ViewModel {
       showProgressBar();
 
       Prefs.init();
-      Order order = Order(
+      ConfirmOrder order = ConfirmOrder(
         mobileNumber: Prefs.getString(Constants.MOBILE_NUMBER),
         orderType: orderTypeList[orderTypeIndex].orderType,
         deliveryCharge: orderTypeList[orderTypeIndex].deliveryCharge.toString()

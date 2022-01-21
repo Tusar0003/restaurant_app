@@ -7,7 +7,7 @@ import 'package:restaurant_app/models/base_json_response.dart';
 import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/add_to_cart.dart';
 import 'package:restaurant_app/models/cart_item.dart';
-import 'package:restaurant_app/models/order.dart';
+import 'package:restaurant_app/models/confirm_order.dart';
 import 'package:restaurant_app/models/update_cart_item.dart';
 import 'package:restaurant_app/utils/api_services.dart';
 import 'package:restaurant_app/utils/constants.dart';
@@ -201,7 +201,7 @@ class CartRepository {
     }
   }
 
-  confirmOrder(Order order) async {
+  confirmOrder(ConfirmOrder order) async {
     try {
       await Prefs.init();
       var token = Prefs.getString(Constants.TOKEN);

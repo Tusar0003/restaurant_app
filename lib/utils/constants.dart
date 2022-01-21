@@ -1,7 +1,6 @@
 class Constants {
   // PADDINGS AND MARGINS
   static const double STANDARD_PADDING = 16.0;
-  static const double SIGN_IN_PAGE_PADDING = 20.0;
   static const double EXTRA_SMALL_PADDING = 4.0;
   static const double SMALL_PADDING = 8.0;
   static const double MEDIUM_PADDING = 12.0;
@@ -15,7 +14,7 @@ class Constants {
   static const double MEDIUM_HEIGHT = 160;
   static const double LARGE_HEIGHT = 210;
   static const double EXTRA_LARGE_HEIGHT = 300;
-  static const double EXTRA_EXTRA_LARGE_HEIGHT = 500;
+  static const double EXTRA_EXTRA_LARGE_HEIGHT = 400;
   static const double RECOMMENDED_IMAGE_HEIGHT = 110;
 
   // WIDTHS
@@ -78,6 +77,9 @@ class Constants {
   static const String CART = 'Cart';
   static const String DESIRED_ITEMS = 'Your desired items';
   static const String ORDER_TYPE = 'Order Type';
+  static const String ORDER_DETAILS = 'Order Details';
+  static const String CURRENT_ORDER = 'Current Order/s';
+  static const String ORDER_NO = 'Order No';
   static const String SUB_TOTAL = 'Sub Total';
   static const String DISCOUNT = 'Discount';
   static const String DELIVERY_CHARGE = 'Delivery Charge';
@@ -92,6 +94,7 @@ class Constants {
   static const String QUANTITY = 'Quantity';
   static const String UNIT_PRICE = 'Unit Price';
   static const String TOTAL_PRICE = 'Total Price';
+  static const String STATUS = 'Status';
   static const String EXCEPTION_MESSAGE = 'Something went wrong! Please try again.';
   static const String CONNECTION_MESSAGE = 'Could not establish the connection!';
   static const String TOKEN = 'token';
@@ -104,7 +107,11 @@ class Constants {
   static const String APPLY_PROMO_CODE = 'Apply Promo Code';
   static const String APPLY = 'Apply';
   static const String PROMO_CODE = 'Promo Code';
+  static const String YOUR_ORDER_IS_PENDING = 'Your Order is Pending';
+  static const String PREPARING_YOUR_FOOD = 'Preparing Your Food';
+  static const String COMPLETED_ORDER = 'Order is Completed';
   static const String TK_SYMBOL = '\u09F3';
+  static const String COPYRIGHTS_SYMBOL = '\u00a9';
 
   static const int TIMEOUT_LIMIT = 20;
 

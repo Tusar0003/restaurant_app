@@ -75,7 +75,7 @@ class CartPageView extends StatelessView<CartViewModel> {
                 ),
               ),
               SizedBox(
-                height: Constants.SIGN_IN_PAGE_PADDING,
+                height: Constants.LARGE_PADDING,
               ),
               addedItemListView(),
               SizedBox(
@@ -91,11 +91,11 @@ class CartPageView extends StatelessView<CartViewModel> {
               ),
               orderTypeListView(),
               SizedBox(
-                height: Constants.SIGN_IN_PAGE_PADDING,
+                height: Constants.LARGE_PADDING,
               ),
               viewModel.isPromoCodeApplied ? promoCode() : applyPromoCode(),
               SizedBox(
-                height: Constants.SIGN_IN_PAGE_PADDING,
+                height: Constants.LARGE_PADDING,
               ),
               orderDetailsLayout(),
             ],

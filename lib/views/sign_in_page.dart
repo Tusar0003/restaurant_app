@@ -74,7 +74,7 @@ class SignInView extends StatelessView<AuthViewModel> {
                   ),
                 ),
                 SizedBox(
-                  height: Constants.SIGN_IN_PAGE_PADDING,
+                  height: Constants.LARGE_PADDING,
                 ),
                 Text(
                   Constants.MOBILE_NUMBER,
@@ -85,7 +85,7 @@ class SignInView extends StatelessView<AuthViewModel> {
                 ),
                 mobileNumberField(),
                 SizedBox(
-                  height: Constants.SIGN_IN_PAGE_PADDING,
+                  height: Constants.LARGE_PADDING,
                 ),
                 signInButton(),
               ],

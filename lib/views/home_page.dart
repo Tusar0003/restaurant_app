@@ -1,13 +1,11 @@
-import 'package:animations/animations.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hud/flutter_hud.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pmvvm/pmvvm.dart';
-import 'package:restaurant_app/models/category.dart';
+import 'package:restaurant_app/models/current_order.dart';
 import 'package:restaurant_app/models/item.dart';
 import 'package:restaurant_app/utils/api_services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
@@ -15,6 +13,7 @@ import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/home_view_model.dart';
 import 'package:restaurant_app/widgets/widgets.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -33,20 +32,32 @@ class HomePageView extends StatelessView<HomeViewModel> {
   late BuildContext context;
   late HomeViewModel viewModel;
 
+  PanelController panelController = PanelController();
+
   @override
   Widget render(BuildContext context, HomeViewModel viewModel) {
     this.context = context;
     this.viewModel = viewModel;
 
-    return WidgetHUD(
-      showHUD: viewModel.isLoading,
-      hud: Widgets().progressBar(),
-      builder: (context) => Scaffold(
-        appBar: appBar(),
-        drawer: drawer(),
-        body: body(),
-        floatingActionButton: floatingActionButton(),
-      )
+    return WillPopScope(
+      onWillPop: () {
+        if (panelController.isPanelOpen) {
+          panelController.close();
+          return Future.value(false);
+        } else {
+          return Future.value(true);
+        }
+      },
+      child: WidgetHUD(
+        showHUD: viewModel.isLoading,
+        hud: Widgets().progressBar(),
+        builder: (context) => Scaffold(
+          appBar: appBar(),
+          drawer: drawer(),
+          body: body(),
+          floatingActionButton: floatingActionButton(),
+        )
+      ),
     );
   }
 
@@ -78,64 +89,79 @@ class HomePageView extends StatelessView<HomeViewModel> {
 
   drawer() {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Stack(
         children: [
-          drawerHeader(),
-          ListTile(
-            title: const Text(Constants.MY_PROFILE),
-            leading: Icon(
-              Icons.person_outlined
-            ),
-            onTap: () {
-              Navigator.pushNamed(context, AppRoute.MY_PROFILE);
-            },
+          ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              drawerHeader(),
+              ListTile(
+                title: const Text(Constants.MY_PROFILE),
+                leading: Icon(
+                    Icons.person_outlined
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoute.MY_PROFILE);
+                },
+              ),
+              // ListTile(
+              //   title: const Text(Constants.MY_ADDRESS),
+              //   leading: Icon(
+              //       Icons.location_city
+              //   ),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //   },
+              // ),
+              ListTile(
+                title: const Text(Constants.MY_ORDERS),
+                leading: Icon(
+                    Icons.fastfood
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoute.MY_ORDERS);
+                },
+              ),
+              // ListTile(
+              //   title: const Text(Constants.VOUCHERS),
+              //   leading: Icon(
+              //       Icons.card_giftcard
+              //   ),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //   },
+              // ),
+              ListTile(
+                title: const Text(Constants.NOTIFICATIONS),
+                leading: Icon(
+                    Icons.notifications
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoute.NOTIFICATIONS);
+                },
+              ),
+              ListTile(
+                title: const Text(Constants.SIGN_OUT),
+                leading: Icon(
+                    Icons.exit_to_app
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
-          // ListTile(
-          //   title: const Text(Constants.MY_ADDRESS),
-          //   leading: Icon(
-          //       Icons.location_city
-          //   ),
-          //   onTap: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
-          ListTile(
-            title: const Text(Constants.MY_ORDERS),
-            leading: Icon(
-                Icons.fastfood
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              'Developed by Tech Island Ltd.',
+              style: GoogleFonts.poppins(
+                color: Colors.black,
+                fontSize: Constants.EXTRA_SMALL_FONT_SIZE,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            onTap: () {
-              Navigator.pushNamed(context, AppRoute.MY_ORDERS);
-            },
-          ),
-          // ListTile(
-          //   title: const Text(Constants.VOUCHERS),
-          //   leading: Icon(
-          //       Icons.card_giftcard
-          //   ),
-          //   onTap: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
-          ListTile(
-            title: const Text(Constants.NOTIFICATIONS),
-            leading: Icon(
-                Icons.notifications
-            ),
-            onTap: () {
-              Navigator.pushNamed(context, AppRoute.NOTIFICATIONS);
-            },
-          ),
-          ListTile(
-            title: const Text(Constants.SIGN_OUT),
-            leading: Icon(
-                Icons.exit_to_app
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
+          )
         ],
       ),
     );
@@ -154,17 +180,6 @@ class HomePageView extends StatelessView<HomeViewModel> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // Text(
-          //   'Tech Island Ltd.',
-          //   style: GoogleFonts.poppins(
-          //     color: Colors.black,
-          //     fontSize: Constants.LARGE_FONT_SIZE,
-          //     fontWeight: FontWeight.bold
-          //   ),
-          // ),
-          SizedBox(
-            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-          ),
           Row(
             children: [
               ClipRRect(
@@ -216,7 +231,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                 ],
               )
             ],
-          )
+          ),
         ],
       ),
     );
@@ -250,6 +265,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
         if (viewModel.cartItemNumber > 0) {
           await Navigator.pushNamed(context, AppRoute.CART);
           viewModel.getCartItemNumber();
+          viewModel.getCurrentOrderDetails();
         } else {
           showEmptyCartDialog();
         }
@@ -277,14 +293,19 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   body() {
-    return Container(
-      padding: EdgeInsets.only(
-        top: Constants.SMALL_PADDING,
-        left: Constants.STANDARD_PADDING
-      ),
-      child: viewModel.isRecommendedItemEmpty ?
-              bodyWithoutRecommendedList() :
-              bodyWithRecommendedList(),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+              top: Constants.SMALL_PADDING,
+              left: Constants.STANDARD_PADDING
+          ),
+          child: viewModel.isRecommendedItemEmpty ?
+          bodyWithoutRecommendedList() :
+          bodyWithRecommendedList(),
+        ),
+        viewModel.currentOrderNumber > 0 ? currentOrderSlidingPanel() : Container()
+      ],
     );
   }
 
@@ -511,7 +532,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
   categoryWiseItemListView() {
     return Expanded(
       child: ListView.builder(
-        padding: EdgeInsets.only(bottom: Constants.STANDARD_PADDING),
+        padding: EdgeInsets.only(bottom: Constants.EXTRA_SMALL_HEIGHT),
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
@@ -669,5 +690,207 @@ class HomePageView extends StatelessView<HomeViewModel> {
       btnOkText: Constants.OK,
       btnOkOnPress: () {},
     ).show();
+  }
+
+  currentOrderSlidingPanel() {
+    return SlidingUpPanel(
+      controller: panelController,
+      borderRadius: BorderRadius.all(
+        Radius.circular(Constants.SMALL_RADIUS)
+      ),
+      maxHeight: Constants.EXTRA_EXTRA_LARGE_HEIGHT,
+      minHeight: Constants.EXTRA_SMALL_HEIGHT,
+      collapsed: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: ColorHelper.PRIMARY_COLOR,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(Constants.SMALL_RADIUS),
+            topRight: Radius.circular(Constants.SMALL_RADIUS),
+          )
+        ),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.drag_handle_rounded,
+                color: Colors.black,
+              ),
+            ),
+            Text(
+              'Your Order/s',
+              style: GoogleFonts.poppins(
+                fontSize: Constants.MEDIUM_FONT_SIZE,
+                fontWeight: FontWeight.bold,
+                color: Colors.black
+              ),
+            )
+          ],
+        ),
+      ),
+      panel: Container(
+        padding: EdgeInsets.only(
+            left: Constants.STANDARD_PADDING,
+            right: Constants.STANDARD_PADDING,
+            bottom: Constants.STANDARD_PADDING
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.drag_handle_rounded,
+                color: Colors.grey.shade500,
+              ),
+            ),
+            SizedBox(
+              height: Constants.EXTRA_SMALL_PADDING,
+            ),
+            Text(
+              Constants.CURRENT_ORDER,
+              style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.LARGE_FONT_SIZE,
+                  fontWeight: FontWeight.w600
+              ),
+            ),
+            Divider(),
+            currentOrderListView()
+          ],
+        ),
+      ),
+    );
+  }
+
+  currentOrderListView() {
+    return Expanded(
+      child: ListView.builder(
+        padding: EdgeInsets.only(bottom: Constants.EXTRA_SMALL_HEIGHT),
+        physics: AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: viewModel.currentOrderList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: singleCurrentOrder(viewModel.currentOrderList[index]),
+            onTap: () {},
+          );
+        },
+      )
+    );
+  }
+
+  singleCurrentOrder(CurrentOrder currentOrder) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            children: [
+              Text(
+                '${Constants.ORDER_NO}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                currentOrder.orderNo!,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.STATUS}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                currentOrder.isAccepted == 1 ?
+                Constants.YOUR_ORDER_IS_PENDING : Constants.PREPARING_YOUR_FOOD,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
+                '${Constants.TOTAL_PRICE}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${Constants.TK_SYMBOL} ${currentOrder.totalPrice}',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          Container(
+            width: Constants.SMALL_WIDTH,
+            child: TextButton(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Details',
+                    style: GoogleFonts.poppins(
+                        fontSize: Constants.SMALL_FONT_SIZE,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.orange.shade900,
+                        decoration: TextDecoration.underline
+                    ),
+                  ),
+                  Icon(
+                    Icons.navigate_next,
+                    size: Constants.EXTRA_SMALL_ICON_SIZE,
+                    color: Colors.orange.shade900,
+                  )
+                ],
+              ),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoute.ORDER_DETAILS,
+                  arguments: currentOrder
+                );
+              },
+            ),
+          ),
+          Divider(),
+        ],
+      )
+    );
   }
 }

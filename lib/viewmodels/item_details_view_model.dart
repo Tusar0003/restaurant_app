@@ -59,8 +59,9 @@ class ItemDetailsViewModel extends ViewModel {
       Prefs.init();
       AddToCart addToCart = AddToCart(
           mobileNumber: '+8801521234567',
-          quantity: '1',
+          quantity: quantity.toString(),
           itemCode: item.itemCode,
+          itemName: item.itemName,
           subTotalPrice: price.toString(),
           unitPrice: item.price.toString()
       );

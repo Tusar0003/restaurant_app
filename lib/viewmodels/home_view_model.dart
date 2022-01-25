@@ -41,7 +41,7 @@ class HomeViewModel extends ViewModel {
   Future<void> init() async {
     showProgressBar();
     getCartItemNumber();
-    getCurrentOrderDetails();
+    getCurrentOrderList();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
@@ -63,6 +63,22 @@ class HomeViewModel extends ViewModel {
   hideProgressBar() {
     isLoading = false;
     notifyListeners();
+  }
+
+  String getStatus(CurrentOrder currentOrder) {
+    String status = '';
+
+    if (currentOrder.isAccepted == null || currentOrder.isAccepted == 0) {
+      status = Constants.YOUR_ORDER_IS_PENDING;
+    } else {
+      if (currentOrder.isAccepted == 1 && (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
+        status = Constants.PREPARING_YOUR_FOOD;
+      } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+        status = Constants.COMPLETED_ORDER;
+      }
+    }
+
+    return status;
   }
 
   getRecommendedItemList() async {
@@ -184,9 +200,9 @@ class HomeViewModel extends ViewModel {
     notifyListeners();
   }
 
-  getCurrentOrderDetails() async {
+  getCurrentOrderList() async {
     try {
-      BaseResponse baseResponse = await homeRepository.getCurrentOrderDetails();
+      BaseResponse baseResponse = await homeRepository.getCurrentOrderList();
 
       if (baseResponse.isSuccess && baseResponse.data.length > 0) {
         currentOrderNumber = baseResponse.data.length;

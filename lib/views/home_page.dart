@@ -265,7 +265,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
         if (viewModel.cartItemNumber > 0) {
           await Navigator.pushNamed(context, AppRoute.CART);
           viewModel.getCartItemNumber();
-          viewModel.getCurrentOrderDetails();
+          viewModel.getCurrentOrderList();
         } else {
           showEmptyCartDialog();
         }
@@ -824,8 +824,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
               ),
               Spacer(),
               Text(
-                currentOrder.isAccepted == 1 ?
-                Constants.YOUR_ORDER_IS_PENDING : Constants.PREPARING_YOUR_FOOD,
+                viewModel.getStatus(currentOrder),
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: Constants.MEDIUM_FONT_SIZE,

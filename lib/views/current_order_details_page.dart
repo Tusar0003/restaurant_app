@@ -73,7 +73,7 @@ class CurrentOrderDetailsPageView extends StatelessView<OrderDetailsViewModel> {
             height: Constants.MEDIUM_PADDING,
           ),
           Text(
-            viewModel.getOrderStatus(),
+            viewModel.orderStatus,
             style: GoogleFonts.poppins(
                 fontSize: Constants.LARGE_FONT_SIZE,
                 fontWeight: FontWeight.w600,

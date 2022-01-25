@@ -126,19 +126,32 @@ class OrderHistoryViewModel extends ViewModel {
   String getLottie() {
     String lottie = '';
 
-    if (orderData.isAccepted == 1 && orderData.isCompleted == 1) {
-      lottie = 'assets/lotties/completed.json';
-      orderStatus = Constants.COMPLETED_ORDER;
-    } else if (orderData.isAccepted == 0 && orderData.isCompleted == 0) {
+    if (orderData.isAccepted == null) {
       lottie = 'assets/lotties/waiting.json';
       orderStatus = Constants.YOUR_ORDER_IS_PENDING;
-    } else if (orderData.isAccepted == 1 && orderData.isCompleted == 0) {
-      lottie = 'assets/lotties/preparing_food.json';
-      orderStatus = Constants.PREPARING_YOUR_FOOD;
     } else {
-      lottie = 'assets/lotties/waiting.json';
-      orderStatus = Constants.YOUR_ORDER_IS_PENDING;
+      if (orderData.isAccepted == 1 && (orderData.isCompleted == null || orderData.isCompleted == 0)) {
+        lottie = 'assets/lotties/preparing_food.json';
+        orderStatus = Constants.PREPARING_YOUR_FOOD;
+      } else if (orderData.isAccepted == 1 && orderData.isCompleted == 1) {
+        lottie = 'assets/lotties/completed.json';
+        orderStatus = Constants.COMPLETED_ORDER;
+      }
     }
+
+    // if (orderData.isAccepted == 1 && orderData.isCompleted == 1) {
+    //   lottie = 'assets/lotties/completed.json';
+    //   orderStatus = Constants.COMPLETED_ORDER;
+    // } else if (orderData.isAccepted == 0 && orderData.isCompleted == 0) {
+    //   lottie = 'assets/lotties/waiting.json';
+    //   orderStatus = Constants.YOUR_ORDER_IS_PENDING;
+    // } else if (orderData.isAccepted == 1 && orderData.isCompleted == 0) {
+    //   lottie = 'assets/lotties/preparing_food.json';
+    //   orderStatus = Constants.PREPARING_YOUR_FOOD;
+    // } else {
+    //   lottie = 'assets/lotties/waiting.json';
+    //   orderStatus = Constants.YOUR_ORDER_IS_PENDING;
+    // }
 
     return lottie;
   }

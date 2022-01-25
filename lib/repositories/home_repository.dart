@@ -160,7 +160,7 @@ class HomeRepository {
     }
   }
 
-  getCurrentOrderDetails() async {
+  getCurrentOrderList() async {
     try {
       await Prefs.init();
       var token = Prefs.getString(Constants.TOKEN);
@@ -169,7 +169,7 @@ class HomeRepository {
         'Content-Type': 'application/json',
         HttpHeaders.authorizationHeader: 'Bearer ' + token
       };
-      var url = Uri.parse(ApiServices.GET_CURRENT_ORDER_DETAILS +
+      var url = Uri.parse(ApiServices.GET_CURRENT_ORDER_LIST +
           '?mobile_number=${Prefs.getString(Constants.MOBILE_NUMBER)}');
 
       final response = await http.get(

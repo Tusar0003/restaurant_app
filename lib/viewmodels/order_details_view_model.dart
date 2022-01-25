@@ -15,7 +15,7 @@ import 'package:restaurant_app/utils/toast_messages.dart';
 class OrderDetailsViewModel extends ViewModel {
 
   bool isLoading = false;
-
+  String orderStatus = '';
   CurrentOrder currentOrder;
 
   OrderDetailsViewModel(this.currentOrder);
@@ -36,14 +36,21 @@ class OrderDetailsViewModel extends ViewModel {
   }
 
   String getLottie() {
-    return currentOrder.isAccepted == 1 ?
-        'assets/lotties/preparing_food.json' :
-        'assets/lotties/waiting.json';
-  }
+    String lottie = '';
 
-  String getOrderStatus() {
-    return currentOrder.isAccepted == 1 ?
-        Constants.PREPARING_YOUR_FOOD :
-        Constants.YOUR_ORDER_IS_PENDING;
+    if (currentOrder.isAccepted == null || currentOrder.isAccepted == 0) {
+      lottie = 'assets/lotties/waiting.json';
+      orderStatus = Constants.YOUR_ORDER_IS_PENDING;
+    } else {
+      if (currentOrder.isAccepted == 1 && (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
+        lottie = 'assets/lotties/preparing_food.json';
+        orderStatus = Constants.PREPARING_YOUR_FOOD;
+      } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+        lottie = 'assets/lotties/completed.json';
+        orderStatus = Constants.COMPLETED_ORDER;
+      }
+    }
+
+    return lottie;
   }
 }

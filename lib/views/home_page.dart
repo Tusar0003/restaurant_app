@@ -77,7 +77,9 @@ class HomePageView extends StatelessView<HomeViewModel> {
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.search),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoute.SEARCH_ITEM);
+          },
         ),
         IconButton(
           icon: Icon(Icons.notifications_active_outlined),
@@ -370,6 +372,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                   arguments: viewModel.recommendedItemList[index]
               );
               viewModel.getCartItemNumber();
+              viewModel.getCurrentOrderList();
             },
           );
         },
@@ -550,6 +553,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                   arguments: viewModel.itemList[index]
               );
               viewModel.getCartItemNumber();
+              viewModel.getCurrentOrderList();
             },
           );
         },
@@ -763,6 +767,12 @@ class HomePageView extends StatelessView<HomeViewModel> {
           ],
         ),
       ),
+      onPanelOpened: () {
+        viewModel.getCurrentOrderList();
+      },
+      onPanelClosed: () {
+        viewModel.getCurrentOrderList();
+      },
     );
   }
 

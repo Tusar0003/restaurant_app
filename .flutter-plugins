@@ -1,12 +1,11 @@
 # This is a generated file; do not edit or check into version control.
-fluttertoast=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\fluttertoast-8.0.8\\
-path_provider=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider-2.0.4\\
-path_provider_linux=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_linux-2.1.0\\
-path_provider_macos=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_macos-2.0.2\\
-path_provider_windows=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_windows-2.0.3\\
-shared_preferences=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences-2.0.7\\
-shared_preferences_linux=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_linux-2.0.3\\
-shared_preferences_macos=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_macos-2.0.2\\
-shared_preferences_web=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_web-2.0.2\\
-shared_preferences_windows=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_windows-2.0.3\\
-workmanager=D:\\Flutter\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\workmanager-0.4.1\\
+fluttertoast=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\fluttertoast-8.0.8\\
+path_provider=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider-2.0.4\\
+path_provider_linux=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_linux-2.1.0\\
+path_provider_macos=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_macos-2.0.2\\
+path_provider_windows=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_windows-2.0.3\\
+shared_preferences=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences-2.0.7\\
+shared_preferences_linux=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_linux-2.0.3\\
+shared_preferences_macos=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_macos-2.0.2\\
+shared_preferences_web=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_web-2.0.2\\
+shared_preferences_windows=D:\\Flutter\\SDK\\flutter_windows_2.2.1-stable\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\shared_preferences_windows-2.0.3\\

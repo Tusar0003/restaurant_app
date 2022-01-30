@@ -43,7 +43,7 @@ class OrderData {
   String? orderType;
   int? deliveryCharge;
   int? isAccepted;
-  int? isCompleted = 0;
+  int? isCompleted;
   String? createdBy;
   String? createdTime;
   String? updatedBy;

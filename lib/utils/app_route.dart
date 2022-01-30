@@ -9,4 +9,5 @@ class AppRoute {
   static const String NOTIFICATIONS = '/notifications';
   static const String APPLY_PROMO_CODE = '/applyPromoCode';
   static const String ORDER_DETAILS = '/orderDetails';
+  static const String SEARCH_ITEM = '/searchItem';
 }

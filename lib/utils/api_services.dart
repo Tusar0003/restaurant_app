@@ -18,4 +18,5 @@ class ApiServices {
   static const String GET_ORDER_LIST = BASE_URL + 'api/customer/get/order/list';
   static const String GET_CURRENT_ORDER_LIST = BASE_URL + 'api/customer/get/current/order/list';
   static const String NOTIFICATION_LIST = BASE_URL + 'api/admin/get/notification/list';
+  static const String SEARCH_ITEM_LIST = BASE_URL + 'api/customer/search/item/list';
 }

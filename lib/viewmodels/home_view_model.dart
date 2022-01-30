@@ -1,18 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:prefs/prefs.dart';
-import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/add_to_cart.dart';
-import 'package:restaurant_app/models/cart_item.dart';
+import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/category.dart';
 import 'package:restaurant_app/models/current_order.dart';
 import 'package:restaurant_app/models/item.dart';
 import 'package:restaurant_app/repositories/cart_repository.dart';
 import 'package:restaurant_app/repositories/home_repository.dart';
-import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/utils/toast_messages.dart';
-import 'package:workmanager/workmanager.dart';
 
 
 class HomeViewModel extends ViewModel {
@@ -42,25 +38,11 @@ class HomeViewModel extends ViewModel {
   Future<void> init() async {
     showProgressBar();
     getCartItemNumber();
-    // getCurrentOrderList();
+    getCurrentOrderList();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
     hideProgressBar();
-
-    Workmanager().registerPeriodicTask(
-        '1',
-        getCurrentOrderList(),
-        initialDelay: Duration(seconds: 0),
-        frequency: Duration(seconds: 5)
-    );
-  }
-
-  setCategory(bool isSelected, int index) {
-    categoryIndex = isSelected ? index : 0;
-    categoryCode = categoryList[index].categoryCode!;
-    getItemList();
-    notifyListeners();
   }
 
   showProgressBar() {
@@ -73,17 +55,25 @@ class HomeViewModel extends ViewModel {
     notifyListeners();
   }
 
+  setCategory(bool isSelected, int index) {
+    categoryIndex = isSelected ? index : 0;
+    categoryCode = categoryList[index].categoryCode!;
+    getItemList();
+    notifyListeners();
+  }
+
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
 
-    if (currentOrder.isAccepted == null || currentOrder.isAccepted == 0) {
+    if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
+        (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
       status = Constants.YOUR_ORDER_IS_PENDING;
-    } else {
-      if (currentOrder.isAccepted == 1 && (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
-        status = Constants.PREPARING_YOUR_FOOD;
-      } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
-        status = Constants.COMPLETED_ORDER;
-      }
+    } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
+      status = Constants.REJECTED;
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 0) {
+      status = Constants.PREPARING_YOUR_FOOD;
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+      status = Constants.COMPLETED_ORDER;
     }
 
     return status;
@@ -210,19 +200,16 @@ class HomeViewModel extends ViewModel {
 
   getCurrentOrderList() async {
     try {
-      Workmanager().executeTask((taskName, inputData) async {
-        BaseResponse baseResponse = await homeRepository.getCurrentOrderList();
+      BaseResponse baseResponse = await homeRepository.getCurrentOrderList();
 
-        if (baseResponse.isSuccess && baseResponse.data.length > 0) {
-          currentOrderNumber = baseResponse.data.length;
+      if (baseResponse.isSuccess && baseResponse.data.length > 0) {
+        currentOrderNumber = baseResponse.data.length;
+        currentOrderList.clear();
 
-          baseResponse.data.forEach((element) {
-            currentOrderList.add(CurrentOrder.fromJson(element));
-          });
-        }
-
-        return Future.value(true);
-      });
+        baseResponse.data.forEach((element) {
+          currentOrderList.add(CurrentOrder.fromJson(element));
+        });
+      }
     } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
     }

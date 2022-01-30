@@ -163,8 +163,8 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
                       icon: Icon(
                         Icons.navigate_next_outlined,
                       ),
-                      onPressed: () {
-                        viewModel.setOrderData(orderData);
+                      onPressed: () async {
+                        await viewModel.setOrderData(orderData);
                         showDetails();
                       },
                     ),
@@ -278,8 +278,7 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
                 ),
                 Spacer(),
                 Text(
-                  viewModel.orderData.isCompleted == 1 ?
-                  Constants.YOUR_ORDER_IS_PENDING : Constants.PREPARING_YOUR_FOOD,
+                  viewModel.getOrderStatus(viewModel.orderData),
                   style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontSize: Constants.MEDIUM_FONT_SIZE,

@@ -10,6 +10,7 @@ import 'package:restaurant_app/views/my_order_page.dart';
 import 'package:restaurant_app/views/my_profile_page.dart';
 import 'package:restaurant_app/views/notification_page.dart';
 import 'package:restaurant_app/views/current_order_details_page.dart';
+import 'package:restaurant_app/views/search_item_page.dart';
 import 'package:restaurant_app/views/sign_in_page.dart';
 import 'package:restaurant_app/views/verification_page.dart';
 
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         AppRoute.NOTIFICATIONS: (context) => NotificationPage(),
         AppRoute.APPLY_PROMO_CODE: (context) => ApplyPromoCodePage(),
         AppRoute.ORDER_DETAILS: (context) => CurrentOrderDetailsPage(),
+        AppRoute.SEARCH_ITEM: (context) => SearchItemPage(),
       },
     );
   }

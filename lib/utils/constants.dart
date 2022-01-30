@@ -110,6 +110,12 @@ class Constants {
   static const String YOUR_ORDER_IS_PENDING = 'Your Order is Pending';
   static const String PREPARING_YOUR_FOOD = 'Preparing Your Food';
   static const String COMPLETED_ORDER = 'Order is Completed';
+  static const String REJECTED_ORDER = 'Order is Rejected';
+  static const String SEARCH_ITEMS = 'Search Items';
+  static const String ACCEPTED = 'Accepted';
+  static const String PENDING = 'Pending';
+  static const String COMPLETED = 'Completed';
+  static const String REJECTED = 'Rejected';
   static const String TK_SYMBOL = '\u09F3';
   static const String COPYRIGHTS_SYMBOL = '\u00a9';
 

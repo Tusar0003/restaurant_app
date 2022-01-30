@@ -17,4 +17,5 @@ class ApiServices {
   static const String APPLY_PROMO_CODE = BASE_URL + 'api/customer/apply/promo/code';
   static const String GET_ORDER_LIST = BASE_URL + 'api/customer/get/order/list';
   static const String GET_CURRENT_ORDER_LIST = BASE_URL + 'api/customer/get/current/order/list';
+  static const String NOTIFICATION_LIST = BASE_URL + 'api/admin/get/notification/list';
 }

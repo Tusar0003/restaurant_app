@@ -81,7 +81,9 @@ class HomePageView extends StatelessView<HomeViewModel> {
         ),
         IconButton(
           icon: Icon(Icons.notifications_active_outlined),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoute.NOTIFICATIONS);
+          },
         )
       ],
     );
@@ -154,7 +156,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Text(
-              'Developed by Tech Island Ltd.',
+              'Copyright ${Constants.COPYRIGHTS_SYMBOL} Tech Island Ltd.',
               style: GoogleFonts.poppins(
                 color: Colors.black,
                 fontSize: Constants.EXTRA_SMALL_FONT_SIZE,

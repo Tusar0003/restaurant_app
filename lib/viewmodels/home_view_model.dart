@@ -12,6 +12,7 @@ import 'package:restaurant_app/repositories/home_repository.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/utils/toast_messages.dart';
+import 'package:workmanager/workmanager.dart';
 
 
 class HomeViewModel extends ViewModel {
@@ -41,11 +42,18 @@ class HomeViewModel extends ViewModel {
   Future<void> init() async {
     showProgressBar();
     getCartItemNumber();
-    getCurrentOrderList();
+    // getCurrentOrderList();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
     hideProgressBar();
+
+    Workmanager().registerPeriodicTask(
+        '1',
+        getCurrentOrderList(),
+        initialDelay: Duration(seconds: 0),
+        frequency: Duration(seconds: 5)
+    );
   }
 
   setCategory(bool isSelected, int index) {
@@ -202,15 +210,19 @@ class HomeViewModel extends ViewModel {
 
   getCurrentOrderList() async {
     try {
-      BaseResponse baseResponse = await homeRepository.getCurrentOrderList();
+      Workmanager().executeTask((taskName, inputData) async {
+        BaseResponse baseResponse = await homeRepository.getCurrentOrderList();
 
-      if (baseResponse.isSuccess && baseResponse.data.length > 0) {
-        currentOrderNumber = baseResponse.data.length;
+        if (baseResponse.isSuccess && baseResponse.data.length > 0) {
+          currentOrderNumber = baseResponse.data.length;
 
-        baseResponse.data.forEach((element) {
-          currentOrderList.add(CurrentOrder.fromJson(element));
-        });
-      }
+          baseResponse.data.forEach((element) {
+            currentOrderList.add(CurrentOrder.fromJson(element));
+          });
+        }
+
+        return Future.value(true);
+      });
     } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
     }

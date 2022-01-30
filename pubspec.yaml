@@ -43,6 +43,7 @@ dependencies:
   animations: ^2.0.2
   sliding_up_panel: ^2.0.0+1
   lottie: ^1.2.1
+  workmanager: ^0.4.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +70,7 @@ flutter:
     - assets/lotties/preparing_food.json
     - assets/lotties/waiting.json
     - assets/lotties/completed.json
+    - assets/images/empty.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

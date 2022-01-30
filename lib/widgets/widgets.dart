@@ -40,25 +40,40 @@ class Widgets {
     );
   }
 
-  noItem() {
-    return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(
-              width: Constants.MEDIUM_WIDTH,
-              height: Constants.MEDIUM_HEIGHT,
-              image: AssetImage('assets/images/empty.png'),
+  noItem(BuildContext context) {
+    double margin = MediaQuery.of(context).size.height / 5;
+
+    return ListView(
+      children: [
+        Container(
+          margin: EdgeInsets.only(
+              top: margin
+          ),
+          child: ListTile(
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(
+                  width: Constants.MEDIUM_WIDTH,
+                  height: Constants.MEDIUM_HEIGHT,
+                  image: AssetImage('assets/images/empty.png'),
+                ),
+                SizedBox(
+                  height: Constants.STANDARD_PADDING,
+                ),
+                Text(
+                  'No data found!',
+                  style: GoogleFonts.poppins(),
+                ),
+                Text(
+                  'Please swipe down to refresh',
+                  style: GoogleFonts.poppins(),
+                ),
+              ],
             ),
-            SizedBox(
-              height: Constants.STANDARD_PADDING,
-            ),
-            Text(
-              'No data found!',
-              style: GoogleFonts.poppins(),
-            ),
-          ],
+          ),
         )
+      ],
     );
   }
 }

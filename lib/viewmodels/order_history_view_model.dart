@@ -16,6 +16,7 @@ import 'package:restaurant_app/utils/toast_messages.dart';
 class OrderHistoryViewModel extends ViewModel {
 
   bool isLoading = false;
+  bool isOrderDataFound = false;
   String orderStatus = '';
 
   late OrderData orderData;
@@ -43,13 +44,16 @@ class OrderHistoryViewModel extends ViewModel {
       BaseResponse baseResponse = await OrderRepository().getOrderList();
 
       if (baseResponse.isSuccess && baseResponse.data != null) {
+        isOrderDataFound = true;
         initOrderHistoryList(OrderHistory.fromJson(baseResponse.data!));
       } else {
+        isOrderDataFound = false;
         ToastMessages().showErrorToast(baseResponse.message!);
       }
 
       hideProgressBar();
     } catch(e) {
+      isOrderDataFound = false;
       hideProgressBar();
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
     }
@@ -133,7 +137,7 @@ class OrderHistoryViewModel extends ViewModel {
       lottie = 'assets/lotties/waiting.json';
       orderStatus = Constants.YOUR_ORDER_IS_PENDING;
     } else if (orderData.isAccepted == 0 && orderData.isCompleted == 1) {
-      lottie = 'assets/lotties/completed.json';
+      lottie = 'assets/lotties/cancelled.json';
       orderStatus = Constants.REJECTED_ORDER;
     } else if (orderData.isAccepted == 1 && orderData.isCompleted == 0) {
       lottie = 'assets/lotties/preparing_food.json';

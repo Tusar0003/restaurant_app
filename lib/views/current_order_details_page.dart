@@ -13,7 +13,7 @@ import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/item_details_view_model.dart';
-import 'package:restaurant_app/viewmodels/order_details_view_model.dart';
+import 'package:restaurant_app/viewmodels/current_order_details_view_model.dart';
 import 'package:restaurant_app/widgets/widgets.dart';
 
 
@@ -24,19 +24,19 @@ class CurrentOrderDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => CurrentOrderDetailsPageView(),
-      viewModel: OrderDetailsViewModel(ModalRoute.of(context)?.settings.arguments as CurrentOrder)
+      viewModel: CurrentOrderDetailsViewModel(ModalRoute.of(context)?.settings.arguments as CurrentOrder)
     );
   }
 }
 
 // ignore: must_be_immutable
-class CurrentOrderDetailsPageView extends StatelessView<OrderDetailsViewModel> {
+class CurrentOrderDetailsPageView extends StatelessView<CurrentOrderDetailsViewModel> {
 
   late BuildContext context;
-  late OrderDetailsViewModel viewModel;
+  late CurrentOrderDetailsViewModel viewModel;
 
   @override
-  Widget render(BuildContext context, OrderDetailsViewModel viewModel) {
+  Widget render(BuildContext context, CurrentOrderDetailsViewModel viewModel) {
     this.context = context;
     this.viewModel = viewModel;
 
@@ -118,8 +118,7 @@ class CurrentOrderDetailsPageView extends StatelessView<OrderDetailsViewModel> {
               ),
               Spacer(),
               Text(
-                viewModel.currentOrder.isAccepted == 1 ?
-                Constants.YOUR_ORDER_IS_PENDING : Constants.PREPARING_YOUR_FOOD,
+                viewModel.getOrderStatus(),
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: Constants.MEDIUM_FONT_SIZE,
@@ -247,7 +246,7 @@ class CurrentOrderDetailsPageView extends StatelessView<OrderDetailsViewModel> {
         ),
         Spacer(),
         Text(
-          currentOrderItem.subTotalPrice.toString(),
+          '${Constants.TK_SYMBOL} ${currentOrderItem.subTotalPrice}',
           style: GoogleFonts.poppins(
             color: Colors.black,
             fontSize: Constants.MEDIUM_FONT_SIZE,

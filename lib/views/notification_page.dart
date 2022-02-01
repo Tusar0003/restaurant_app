@@ -192,7 +192,7 @@ class NotificationPageView extends StatelessView<NotificationViewModel> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            Constants.NOTIFICATIONS,
+            Constants.NOTIFICATION,
             style: GoogleFonts.poppins(
                 color: Colors.black,
                 fontSize: Constants.LARGE_FONT_SIZE,

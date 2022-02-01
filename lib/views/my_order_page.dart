@@ -46,23 +46,32 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
   body() {
     return Container(
       padding: EdgeInsets.all(Constants.STANDARD_PADDING),
-      child: orderListView(),
+      child: RefreshIndicator(
+        color: ColorHelper.PRIMARY_COLOR,
+        onRefresh: () async {
+          viewModel.getOrderList();
+        },
+        child: viewModel.isOrderDataFound ? orderListView() : Widgets().noItem(context),
+      ),
     );
   }
 
   orderListView() {
-    return ListView.builder(
-      physics: ClampingScrollPhysics(),
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: viewModel.orderHistoryList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: singleOrder(viewModel.orderHistoryList[index]),
-          onTap: () {},
-        );
-      },
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      child: ListView.builder(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: viewModel.orderHistoryList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: singleOrder(viewModel.orderHistoryList[index]),
+            onTap: () {},
+          );
+        },
+      ),
     );
   }
 
@@ -78,7 +87,7 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
                   child: Image(
-                    image: AssetImage('assets/images/order_history.png'),
+                    image: AssetImage('assets/images/order.png'),
                     fit: BoxFit.fill,
                     height: Constants.MY_ORDER_IMAGE_SIZE,
                     width: Constants.MY_ORDER_IMAGE_SIZE,

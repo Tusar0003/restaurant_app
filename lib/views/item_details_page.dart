@@ -165,8 +165,8 @@ class ItemDetailsPageView extends StatelessView<ItemDetailsViewModel> {
               ),
               color: Colors.white
             ),
-            child: IconButton(
-              icon: Icon(
+            child: TextButton(
+              child: Icon(
                 Icons.arrow_back,
                 color: Colors.black,
                 size: Constants.SMALL_ICON_SIZE,

@@ -39,22 +39,9 @@ class CartPageView extends StatelessView<CartViewModel> {
       showHUD: viewModel.isLoading,
       hud: Widgets().progressBar(),
       builder: (context) => Scaffold(
-        appBar: appBar(),
+        appBar: Widgets().appBar(Constants.CART),
         body: body(),
       )
-    );
-  }
-
-  appBar() {
-    return AppBar(
-      title: Text(
-        Constants.CART,
-        style: GoogleFonts.poppins(
-          color: Colors.black
-        ),
-      ),
-      // backgroundColor: ColorHelper.TRANSPARENT_COLOR,
-      // elevation: 0,
     );
   }
 

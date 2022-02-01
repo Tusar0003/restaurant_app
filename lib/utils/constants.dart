@@ -68,6 +68,7 @@ class Constants {
   static const String MY_ORDERS = 'My Orders';
   static const String VOUCHERS = 'Vouchers';
   static const String NOTIFICATIONS = 'Notifications';
+  static const String NOTIFICATION = 'Notification';
   static const String SIGN_OUT = 'Sign out';
   static const String VERIFY_YOUR_MOBILE_NUMBER = 'Verify your Mobile Number';
   static const String PROVIDE_YOUR_OTP = 'Please provide the OTP '
@@ -111,6 +112,7 @@ class Constants {
   static const String PREPARING_YOUR_FOOD = 'Preparing Your Food';
   static const String COMPLETED_ORDER = 'Order is Completed';
   static const String REJECTED_ORDER = 'Order is Rejected';
+  static const String SEARCH = 'Search';
   static const String SEARCH_ITEMS = 'Search Items';
   static const String ACCEPTED = 'Accepted';
   static const String PENDING = 'Pending';

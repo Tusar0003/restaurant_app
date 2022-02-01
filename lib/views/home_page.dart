@@ -34,10 +34,19 @@ class HomePageView extends StatelessView<HomeViewModel> {
 
   PanelController panelController = PanelController();
 
+  late PopupHUD popupHUD;
+  bool isPopUpShowed = false;
+
   @override
   Widget render(BuildContext context, HomeViewModel viewModel) {
     this.context = context;
     this.viewModel = viewModel;
+
+    popupHUD = PopupHUD(
+      context,
+      hud: Widgets().progressBar(),
+    );
+    showPopUpHud();
 
     return WillPopScope(
       onWillPop: () {
@@ -48,15 +57,11 @@ class HomePageView extends StatelessView<HomeViewModel> {
           return Future.value(true);
         }
       },
-      child: WidgetHUD(
-        showHUD: viewModel.isLoading,
-        hud: Widgets().progressBar(),
-        builder: (context) => Scaffold(
-          appBar: appBar(),
-          drawer: drawer(),
-          body: body(),
-          floatingActionButton: floatingActionButton(),
-        )
+      child: Scaffold(
+        appBar: appBar(),
+        drawer: drawer(),
+        body: body(),
+        floatingActionButton: floatingActionButton(),
       ),
     );
   }
@@ -158,11 +163,13 @@ class HomePageView extends StatelessView<HomeViewModel> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Text(
-              'Copyright ${Constants.COPYRIGHTS_SYMBOL} Tech Island Ltd.',
+              'All Copyrights ${Constants.COPYRIGHTS_SYMBOL} Reserved\n'
+                  '& Developed by Tech Island Ltd.',
+              textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 color: Colors.black,
-                fontSize: Constants.EXTRA_SMALL_FONT_SIZE,
-                fontWeight: FontWeight.bold,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
               ),
             ),
           )
@@ -529,6 +536,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
         autofocus: true,
         onSelected: (bool selected) {
           viewModel.setCategory(selected, index);
+          viewModel.getCurrentOrderList();
         },
       ),
     );
@@ -903,5 +911,17 @@ class HomePageView extends StatelessView<HomeViewModel> {
         ],
       )
     );
+  }
+
+  showPopUpHud() {
+    WidgetsBinding.instance!.addPostFrameCallback((_){
+      if (viewModel.isLoading && !isPopUpShowed) {
+        popupHUD.show();
+        isPopUpShowed = true;
+      } else if (!viewModel.isLoading && isPopUpShowed) {
+        popupHUD.dismiss();
+        isPopUpShowed = false;
+      }
+    });
   }
 }

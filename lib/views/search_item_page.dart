@@ -41,6 +41,7 @@ class SearchItemPageView extends StatelessView<SearchItemViewModel> {
       showHUD: viewModel.isLoading,
       hud: Widgets().progressBar(),
       builder: (context) => Scaffold(
+        appBar: Widgets().appBar(Constants.SEARCH),
         body: body(),
       )
     );
@@ -49,7 +50,7 @@ class SearchItemPageView extends StatelessView<SearchItemViewModel> {
   body() {
     return Container(
       margin: EdgeInsets.only(
-        top: 50,
+        top: 10,
         bottom: Constants.STANDARD_PADDING,
         left: Constants.STANDARD_PADDING,
         right: Constants.STANDARD_PADDING
@@ -93,7 +94,7 @@ class SearchItemPageView extends StatelessView<SearchItemViewModel> {
         cursorColor: Colors.black54,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-          hintText: '${Constants.SEARCH_ITEMS}...',
+          hintText: '${Constants.SEARCH_ITEMS} . . .',
           border: InputBorder.none,
           contentPadding: EdgeInsets.all(
             Constants.MEDIUM_PADDING

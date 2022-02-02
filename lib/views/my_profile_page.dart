@@ -5,6 +5,7 @@ import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/home_view_model.dart';
+import 'package:restaurant_app/viewmodels/profile_view_model.dart';
 import 'package:restaurant_app/widgets/widgets.dart';
 
 
@@ -13,18 +14,18 @@ class MyProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => MyProfilePageView(),
-      viewModel: HomeViewModel(),
+      viewModel: ProfileViewModel(),
     );
   }
 }
 
 // ignore: must_be_immutable
-class MyProfilePageView extends StatelessView<HomeViewModel> {
+class MyProfilePageView extends StatelessView<ProfileViewModel> {
 
   late BuildContext context;
 
   @override
-  Widget render(BuildContext context, HomeViewModel viewModel) {
+  Widget render(BuildContext context, ProfileViewModel viewModel) {
     this.context = context;
 
     return Scaffold(

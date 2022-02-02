@@ -19,4 +19,6 @@ class ApiServices {
   static const String GET_CURRENT_ORDER_LIST = BASE_URL + 'api/customer/get/current/order/list';
   static const String NOTIFICATION_LIST = BASE_URL + 'api/admin/get/notification/list';
   static const String SEARCH_ITEM_LIST = BASE_URL + 'api/customer/search/item/list';
+  static const String PROFILE_UPDATE = BASE_URL + 'api/customer/update/profile';
+  static const String GET_PROFILE_DATA = BASE_URL + 'api/customer/get/profile/data';
 }

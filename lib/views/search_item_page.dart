@@ -113,9 +113,11 @@ class SearchItemPageView extends StatelessView<SearchItemViewModel> {
               onPressed: () {
                 viewModel.setSearchString('');
                 searchTextEditingController.clear();
-                Future.delayed(Duration(seconds: 1), () {
-                  viewModel.getSearchItemList();
-                });
+                viewModel.getSearchItemList();
+
+                // Future.delayed(Duration(seconds: 1), () {
+                //   viewModel.getSearchItemList();
+                // });
               },
             ),
           )
@@ -126,10 +128,11 @@ class SearchItemPageView extends StatelessView<SearchItemViewModel> {
         ),
         onChanged: (newVal) {
           viewModel.setSearchString(newVal);
+          viewModel.getSearchItemList();
 
-          Future.delayed(Duration(seconds: 1), () {
-            viewModel.getSearchItemList();
-          });
+          // Future.delayed(Duration(seconds: 1), () {
+          //   viewModel.getSearchItemList();
+          // });
         },
       ),
     );

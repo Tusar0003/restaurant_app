@@ -43,6 +43,7 @@ dependencies:
   animations: ^2.0.2
   sliding_up_panel: ^2.0.0+1
   lottie: ^1.2.1
+  mask_text_input_formatter: ^2.1.0
 
 dev_dependencies:
   flutter_test:

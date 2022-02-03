@@ -4,7 +4,7 @@ class Profile {
   String? email;
   String? address;
   String? profileImagePath;
-  String? firebaseToken;
+  String? profileImage;
   int? isActive;
   String? createdBy;
   String? createdTime;
@@ -17,7 +17,6 @@ class Profile {
         this.email,
         this.address,
         this.profileImagePath,
-        this.firebaseToken,
         this.isActive,
         this.createdBy,
         this.createdTime,
@@ -30,7 +29,6 @@ class Profile {
     email = json['email'];
     address = json['address'];
     profileImagePath = json['profile_image_path'];
-    firebaseToken = json['firebase_token'];
     isActive = json['is_active'];
     createdBy = json['created_by'];
     createdTime = json['created_time'];
@@ -44,13 +42,10 @@ class Profile {
     data['user_name'] = this.userName;
     data['email'] = this.email;
     data['address'] = this.address;
-    data['profile_image_path'] = this.profileImagePath;
-    data['firebase_token'] = this.firebaseToken;
-    data['is_active'] = this.isActive;
-    data['created_by'] = this.createdBy;
-    data['created_time'] = this.createdTime;
-    data['updated_by'] = this.updatedBy;
-    data['updated_time'] = this.updatedTime;
+    data['profile_image'] = this.profileImage ?? '';
+    // data['created_time'] = this.createdTime;
+    // data['updated_by'] = this.updatedBy;
+    // data['updated_time'] = this.updatedTime;
     return data;
   }
 }

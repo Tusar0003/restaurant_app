@@ -20,7 +20,7 @@ class SearchItemViewModel extends ViewModel {
 
   @override
   void init() {
-    getSearchItemList();
+    getRecommendedItemList();
   }
 
   showProgressBar() {
@@ -44,16 +44,11 @@ class SearchItemViewModel extends ViewModel {
     notifyListeners();
   }
 
-  getSearchItemList() async {
+  getRecommendedItemList() async {
     try {
       showProgressBar();
 
-      BaseResponse baseResponse;
-      if (searchString.isEmpty) {
-        baseResponse = await HomeRepository().getRecommendedItemList();
-      } else {
-        baseResponse = await searchItemRepository.getSearchItemList(searchString);
-      }
+      BaseResponse baseResponse = await HomeRepository().getRecommendedItemList();
 
       if (baseResponse.isSuccess && baseResponse.data != null) {
         searchItemList.clear();
@@ -68,6 +63,24 @@ class SearchItemViewModel extends ViewModel {
       hideProgressBar();
     } catch(e) {
       hideProgressBar();
+      ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
+    }
+
+    notifyListeners();
+  }
+
+  getSearchItemList() async {
+    try {
+      BaseResponse baseResponse = await searchItemRepository.getSearchItemList(searchString);
+
+      if (baseResponse.isSuccess && baseResponse.data != null) {
+        searchItemList.clear();
+
+        baseResponse.data.forEach((value) {
+          searchItemList.add(Item.fromJson(value));
+        });
+      }
+    } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
     }
 

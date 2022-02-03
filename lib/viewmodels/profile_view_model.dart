@@ -12,8 +12,11 @@ class ProfileViewModel extends ViewModel {
 
   ProfileRepository profileRepository = ProfileRepository();
 
-  var isLoading = false;
-  late Profile profile;
+  bool isLoading = false;
+  String userName = '';
+  String mobileNumber = '';
+  String email = '';
+  String address = '';
 
   @override
   void init() {
@@ -30,6 +33,43 @@ class ProfileViewModel extends ViewModel {
     notifyListeners();
   }
 
+  setUserName(String newVal) {
+    userName = newVal;
+    notifyListeners();
+  }
+
+  setMobileNumber(String newVal) {
+    mobileNumber = newVal;
+    notifyListeners();
+  }
+
+  setEmail(String newVal) {
+    email = newVal;
+    notifyListeners();
+  }
+
+  setAddress(String newVal) {
+    address = newVal;
+    notifyListeners();
+  }
+
+  validationProfileData() {
+    if (userName.isEmpty) {
+      showWarningMessage('User is empty!');
+    } else if (mobileNumber.isEmpty) {
+      showWarningMessage('Mobile number is empty!');
+    } else {
+      Profile profile = Profile(
+        mobileNumber: mobileNumber.replaceAll(' ', ''),
+        userName: userName,
+        email: email,
+        address: address
+      );
+
+      updateProfileData(profile);
+    }
+  }
+
   getProfileData() async {
     try {
       showProgressBar();
@@ -37,12 +77,38 @@ class ProfileViewModel extends ViewModel {
       BaseResponse baseResponse = await profileRepository.getProfileData();
 
       if (baseResponse.isSuccess && baseResponse.data != null) {
-        profile = baseResponse.data[0];
+        Profile profile = Profile.fromJson(baseResponse.data[0]);
+        userName = profile.userName ?? '';
+        mobileNumber = profile.mobileNumber ?? '';
+        email = profile.email ?? '';
+        address = profile.address ?? '';
       } else {
         ToastMessages().showErrorToast(baseResponse.message!);
       }
 
       hideProgressBar();
+    } catch(e) {
+      hideProgressBar();
+      ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
+    }
+
+    notifyListeners();
+  }
+
+  updateProfileData(Profile profile) async {
+    try {
+      showProgressBar();
+
+      BaseResponse baseResponse = await profileRepository.updateProfile(profile);
+
+      if (baseResponse.isSuccess) {
+        ToastMessages().showSuccessToast(baseResponse.message!);
+      } else {
+        ToastMessages().showErrorToast(baseResponse.message!);
+        hideProgressBar();
+      }
+
+      getProfileData();
     } catch(e) {
       hideProgressBar();
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);

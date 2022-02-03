@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
-import 'package:restaurant_app/viewmodels/home_view_model.dart';
 import 'package:restaurant_app/viewmodels/profile_view_model.dart';
 import 'package:restaurant_app/widgets/widgets.dart';
 
@@ -23,26 +24,33 @@ class MyProfilePage extends StatelessWidget {
 class MyProfilePageView extends StatelessView<ProfileViewModel> {
 
   late BuildContext context;
+  late ProfileViewModel viewModel;
+
+  var maskFormatter = MaskTextInputFormatter(
+      mask: '+88 ### ### #####',
+      type: MaskAutoCompletionType.lazy
+  );
 
   @override
   Widget render(BuildContext context, ProfileViewModel viewModel) {
     this.context = context;
+    this.viewModel = viewModel;
 
-    return Scaffold(
-      appBar: appBar(),
-      body: body(),
+    return WidgetHUD(
+      showHUD: viewModel.isLoading,
+      hud: Widgets().progressBar(),
+      builder: (context) => Scaffold(
+        appBar: appBar(),
+        body: body(),
+      )
     );
   }
 
   body() {
     return Column(
       children: [
+        header(),
         Expanded(
-          flex: 2,
-          child: header()
-        ),
-        Expanded(
-          flex: 3,
           child: SingleChildScrollView(
             padding: EdgeInsets.all(Constants.STANDARD_PADDING),
             child: Column(
@@ -50,16 +58,6 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
               children: [
                 userNameLabel(),
                 userNameField(),
-                SizedBox(
-                  height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                ),
-                firstNameLabel(),
-                firstNameField(),
-                SizedBox(
-                  height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                ),
-                lastNameLabel(),
-                lastNameField(),
                 SizedBox(
                   height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
                 ),
@@ -101,205 +99,74 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
   }
 
   header() {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: Constants.MEDIUM_HEIGHT,
-            decoration: BoxDecoration(
-                color: ColorHelper.PRIMARY_COLOR,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(Constants.MEDIUM_RADIUS),
-                    bottomRight: Radius.circular(Constants.MEDIUM_RADIUS)
-                )
+    return Container(
+      height: 230,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: Constants.MEDIUM_HEIGHT,
+              decoration: BoxDecoration(
+                  color: ColorHelper.PRIMARY_COLOR,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(Constants.MEDIUM_RADIUS),
+                      bottomRight: Radius.circular(Constants.MEDIUM_RADIUS)
+                  )
+              ),
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            margin: EdgeInsets.only(top: Constants.EXTRA_LARGE_PADDING),
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(Constants.EXTRA_LARGE_RADIUS),
-                  child: FadeInImage(
-                    image: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: EdgeInsets.only(top: Constants.EXTRA_LARGE_PADDING),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(Constants.EXTRA_LARGE_RADIUS),
+                    child: FadeInImage(
+                      image: NetworkImage(
+                        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
+                      ),
+                      placeholder: AssetImage('assets/images/place_holder.jpg'),
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        return Image(
+                          image: AssetImage('assets/images/place_holder.jpg'),
+                          fit: BoxFit.fill,
+                          height: Constants.MEDIUM_HEIGHT,
+                          width: Constants.MEDIUM_WIDTH,
+                        );
+                      },
+                      fit: BoxFit.fill,
+                      height: Constants.MEDIUM_HEIGHT,
+                      width: Constants.MEDIUM_WIDTH,
                     ),
-                    placeholder: AssetImage('assets/images/place_holder.jpg'),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Image(
-                        image: AssetImage('assets/images/place_holder.jpg'),
-                        fit: BoxFit.fill,
-                        height: Constants.MEDIUM_HEIGHT,
-                        width: Constants.MEDIUM_WIDTH,
-                      );
-                    },
-                    fit: BoxFit.fill,
-                    height: Constants.MEDIUM_HEIGHT,
-                    width: Constants.MEDIUM_WIDTH,
                   ),
-                ),
-                Positioned(
-                    top: Constants.EXTRA_SMALL_PADDING,
-                    right: Constants.SMALL_PADDING,
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: ColorHelper.PRIMARY_COLOR,
-                          shape: CircleBorder(
-                              side: BorderSide(
-                                  color: Colors.white
-                              )
+                  Positioned(
+                      top: Constants.EXTRA_SMALL_PADDING,
+                      right: Constants.SMALL_PADDING,
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: ColorHelper.PRIMARY_COLOR,
+                            shape: CircleBorder(
+                                side: BorderSide(
+                                    color: ColorHelper.PRIMARY_DARK_COLOR
+                                )
+                            ),
                           ),
-                        ),
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {}
-                    )
-                )
-              ],
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {}
+                      )
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    );
-  }
-
-  firstNameLabel() {
-    return Row(
-      children: [
-        Text(
-          Constants.FIRST_NAME,
-          style: GoogleFonts.poppins(
-              fontSize: Constants.SMALL_FONT_SIZE,
-              fontWeight: FontWeight.w500
-          ),
-        ),
-        SizedBox(
-          width: Constants.EXTRA_SMALL_PADDING,
-        ),
-        Widgets().mandatory()
-      ],
-    );
-  }
-
-  firstNameField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-              color: Colors.grey.shade300
-          ),
-          borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
-      ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
-        textAlign: TextAlign.start,
-        cursorColor: Colors.black54,
-        keyboardType: TextInputType.text,
-        style: GoogleFonts.poppins(
-          color: Colors.black,
-          fontSize: Constants.MEDIUM_FONT_SIZE,
-        ),
-        decoration: InputDecoration(
-            hintText: Constants.FIRST_NAME,
-            hintStyle: GoogleFonts.poppins(
-              color: Colors.grey.shade500,
-              fontSize: Constants.MEDIUM_FONT_SIZE,
-            ),
-            // prefixIcon: Icon(
-            //   Icons.person,
-            //   size: Constants.SMALL_ICON_SIZE,
-            //   color: Colors.grey.shade500,
-            // ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
-        ),
-        onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
-        },
-      ),
-    );
-  }
-
-  lastNameLabel() {
-    return Row(
-      children: [
-        Text(
-          Constants.LAST_NAME,
-          style: GoogleFonts.poppins(
-              fontSize: Constants.SMALL_FONT_SIZE,
-              fontWeight: FontWeight.w500
-          ),
-        ),
-        SizedBox(
-          width: Constants.EXTRA_SMALL_PADDING,
-        ),
-        Widgets().mandatory()
-      ],
-    );
-  }
-
-  lastNameField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-              color: Colors.grey.shade300
-          ),
-          borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
-      ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
-        textAlign: TextAlign.start,
-        cursorColor: Colors.black54,
-        keyboardType: TextInputType.text,
-        style: GoogleFonts.poppins(
-          color: Colors.black,
-          fontSize: Constants.MEDIUM_FONT_SIZE,
-        ),
-        decoration: InputDecoration(
-            hintText: Constants.LAST_NAME,
-            hintStyle: GoogleFonts.poppins(
-              color: Colors.grey.shade500,
-              fontSize: Constants.MEDIUM_FONT_SIZE,
-            ),
-            // prefixIcon: Icon(
-            //   Icons.person,
-            //   size: Constants.SMALL_ICON_SIZE,
-            //   color: Colors.grey.shade500,
-            // ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
-        ),
-        onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
-        },
+        ],
       ),
     );
   }
@@ -323,24 +190,18 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
   }
 
   userNameField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
     return Container(
       width: MediaQuery.of(context).size.width,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-              color: Colors.grey.shade300
-          ),
-          borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
+        color: Colors.white,
+        border: Border.all(
+          color: Colors.grey.shade300
+        ),
+        borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
       ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
+      child: TextFormField(
+        initialValue: viewModel.userName == '' ? null : viewModel.userName,
         textAlign: TextAlign.start,
         cursorColor: Colors.black54,
         keyboardType: TextInputType.text,
@@ -349,23 +210,16 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
           fontSize: Constants.MEDIUM_FONT_SIZE,
         ),
         decoration: InputDecoration(
-            hintText: Constants.USER_NAME,
-            hintStyle: GoogleFonts.poppins(
-              color: Colors.grey.shade500,
-              fontSize: Constants.MEDIUM_FONT_SIZE,
-            ),
-            // prefixIcon: Icon(
-            //   Icons.person,
-            //   size: Constants.SMALL_ICON_SIZE,
-            //   color: Colors.grey.shade500,
-            // ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
+          hintText: Constants.USER_NAME,
+          hintStyle: GoogleFonts.poppins(
+            color: Colors.grey.shade500,
+            fontSize: Constants.MEDIUM_FONT_SIZE,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
         ),
         onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
+          viewModel.setUserName(newVal);
         },
       ),
     );
@@ -390,11 +244,6 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
   }
 
   mobileNumberField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
     return Container(
       width: MediaQuery.of(context).size.width,
       alignment: Alignment.center,
@@ -405,34 +254,27 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
           ),
           borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
       ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
+      child: TextFormField(
+        initialValue: viewModel.mobileNumber == '' ? null : viewModel.mobileNumber,
+        inputFormatters: [maskFormatter],
         textAlign: TextAlign.start,
         cursorColor: Colors.black54,
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.phone,
         style: GoogleFonts.poppins(
           color: Colors.black,
           fontSize: Constants.MEDIUM_FONT_SIZE,
         ),
         decoration: InputDecoration(
-            hintText: Constants.MOBILE_NUMBER,
-            hintStyle: GoogleFonts.poppins(
-              color: Colors.grey.shade500,
-              fontSize: Constants.MEDIUM_FONT_SIZE,
-            ),
-            // prefixIcon: Icon(
-            //   Icons.person,
-            //   size: Constants.SMALL_ICON_SIZE,
-            //   color: Colors.grey.shade500,
-            // ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
+          hintText: Constants.MOBILE_NUMBER,
+          hintStyle: GoogleFonts.poppins(
+            color: Colors.grey.shade500,
+            fontSize: Constants.MEDIUM_FONT_SIZE,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
         ),
         onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
+          viewModel.setMobileNumber(newVal);
         },
       ),
     );
@@ -448,20 +290,11 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
               fontWeight: FontWeight.w500
           ),
         ),
-        SizedBox(
-          width: Constants.EXTRA_SMALL_PADDING,
-        ),
-        Widgets().mandatory()
       ],
     );
   }
 
   emailField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
     return Container(
       width: MediaQuery.of(context).size.width,
       alignment: Alignment.center,
@@ -472,9 +305,8 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
           ),
           borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
       ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
+      child: TextFormField(
+        initialValue: viewModel.email == '' ? null : viewModel.email,
         textAlign: TextAlign.start,
         cursorColor: Colors.black54,
         keyboardType: TextInputType.text,
@@ -488,18 +320,11 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
               color: Colors.grey.shade500,
               fontSize: Constants.MEDIUM_FONT_SIZE,
             ),
-            // prefixIcon: Icon(
-            //   Icons.person,
-            //   size: Constants.SMALL_ICON_SIZE,
-            //   color: Colors.grey.shade500,
-            // ),
             border: InputBorder.none,
             contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
         ),
         onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
+          viewModel.setEmail(newVal);
         },
       ),
     );
@@ -515,22 +340,14 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
               fontWeight: FontWeight.w500
           ),
         ),
-        SizedBox(
-          width: Constants.EXTRA_SMALL_PADDING,
-        ),
-        Widgets().mandatory()
       ],
     );
   }
 
   addressField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
     return Container(
       width: MediaQuery.of(context).size.width,
+      height: Constants.SMALL_HEIGHT,
       alignment: Alignment.center,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -539,34 +356,27 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
           ),
           borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
       ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
+      child: TextFormField(
+        initialValue: viewModel.address == '' ? null : viewModel.address,
         textAlign: TextAlign.start,
         cursorColor: Colors.black54,
         keyboardType: TextInputType.text,
+        maxLines: 5,
         style: GoogleFonts.poppins(
           color: Colors.black,
           fontSize: Constants.MEDIUM_FONT_SIZE,
         ),
         decoration: InputDecoration(
-            hintText: Constants.ADDRESS,
-            hintStyle: GoogleFonts.poppins(
-              color: Colors.grey.shade500,
-              fontSize: Constants.MEDIUM_FONT_SIZE,
-            ),
-            // prefixIcon: Icon(
-            //   Icons.person,
-            //   size: Constants.SMALL_ICON_SIZE,
-            //   color: Colors.grey.shade500,
-            // ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
+          hintText: Constants.ADDRESS,
+          hintStyle: GoogleFonts.poppins(
+            color: Colors.grey.shade500,
+            fontSize: Constants.MEDIUM_FONT_SIZE,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
         ),
         onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
+          viewModel.setAddress(newVal);
         },
       ),
     );
@@ -594,10 +404,7 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
             )
         ),
         onPressed: () {
-          // String number = phoneNumberTextController.text.toString();
-          // Provider.of<AuthViewModel>(context, listen: false).checkLogIn(number.replaceAll(' ', ''));
-
-          // Navigator.pushNamed(buildContext, AppRoute.HOME);
+          viewModel.validationProfileData();
         },
       ),
     );

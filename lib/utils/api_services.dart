@@ -15,6 +15,7 @@ class ApiServices {
   static const String DELETE_CART_ITEM = BASE_URL + 'api/customer/delete/cart/item';
   static const String CONFIRM_ORDER = BASE_URL + 'api/customer/confirm/order';
   static const String APPLY_PROMO_CODE = BASE_URL + 'api/customer/apply/promo/code';
+  static const String REMOVE_PROMO_CODE = BASE_URL + 'api/customer/remove/promo/code';
   static const String GET_ORDER_LIST = BASE_URL + 'api/customer/get/order/list';
   static const String GET_CURRENT_ORDER_LIST = BASE_URL + 'api/customer/get/current/order/list';
   static const String NOTIFICATION_LIST = BASE_URL + 'api/admin/get/notification/list';

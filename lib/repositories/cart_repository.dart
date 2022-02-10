@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:prefs/prefs.dart';
 import 'package:http/http.dart' as http;
+import 'package:prefs/prefs.dart';
+import 'package:restaurant_app/models/add_to_cart.dart';
 import 'package:restaurant_app/models/base_json_response.dart';
 import 'package:restaurant_app/models/base_response.dart';
-import 'package:restaurant_app/models/add_to_cart.dart';
-import 'package:restaurant_app/models/cart_item.dart';
 import 'package:restaurant_app/models/confirm_order.dart';
 import 'package:restaurant_app/models/update_cart_item.dart';
 import 'package:restaurant_app/utils/api_services.dart';
@@ -253,6 +252,43 @@ class CartRepository {
       final response = await http.put(
           url,
           headers: header,
+      ).timeout(
+          Duration(seconds: Constants.TIMEOUT_LIMIT)
+      ).onError((error, stackTrace) {
+        return Future.error(error!);
+      });
+
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      var baseJsonResponse = BaseJsonResponse.fromJson(jsonResponse);
+
+      if (response.statusCode == 200) {
+        return BaseResponse(
+            baseJsonResponse.isSuccess,
+            baseJsonResponse.message,
+            baseJsonResponse.data
+        );
+      } else {
+        return BaseResponse(false, Constants.CONNECTION_MESSAGE, null);
+      }
+    } catch (e) {
+      return BaseResponse(false, Constants.EXCEPTION_MESSAGE, null);
+    }
+  }
+
+  removePromoCode() async {
+    try {
+      await Prefs.init();
+      var token = Prefs.getString(Constants.TOKEN);
+
+      final Map<String, String> header = {
+        HttpHeaders.authorizationHeader: 'Bearer ' + token
+      };
+      var url = Uri.parse(ApiServices.REMOVE_PROMO_CODE + '?'
+          'mobile_number=${Prefs.getString(Constants.MOBILE_NUMBER)}');
+
+      final response = await http.put(
+        url,
+        headers: header,
       ).timeout(
           Duration(seconds: Constants.TIMEOUT_LIMIT)
       ).onError((error, stackTrace) {

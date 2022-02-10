@@ -118,6 +118,7 @@ class Constants {
   static const String PENDING = 'Pending';
   static const String COMPLETED = 'Completed';
   static const String REJECTED = 'Rejected';
+  static const String OFF = 'OFF';
   static const String TK_SYMBOL = '\u09F3';
   static const String COPYRIGHTS_SYMBOL = '\u00a9';
 

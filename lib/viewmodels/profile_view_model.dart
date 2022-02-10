@@ -1,8 +1,6 @@
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/models/base_response.dart';
-import 'package:restaurant_app/models/notification.dart' as Model;
 import 'package:restaurant_app/models/profile.dart';
-import 'package:restaurant_app/repositories/notification_repository.dart';
 import 'package:restaurant_app/repositories/profile_repository.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/utils/toast_messages.dart';

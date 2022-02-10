@@ -388,118 +388,169 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   singleRecommendedItem(Item item) {
+    bool hasDiscount = item.discountAmount == null || item.discountAmount == 0 ? false : true;
+    int price = hasDiscount ? (item.price! - item.discountAmount!) : item.price!;
+
     return Container(
       width: Constants.LARGE_WIDTH,
       margin: EdgeInsets.only(right: Constants.SMALL_PADDING),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            width: Constants.LARGE_WIDTH,
-            height: Constants.RECOMMENDED_IMAGE_HEIGHT,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                  Radius.circular(Constants.SMALL_RADIUS)
-              ),
-              color: Colors.grey.shade300
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(Constants.SMALL_RADIUS),
-              child: FadeInImage(
-                image: NetworkImage(ApiServices.BASE_URL + '${item.imagePath}'),
-                placeholder: AssetImage('assets/images/place_holder.jpg'),
-                imageErrorBuilder: (context, error, stackTrace) {
-                  return Image(
-                    image: AssetImage('assets/images/place_holder.jpg'),
-                    fit: BoxFit.cover,
-                    height: Constants.RECOMMENDED_IMAGE_HEIGHT,
-                    width: Constants.LARGE_WIDTH,
-                  );
-                },
-                fit: BoxFit.cover,
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
                 width: Constants.LARGE_WIDTH,
                 height: Constants.RECOMMENDED_IMAGE_HEIGHT,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: Constants.SMALL_PADDING,
-          ),
-          Text(
-              item.itemName!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.poppins(
-                fontSize: Constants.MEDIUM_FONT_SIZE,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              )
-          ),
-          SizedBox(
-            height: Constants.EXTRA_SMALL_PADDING,
-          ),
-          Row(
-            children: [
-              RatingBarIndicator(
-                rating: item.averageRating.toString() == 'null' ? 0 : item.averageRating!,
-                itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                direction: Axis.horizontal,
-                unratedColor: Colors.grey[300],
-                itemCount: 5,
-                // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: ColorHelper.PRIMARY_COLOR,
-                ),
-              ),
-              SizedBox(
-                width: Constants.EXTRA_SMALL_PADDING,
-              ),
-              Text(
-                item.averageRating.toString() == 'null' ? '0.0' : item.averageRating.toString(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  fontSize: Constants.SMALL_FONT_SIZE,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Container(
-                height: 35,
-                padding: EdgeInsets.all(Constants.SMALL_PADDING),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(
                         Radius.circular(Constants.SMALL_RADIUS)
                     ),
                     color: Colors.grey.shade300
                 ),
-                child: Text(
-                    '${item.price} TK',
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                          fontSize: Constants.SMALL_FONT_SIZE,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black
-                      ),
-                    )
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(Constants.SMALL_RADIUS),
+                  child: FadeInImage(
+                    image: NetworkImage(ApiServices.BASE_URL + '${item.imagePath}'),
+                    placeholder: AssetImage('assets/images/place_holder.jpg'),
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return Image(
+                        image: AssetImage('assets/images/place_holder.jpg'),
+                        fit: BoxFit.cover,
+                        height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+                        width: Constants.LARGE_WIDTH,
+                      );
+                    },
+                    fit: BoxFit.cover,
+                    width: Constants.LARGE_WIDTH,
+                    height: Constants.RECOMMENDED_IMAGE_HEIGHT,
+                  ),
                 ),
               ),
-              Spacer(),
-              IconButton(
-                icon: Icon(
-                  Icons.add_shopping_cart,
-                ),
-                onPressed: () {
-                  viewModel.addToCart(item);
-                },
+              SizedBox(
+                height: Constants.SMALL_PADDING,
+              ),
+              Text(
+                  item.itemName!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: Constants.MEDIUM_FONT_SIZE,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  )
+              ),
+              SizedBox(
+                height: Constants.EXTRA_SMALL_PADDING,
+              ),
+              Row(
+                children: [
+                  RatingBarIndicator(
+                    rating: item.averageRating.toString() == 'null' ? 0 : item.averageRating!,
+                    itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                    direction: Axis.horizontal,
+                    unratedColor: Colors.grey[300],
+                    itemCount: 5,
+                    // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: ColorHelper.PRIMARY_COLOR,
+                    ),
+                  ),
+                  SizedBox(
+                    width: Constants.EXTRA_SMALL_PADDING,
+                  ),
+                  Text(
+                    item.averageRating.toString() == 'null' ? '0.0' : item.averageRating.toString(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      fontSize: Constants.SMALL_FONT_SIZE,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                    height: 35,
+                    padding: EdgeInsets.all(Constants.SMALL_PADDING),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(Constants.SMALL_RADIUS)
+                        ),
+                        color: Colors.grey.shade300
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          '${item.price} TK',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontSize: Constants.SMALL_FONT_SIZE,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                              decoration: hasDiscount ? TextDecoration.lineThrough : null,
+                            ),
+                          )
+                        ),
+                        SizedBox(
+                          width: Constants.SMALL_PADDING,
+                        ),
+                        Visibility(
+                          visible: hasDiscount ? true : false,
+                          child: Text(
+                            '$price TK',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: Constants.SMALL_FONT_SIZE,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black,
+                              ),
+                            )
+                          )
+                        )
+                      ],
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      Icons.add_shopping_cart,
+                    ),
+                    onPressed: () {
+                      viewModel.addToCart(item);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Visibility(
+              visible: hasDiscount ? true : false,
+              child: Container(
+                  padding: EdgeInsets.all(Constants.EXTRA_SMALL_PADDING),
+                  decoration: BoxDecoration(
+                      color: ColorHelper.PRIMARY_COLOR,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(Constants.EXTRA_SMALL_RADIUS),
+                      )
+                  ),
+                  child: Text(
+                    hasDiscount ? '${item.discountPercent}% ${Constants.OFF}' : '',
+                    style: GoogleFonts.poppins(
+                        fontSize: Constants.SMALL_FONT_SIZE,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black
+                    ),
+                  )
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -570,123 +621,175 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   singleCategoryWiseItem(Item item) {
+    bool hasDiscount = item.discountAmount == null || item.discountAmount == 0 ? false : true;
+    int price = hasDiscount ? (item.price! - item.discountAmount!) : item.price!;
+
     return Container(
       width: MediaQuery.of(context).size.width,
-      child: Column(
+      child: Stack(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                height: Constants.SMALL_HEIGHT,
-                width: Constants.SMALL_WIDTH,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(Constants.LARGE_RADIUS)
-                  ),
-                  color: Colors.grey.shade300
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
-                  child: FadeInImage(
-                    image: NetworkImage(
-                      ApiServices.BASE_URL + '${item.imagePath}',
-                    ),
-                    placeholder: AssetImage('assets/images/place_holder.jpg'),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Image(
-                        image: AssetImage('assets/images/place_holder.jpg'),
-                        fit: BoxFit.cover,
-                        height: Constants.SMALL_HEIGHT,
-                        width: Constants.SMALL_WIDTH,
-                      );
-                    },
-                    fit: BoxFit.cover,
-                    height: Constants.SMALL_HEIGHT,
-                    width: Constants.SMALL_WIDTH,
-                  ),
-                )
-              ),
-              SizedBox(
-                width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-              ),
-              Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                          item.itemName!,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.poppins(
-                            fontSize: Constants.MEDIUM_FONT_SIZE,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          )
+          Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      height: Constants.SMALL_HEIGHT,
+                      width: Constants.SMALL_WIDTH,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Constants.LARGE_RADIUS)
+                          ),
+                          color: Colors.grey.shade300
                       ),
-                      SizedBox(
-                        height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(Constants.SMALL_PADDING),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(Constants.SMALL_RADIUS)
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
+                        child: FadeInImage(
+                          image: NetworkImage(
+                            ApiServices.BASE_URL + '${item.imagePath}',
+                          ),
+                          placeholder: AssetImage('assets/images/place_holder.jpg'),
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            return Image(
+                              image: AssetImage('assets/images/place_holder.jpg'),
+                              fit: BoxFit.cover,
+                              height: Constants.SMALL_HEIGHT,
+                              width: Constants.SMALL_WIDTH,
+                            );
+                          },
+                          fit: BoxFit.cover,
+                          height: Constants.SMALL_HEIGHT,
+                          width: Constants.SMALL_WIDTH,
+                        ),
+                      )
+                  ),
+                  SizedBox(
+                    width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                  ),
+                  Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              item.itemName!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.poppins(
+                                fontSize: Constants.MEDIUM_FONT_SIZE,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              )
+                          ),
+                          SizedBox(
+                            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(Constants.SMALL_PADDING),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(Constants.SMALL_RADIUS)
+                                ),
+                                color: Colors.grey.shade300
                             ),
-                            color: Colors.grey.shade300
-                        ),
-                        child: Text(
-                            '${item.price} TK',
-                            style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontSize: Constants.SMALL_FONT_SIZE,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black
-                              ),
-                            )
-                        ),
-                      ),
-                    ],
+                            child: Wrap(
+                              direction: Axis.horizontal,
+                              children: [
+                                Text(
+                                    '${item.price} TK',
+                                    style: GoogleFonts.poppins(
+                                      textStyle: TextStyle(
+                                        fontSize: Constants.SMALL_FONT_SIZE,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black,
+                                        decoration: hasDiscount ? TextDecoration.lineThrough : null,
+                                      ),
+                                    )
+                                ),
+                                SizedBox(
+                                  width: Constants.SMALL_PADDING,
+                                ),
+                                Visibility(
+                                    visible: hasDiscount ? true : false,
+                                    child: Text(
+                                        '$price TK',
+                                        style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(
+                                            fontSize: Constants.SMALL_FONT_SIZE,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                          ),
+                                        )
+                                    )
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      )
+                  ),
+                  SizedBox(
+                    width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                  ),
+                  Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                                Icons.add_shopping_cart
+                            ),
+                            onPressed: () {
+                              viewModel.addToCart(item);
+                            },
+                          ),
+                          SizedBox(
+                            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+                          ),
+                          RatingBarIndicator(
+                            rating: item.averageRating.toString() == 'null' ? 0 : item.averageRating!,
+                            itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
+                            direction: Axis.horizontal,
+                            unratedColor: Colors.grey[300],
+                            itemCount: 5,
+                            // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: ColorHelper.PRIMARY_COLOR,
+                            ),
+                          ),
+                        ],
+                      )
                   )
+                ],
               ),
-              SizedBox(
-                width: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                            Icons.add_shopping_cart
-                        ),
-                        onPressed: () {
-                          viewModel.addToCart(item);
-                        },
-                      ),
-                      SizedBox(
-                        height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                      ),
-                      RatingBarIndicator(
-                        rating: item.averageRating.toString() == 'null' ? 0 : item.averageRating!,
-                        itemSize: Constants.EXTRA_EXTRA_SMALL_WIDTH,
-                        direction: Axis.horizontal,
-                        unratedColor: Colors.grey[300],
-                        itemCount: 5,
-                        // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: ColorHelper.PRIMARY_COLOR,
-                        ),
-                      ),
-                    ],
-                  )
-              )
+              Divider()
             ],
           ),
-          Divider()
+          Align(
+            alignment: Alignment.topLeft,
+            child: Visibility(
+              visible: hasDiscount ? true : false,
+              child: Container(
+                  padding: EdgeInsets.all(Constants.EXTRA_SMALL_PADDING),
+                  decoration: BoxDecoration(
+                      color: ColorHelper.PRIMARY_COLOR,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(Constants.EXTRA_SMALL_RADIUS),
+                      )
+                  ),
+                  child: Text(
+                    hasDiscount ? '${item.discountPercent}% ${Constants.OFF}' : '',
+                    style: GoogleFonts.poppins(
+                        fontSize: Constants.SMALL_FONT_SIZE,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black
+                    ),
+                  )
+              ),
+            ),
+          )
         ],
       )
     );

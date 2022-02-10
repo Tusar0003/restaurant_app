@@ -441,7 +441,7 @@ class CartPageView extends StatelessView<CartViewModel> {
         Expanded(
             flex: 1,
             child: Text(
-              '${Constants.TK_SYMBOL} ${viewModel.totalPrice}',
+              '${Constants.TK_SYMBOL} ${viewModel.subTotal}',
               textAlign: TextAlign.end,
               style: GoogleFonts.poppins(
                 color: Colors.black,
@@ -469,7 +469,7 @@ class CartPageView extends StatelessView<CartViewModel> {
         Expanded(
             flex: 1,
             child: Text(
-              '${Constants.TK_SYMBOL} ${viewModel.promoDiscount}',
+              '${Constants.TK_SYMBOL} ${viewModel.totalDiscount}',
               textAlign: TextAlign.end,
               style: GoogleFonts.poppins(
                 color: Colors.black,
@@ -526,8 +526,7 @@ class CartPageView extends StatelessView<CartViewModel> {
         Expanded(
             flex: 1,
             child: Text(
-              '${Constants.TK_SYMBOL} '
-              '${viewModel.totalPrice + viewModel.deliveryCharge - viewModel.promoDiscount}',
+              '${Constants.TK_SYMBOL} ${viewModel.totalPrice}',
               textAlign: TextAlign.end,
               style: GoogleFonts.poppins(
                   color: Colors.black,

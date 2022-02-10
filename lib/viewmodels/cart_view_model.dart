@@ -20,8 +20,10 @@ class CartViewModel extends ViewModel {
   bool isPromoCodeApplied = false;
   String promoCode = '';
   int promoDiscount = 0;
+  int totalDiscount = 0;
   int orderTypeIndex = 0;
   int deliveryCharge = 0;
+  int subTotal = 0;
   int totalPrice = 0;
 
   List<CartItem> cartItemList = [];
@@ -54,20 +56,26 @@ class CartViewModel extends ViewModel {
   setPromoDetails(PromoDetails promoDetails) {
     promoCode = promoDetails.promoCode!;
     promoDiscount = int.parse(promoDetails.discountAmount!);
+    totalDiscount += promoDiscount;
+    totalPrice -= promoDiscount;
     isPromoCodeApplied = true;
     notifyListeners();
   }
 
-  removePromoCode() {
-    isPromoCodeApplied = false;
-    promoDiscount = 0;
-    notifyListeners();
-  }
-
   incrementQuantity(CartItem cartItem) async {
-    cartItem.quantity = cartItem.quantity! + 1;
-    cartItem.subTotalPrice = cartItem.unitPrice! * cartItem.quantity!;
-    totalPrice += cartItem.unitPrice!;
+    if (cartItem.discountPrice != null && cartItem.discountPrice != 0) {
+      cartItem.quantity = cartItem.quantity! + 1;
+      cartItem.subTotalPrice = cartItem.discountPrice! * cartItem.quantity!;
+      subTotal += cartItem.unitPrice!;
+      totalPrice += cartItem.discountPrice!;
+      totalDiscount += (cartItem.unitPrice! - cartItem.discountPrice!);
+    } else {
+      cartItem.quantity = cartItem.quantity! + 1;
+      cartItem.subTotalPrice = cartItem.unitPrice! * cartItem.quantity!;
+      subTotal += cartItem.unitPrice!;
+      totalPrice += cartItem.unitPrice!;
+    }
+
     updateCart(cartItem);
     notifyListeners();
   }
@@ -77,9 +85,19 @@ class CartViewModel extends ViewModel {
       cartItemList.remove(cartItem);
     }
 
-    cartItem.quantity = cartItem.quantity! - 1;
-    cartItem.subTotalPrice = cartItem.unitPrice! * cartItem.quantity!;
-    totalPrice -= cartItem.unitPrice!;
+    if (cartItem.discountPrice != null && cartItem.discountPrice != 0) {
+      cartItem.quantity = cartItem.quantity! - 1;
+      cartItem.subTotalPrice = cartItem.discountPrice! * cartItem.quantity!;
+      subTotal -= cartItem.unitPrice!;
+      totalPrice -= cartItem.discountPrice!;
+      totalDiscount -= (cartItem.unitPrice! - cartItem.discountPrice!);
+    } else {
+      cartItem.quantity = cartItem.quantity! - 1;
+      cartItem.subTotalPrice = cartItem.unitPrice! * cartItem.quantity!;
+      subTotal -= cartItem.unitPrice!;
+      totalPrice -= cartItem.unitPrice!;
+    }
+
     updateCart(cartItem);
     notifyListeners();
   }
@@ -93,7 +111,12 @@ class CartViewModel extends ViewModel {
 
         baseResponse.data.forEach((value) {
           CartItem cartItem = CartItem.fromJson(value);
-          totalPrice += cartItem.subTotalPrice!;
+          isPromoCodeApplied = cartItem.isPromoCodeApplied == 1 ? true : false;
+          promoCode = cartItem.promoCode == null ? '' : cartItem.promoCode!;
+          promoDiscount = cartItem.promoCodeAmount == null ? 0 : int.parse(cartItem.promoCodeAmount!);
+          totalDiscount += (cartItem.unitPrice! - cartItem.discountPrice!) * cartItem.quantity! + promoDiscount;
+          subTotal += cartItem.unitPrice! * cartItem.quantity!;
+          totalPrice += cartItem.subTotalPrice! - promoDiscount;
           cartItemList.add(cartItem);
         });
       } else {
@@ -187,6 +210,32 @@ class CartViewModel extends ViewModel {
     if (cartItemList.length == 0) {
       Navigator.pop(context);
     }
+  }
+
+  removePromoCode() async {
+    try {
+      showProgressBar();
+
+      isPromoCodeApplied = false;
+      totalDiscount -= promoDiscount;
+      totalPrice += promoDiscount;
+      promoDiscount = 0;
+
+      BaseResponse baseResponse = await cartRepository.removePromoCode();
+
+      if (baseResponse.isSuccess) {
+        ToastMessages().showSuccessToast(baseResponse.message!);
+      } else {
+        ToastMessages().showErrorToast(baseResponse.message!);
+      }
+
+      hideProgressBar();
+    } catch(e) {
+      hideProgressBar();
+      ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
+    }
+
+    notifyListeners();
   }
 
   confirmOrder() async {

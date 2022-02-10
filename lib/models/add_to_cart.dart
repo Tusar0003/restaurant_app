@@ -4,6 +4,7 @@ class AddToCart {
   String? itemName;
   String? quantity;
   String? unitPrice;
+  String? discountPrice;
   String? subTotalPrice;
 
   AddToCart({
@@ -12,6 +13,7 @@ class AddToCart {
     this.itemName,
     this.quantity,
     this.unitPrice,
+    this.discountPrice,
     this.subTotalPrice
   });
 
@@ -31,6 +33,7 @@ class AddToCart {
     data['item_name'] = this.itemName;
     data['quantity'] = this.quantity;
     data['unit_price'] = this.unitPrice;
+    data['discount_price'] = this.discountPrice;
     data['sub_total_price'] = this.subTotalPrice;
     return data;
   }

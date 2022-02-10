@@ -67,8 +67,8 @@ class ApplyPromoCodePageView extends StatelessView<ApplyPromoCodeViewModel> {
           ),
           borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
       ),
-      child: TextField(
-        // controller: phoneNumberTextController,
+      child: TextFormField(
+        initialValue: viewModel.promoCode,
         textAlign: TextAlign.start,
         cursorColor: Colors.black54,
         keyboardType: TextInputType.text,

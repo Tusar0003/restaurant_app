@@ -39,15 +39,30 @@ class ItemDetailsViewModel extends ViewModel {
   }
 
   incrementQuantity() {
+    int priceAfterDiscount;
+    if (item.discountAmount != null && item.discountAmount != 0) {
+      priceAfterDiscount = item.price! - item.discountAmount!;
+    } else {
+      priceAfterDiscount = item.price!;
+    }
+
     quantity += 1;
-    price = item.price! * quantity;
+    price = priceAfterDiscount * quantity;
+
     notifyListeners();
   }
 
   decrementQuantity() {
+    int priceAfterDiscount;
+    if (item.discountAmount != null && item.discountAmount != 0) {
+      priceAfterDiscount = item.price! - item.discountAmount!;
+    } else {
+      priceAfterDiscount = item.price!;
+    }
+
     if (quantity > 1) {
       quantity -= 1;
-      price = item.price! * quantity;
+      price = priceAfterDiscount * quantity;
       notifyListeners();
     }
   }
@@ -56,14 +71,22 @@ class ItemDetailsViewModel extends ViewModel {
     try {
       showProgressBar();
 
+      int priceAfterDiscount;
+      if (item.discountAmount != null && item.discountAmount != 0) {
+        priceAfterDiscount = item.price! - item.discountAmount!;
+      } else {
+        priceAfterDiscount = item.price!;
+      }
+
       Prefs.init();
       AddToCart addToCart = AddToCart(
-          mobileNumber: '+8801521234567',
-          quantity: quantity.toString(),
-          itemCode: item.itemCode,
-          itemName: item.itemName,
-          subTotalPrice: price.toString(),
-          unitPrice: item.price.toString()
+        mobileNumber: '+8801521234567',
+        quantity: quantity.toString(),
+        itemCode: item.itemCode,
+        itemName: item.itemName,
+        unitPrice: item.price.toString(),
+        discountPrice: priceAfterDiscount.toString(),
+        subTotalPrice: price.toString(),
       );
 
       BaseResponse baseResponse = await CartRepository().addToCart(addToCart);

@@ -154,14 +154,22 @@ class HomeViewModel extends ViewModel {
     try {
       showProgressBar();
 
+      String price;
+      if (item.discountAmount != null && item.discountAmount != 0) {
+        price = (item.price! - item.discountAmount!).toString();
+      } else {
+        price = item.price.toString();
+      }
+
       Prefs.init();
       AddToCart addToCart = AddToCart(
         mobileNumber: Prefs.getString(Constants.MOBILE_NUMBER),
         quantity: '1',
         itemCode: item.itemCode,
         itemName: item.itemName,
-        subTotalPrice: item.price.toString(),
-        unitPrice: item.price.toString()
+        unitPrice: item.price.toString(),
+        discountPrice: price.toString(),
+        subTotalPrice: price.toString(),
       );
 
       BaseResponse baseResponse = await CartRepository().addToCart(addToCart);

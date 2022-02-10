@@ -5,9 +5,11 @@ class CartItem {
   String? itemName;
   int? quantity;
   int? unitPrice;
+  int? discountPrice;
   int? subTotalPrice;
   int? isPromoCodeApplied;
   String? promoCode;
+  String? promoCodeAmount;
   String? imagePath;
   String? createdBy;
   String? createdTime;
@@ -21,9 +23,11 @@ class CartItem {
     this.itemName,
     this.quantity,
     this.unitPrice,
+    this.discountPrice,
     this.subTotalPrice,
     this.isPromoCodeApplied,
     this.promoCode,
+    this.promoCodeAmount,
     this.imagePath,
     this.createdBy,
     this.createdTime,
@@ -38,9 +42,11 @@ class CartItem {
     itemName = json['item_name'];
     quantity = json['quantity'];
     unitPrice = json['unit_price'];
+    discountPrice = json['discount_price'];
     subTotalPrice = json['sub_total_price'];
     isPromoCodeApplied = json['is_promo_code_applied'];
     promoCode = json['promo_code'];
+    promoCodeAmount = json['promo_code_amount'].toString();
     imagePath = json['image_path'];
     createdBy = json['created_by'];
     createdTime = json['created_time'];

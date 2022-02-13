@@ -102,6 +102,17 @@ class CartViewModel extends ViewModel {
     notifyListeners();
   }
 
+  totalWithDiscount() {
+    CartItem cartItem = cartItemList[0];
+    totalDiscount = (subTotal - totalPrice) + promoDiscount;
+    isPromoCodeApplied = cartItem.isPromoCodeApplied == 1 ? true : false;
+
+    if (isPromoCodeApplied) {
+      promoCode = cartItem.promoCode == null ? '' : cartItem.promoCode!;
+      promoDiscount = cartItem.promoCodeAmount == null ? 0 : int.parse(cartItem.promoCodeAmount!);
+    }
+  }
+
   getCartItemList() async {
     try {
       BaseResponse baseResponse = await cartRepository.getCartItemList();
@@ -109,16 +120,15 @@ class CartViewModel extends ViewModel {
       if (baseResponse.isSuccess && baseResponse.data != null) {
         cartItemList.clear();
 
-        baseResponse.data.forEach((value) {
+        await baseResponse.data.forEach((value) async {
           CartItem cartItem = CartItem.fromJson(value);
-          isPromoCodeApplied = cartItem.isPromoCodeApplied == 1 ? true : false;
-          promoCode = cartItem.promoCode == null ? '' : cartItem.promoCode!;
-          promoDiscount = cartItem.promoCodeAmount == null ? 0 : int.parse(cartItem.promoCodeAmount!);
-          totalDiscount += (cartItem.unitPrice! - cartItem.discountPrice!) * cartItem.quantity! + promoDiscount;
-          subTotal += cartItem.unitPrice! * cartItem.quantity!;
-          totalPrice += cartItem.subTotalPrice! - promoDiscount;
           cartItemList.add(cartItem);
+
+          subTotal += cartItem.unitPrice! * cartItem.quantity!;
+          totalPrice += cartItem.subTotalPrice!;
         });
+
+        totalWithDiscount();
       } else {
         ToastMessages().showErrorToast(baseResponse.message!);
       }

@@ -117,36 +117,7 @@ class ItemDetailsPageView extends StatelessView<ItemDetailsViewModel> {
             ),
             Expanded(
                 flex: 3,
-                child: Container(
-                  padding: EdgeInsets.all(Constants.STANDARD_PADDING),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        viewModel.item.itemName!,
-                        style: GoogleFonts.poppins(
-                            color: Colors.black,
-                            fontSize: Constants.LARGE_FONT_SIZE,
-                            fontWeight: FontWeight.w600
-                        ),
-                      ),
-                      SizedBox(
-                        height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
-                      ),
-                      Text(
-                        viewModel.item.description!,
-                        style: GoogleFonts.poppins(
-                          color: Colors.black,
-                          fontSize: Constants.MEDIUM_FONT_SIZE,
-                        ),
-                      ),
-                      SizedBox(
-                        height: Constants.EXTRA_SMALL_HEIGHT,
-                      ),
-                      bottomLayout(),
-                    ],
-                  ),
-                )
+                child: itemDetailsLayout()
             ),
           ],
         ),
@@ -178,6 +149,69 @@ class ItemDetailsPageView extends StatelessView<ItemDetailsViewModel> {
           ),
         ),
       ],
+    );
+  }
+
+  itemDetailsLayout() {
+    return Container(
+      padding: EdgeInsets.all(Constants.STANDARD_PADDING),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: Text(
+                    viewModel.item.itemName!,
+                    style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: Constants.LARGE_FONT_SIZE,
+                        fontWeight: FontWeight.w600
+                    ),
+                  )
+              ),
+              SizedBox(
+                width: Constants.MEDIUM_PADDING,
+              ),
+              Visibility(
+                visible: viewModel.hasDiscount,
+                child: Container(
+                    padding: EdgeInsets.all(Constants.SMALL_PADDING),
+                    decoration: BoxDecoration(
+                        color: ColorHelper.PRIMARY_COLOR,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(Constants.EXTRA_SMALL_RADIUS),
+                        )
+                    ),
+                    child: Text(
+                      viewModel.hasDiscount ? '${viewModel.item.discountPercent}% ${Constants.OFF}' : '',
+                      style: GoogleFonts.poppins(
+                          fontSize: Constants.SMALL_FONT_SIZE,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black
+                      ),
+                    )
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Text(
+            viewModel.item.description!,
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: Constants.MEDIUM_FONT_SIZE,
+            ),
+          ),
+          SizedBox(
+            height: Constants.EXTRA_SMALL_HEIGHT,
+          ),
+          bottomLayout(),
+        ],
+      ),
     );
   }
 
@@ -251,9 +285,25 @@ class ItemDetailsPageView extends StatelessView<ItemDetailsViewModel> {
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: Constants.SMALL_FONT_SIZE,
-                        fontWeight: FontWeight.w500
+                        fontWeight: FontWeight.w500,
+                        decoration: viewModel.hasDiscount ? TextDecoration.lineThrough : null,
+                        decorationColor: Colors.white
                       ),
                     ),
+                    SizedBox(
+                      width: Constants.SMALL_PADDING,
+                    ),
+                    Visibility(
+                        visible: viewModel.hasDiscount,
+                        child: Text(
+                          '${viewModel.discountPrice} TK',
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: Constants.SMALL_FONT_SIZE,
+                              fontWeight: FontWeight.w500
+                          ),
+                        )
+                    )
                   ],
                 ),
                 style: ElevatedButton.styleFrom(

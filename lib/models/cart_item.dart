@@ -5,7 +5,7 @@ class CartItem {
   String? itemName;
   int? quantity;
   int? unitPrice;
-  int? discountPrice;
+  int? discountPercent;
   int? subTotalPrice;
   int? isPromoCodeApplied;
   String? promoCode;
@@ -23,7 +23,7 @@ class CartItem {
     this.itemName,
     this.quantity,
     this.unitPrice,
-    this.discountPrice,
+    this.discountPercent,
     this.subTotalPrice,
     this.isPromoCodeApplied,
     this.promoCode,
@@ -42,7 +42,7 @@ class CartItem {
     itemName = json['item_name'];
     quantity = json['quantity'];
     unitPrice = json['unit_price'];
-    discountPrice = json['discount_price'];
+    discountPercent = json['discount_percent'];
     subTotalPrice = json['sub_total_price'];
     isPromoCodeApplied = json['is_promo_code_applied'];
     promoCode = json['promo_code'];

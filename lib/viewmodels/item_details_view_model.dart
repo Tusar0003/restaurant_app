@@ -16,15 +16,17 @@ class ItemDetailsViewModel extends ViewModel {
   bool isLoading = false;
 
   Item item;
+  bool hasDiscount = false;
   int quantity = 1;
   int price = 0;
+  int discountPrice = 0;
   int cartItemNumber = 0;
 
   ItemDetailsViewModel(this.item);
 
   @override
   void init() {
-    price = item.price!;
+    checkDiscount();
     getCartItemNumber();
   }
 
@@ -38,31 +40,37 @@ class ItemDetailsViewModel extends ViewModel {
     notifyListeners();
   }
 
-  incrementQuantity() {
-    int priceAfterDiscount;
-    if (item.discountAmount != null && item.discountAmount != 0) {
-      priceAfterDiscount = item.price! - item.discountAmount!;
+  checkDiscount() {
+    price = item.price!;
+
+    if (item.discountPercent == null || item.discountPercent == 0) {
+      hasDiscount = false;
+      discountPrice = item.price!;
     } else {
-      priceAfterDiscount = item.price!;
+      hasDiscount = true;
+      discountPrice = item.price! - item.discountAmount!;
     }
 
+    notifyListeners();
+  }
+
+  incrementQuantity() {
     quantity += 1;
-    price = priceAfterDiscount * quantity;
+    price = item.price! * quantity;
+    double discountAmount = (item.price! * quantity * item.discountPercent!) / 100;
+    double priceAfterDiscount = price - discountAmount;
+    discountPrice = priceAfterDiscount.round();
 
     notifyListeners();
   }
 
   decrementQuantity() {
-    int priceAfterDiscount;
-    if (item.discountAmount != null && item.discountAmount != 0) {
-      priceAfterDiscount = item.price! - item.discountAmount!;
-    } else {
-      priceAfterDiscount = item.price!;
-    }
-
     if (quantity > 1) {
       quantity -= 1;
-      price = priceAfterDiscount * quantity;
+      price = item.price! * quantity;
+      double discountAmount = (item.price! * quantity * item.discountPercent!) / 100;
+      double priceAfterDiscount = price - discountAmount;
+      discountPrice = priceAfterDiscount.round();
       notifyListeners();
     }
   }
@@ -71,22 +79,15 @@ class ItemDetailsViewModel extends ViewModel {
     try {
       showProgressBar();
 
-      int priceAfterDiscount;
-      if (item.discountAmount != null && item.discountAmount != 0) {
-        priceAfterDiscount = item.price! - item.discountAmount!;
-      } else {
-        priceAfterDiscount = item.price!;
-      }
-
       Prefs.init();
       AddToCart addToCart = AddToCart(
-        mobileNumber: '+8801521234567',
+        mobileNumber: Prefs.getString(Constants.MOBILE_NUMBER),
         quantity: quantity.toString(),
         itemCode: item.itemCode,
         itemName: item.itemName,
         unitPrice: item.price.toString(),
-        discountPrice: priceAfterDiscount.toString(),
-        subTotalPrice: price.toString(),
+        discountPercent: item.discountPercent.toString(),
+        subTotalPrice: discountPrice.toString(),
       );
 
       BaseResponse baseResponse = await CartRepository().addToCart(addToCart);

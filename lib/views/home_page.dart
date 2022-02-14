@@ -388,9 +388,6 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   singleRecommendedItem(Item item) {
-    bool hasDiscount = item.discountAmount == null || item.discountAmount == 0 ? false : true;
-    int price = hasDiscount ? (item.price! - item.discountAmount!) : item.price!;
-
     return Container(
       width: Constants.LARGE_WIDTH,
       margin: EdgeInsets.only(right: Constants.SMALL_PADDING),
@@ -492,7 +489,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                               fontSize: Constants.SMALL_FONT_SIZE,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
-                              decoration: hasDiscount ? TextDecoration.lineThrough : null,
+                              decoration: viewModel.hasDiscount(item) ? TextDecoration.lineThrough : null,
                             ),
                           )
                         ),
@@ -500,15 +497,13 @@ class HomePageView extends StatelessView<HomeViewModel> {
                           width: Constants.SMALL_PADDING,
                         ),
                         Visibility(
-                          visible: hasDiscount ? true : false,
+                          visible: viewModel.hasDiscount(item),
                           child: Text(
-                            '$price TK',
+                            '${viewModel.getDiscountPrice(item)} TK',
                             style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                fontSize: Constants.SMALL_FONT_SIZE,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black,
-                              ),
+                              fontSize: Constants.SMALL_FONT_SIZE,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
                             )
                           )
                         )
@@ -531,7 +526,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           Align(
             alignment: Alignment.topLeft,
             child: Visibility(
-              visible: hasDiscount ? true : false,
+              visible: viewModel.hasDiscount(item),
               child: Container(
                   padding: EdgeInsets.all(Constants.EXTRA_SMALL_PADDING),
                   decoration: BoxDecoration(
@@ -541,7 +536,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                       )
                   ),
                   child: Text(
-                    hasDiscount ? '${item.discountPercent}% ${Constants.OFF}' : '',
+                    viewModel.hasDiscount(item) ? '${item.discountPercent}% ${Constants.OFF}' : '',
                     style: GoogleFonts.poppins(
                         fontSize: Constants.SMALL_FONT_SIZE,
                         fontWeight: FontWeight.w500,
@@ -621,9 +616,6 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   singleCategoryWiseItem(Item item) {
-    bool hasDiscount = item.discountAmount == null || item.discountAmount == 0 ? false : true;
-    int price = hasDiscount ? (item.price! - item.discountAmount!) : item.price!;
-
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Stack(
@@ -703,7 +695,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                                         fontSize: Constants.SMALL_FONT_SIZE,
                                         fontWeight: FontWeight.w700,
                                         color: Colors.black,
-                                        decoration: hasDiscount ? TextDecoration.lineThrough : null,
+                                        decoration: viewModel.hasDiscount(item) ? TextDecoration.lineThrough : null,
                                       ),
                                     )
                                 ),
@@ -711,15 +703,13 @@ class HomePageView extends StatelessView<HomeViewModel> {
                                   width: Constants.SMALL_PADDING,
                                 ),
                                 Visibility(
-                                    visible: hasDiscount ? true : false,
+                                    visible: viewModel.hasDiscount(item),
                                     child: Text(
-                                        '$price TK',
+                                        '${viewModel.getDiscountPrice(item)} TK',
                                         style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
-                                            fontSize: Constants.SMALL_FONT_SIZE,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black,
-                                          ),
+                                          fontSize: Constants.SMALL_FONT_SIZE,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black,
                                         )
                                     )
                                 )
@@ -770,7 +760,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           Align(
             alignment: Alignment.topLeft,
             child: Visibility(
-              visible: hasDiscount ? true : false,
+              visible: viewModel.hasDiscount(item),
               child: Container(
                   padding: EdgeInsets.all(Constants.EXTRA_SMALL_PADDING),
                   decoration: BoxDecoration(
@@ -780,7 +770,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                       )
                   ),
                   child: Text(
-                    hasDiscount ? '${item.discountPercent}% ${Constants.OFF}' : '',
+                    viewModel.hasDiscount(item) ? '${item.discountPercent}% ${Constants.OFF}' : '',
                     style: GoogleFonts.poppins(
                         fontSize: Constants.SMALL_FONT_SIZE,
                         fontWeight: FontWeight.w500,

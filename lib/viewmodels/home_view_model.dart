@@ -62,6 +62,30 @@ class HomeViewModel extends ViewModel {
     notifyListeners();
   }
 
+  bool hasDiscount(Item item) {
+    bool hasDiscount = false;
+
+    if (item.discountAmount == null || item.discountAmount == 0) {
+      hasDiscount = false;
+    } else {
+      hasDiscount = true;
+    }
+
+    return hasDiscount;
+  }
+
+  int getDiscountPrice(Item item) {
+    int discountPrice = 0;
+
+    if (item.discountAmount == null || item.discountAmount == 0) {
+      discountPrice = item.price!;
+    } else {
+      discountPrice = item.price! - item.discountAmount!;
+    }
+
+    return discountPrice;
+  }
+
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
 
@@ -168,7 +192,7 @@ class HomeViewModel extends ViewModel {
         itemCode: item.itemCode,
         itemName: item.itemName,
         unitPrice: item.price.toString(),
-        discountPrice: price.toString(),
+        discountPercent: item.discountPercent.toString(),
         subTotalPrice: price.toString(),
       );
 

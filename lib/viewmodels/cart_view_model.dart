@@ -63,17 +63,24 @@ class CartViewModel extends ViewModel {
   }
 
   incrementQuantity(CartItem cartItem) async {
-    if (cartItem.discountPrice != null && cartItem.discountPrice != 0) {
+    if (cartItem.discountPercent != null && cartItem.discountPercent != 0) {
+      int discountAmount = ((cartItem.unitPrice! * cartItem.quantity! * cartItem.discountPercent!) / 100).round();
+      totalDiscount -= discountAmount;
+      totalPrice -= cartItem.subTotalPrice!;
+
       cartItem.quantity = cartItem.quantity! + 1;
-      cartItem.subTotalPrice = cartItem.discountPrice! * cartItem.quantity!;
+      discountAmount = ((cartItem.unitPrice! * cartItem.quantity! * cartItem.discountPercent!) / 100).round();
+      cartItem.subTotalPrice = (cartItem.quantity! * cartItem.unitPrice!) - discountAmount;
+
       subTotal += cartItem.unitPrice!;
-      totalPrice += cartItem.discountPrice!;
-      totalDiscount += (cartItem.unitPrice! - cartItem.discountPrice!);
+      totalPrice += cartItem.subTotalPrice!;
+      totalDiscount += discountAmount;
     } else {
       cartItem.quantity = cartItem.quantity! + 1;
       cartItem.subTotalPrice = cartItem.unitPrice! * cartItem.quantity!;
+
       subTotal += cartItem.unitPrice!;
-      totalPrice += cartItem.unitPrice!;
+      totalPrice += subTotal;
     }
 
     updateCart(cartItem);
@@ -85,17 +92,24 @@ class CartViewModel extends ViewModel {
       cartItemList.remove(cartItem);
     }
 
-    if (cartItem.discountPrice != null && cartItem.discountPrice != 0) {
+    if (cartItem.discountPercent != null && cartItem.discountPercent != 0) {
+      int discountAmount = ((cartItem.unitPrice! * cartItem.quantity! * cartItem.discountPercent!) / 100).round();
+      totalDiscount -= discountAmount;
+      totalPrice -= cartItem.subTotalPrice!;
+
       cartItem.quantity = cartItem.quantity! - 1;
-      cartItem.subTotalPrice = cartItem.discountPrice! * cartItem.quantity!;
+      discountAmount = ((cartItem.unitPrice! * cartItem.quantity! * cartItem.discountPercent!) / 100).round();
+      cartItem.subTotalPrice = (cartItem.quantity! * cartItem.unitPrice!) - discountAmount;
+
       subTotal -= cartItem.unitPrice!;
-      totalPrice -= cartItem.discountPrice!;
-      totalDiscount -= (cartItem.unitPrice! - cartItem.discountPrice!);
+      totalPrice += cartItem.subTotalPrice!;
+      totalDiscount += discountAmount;
     } else {
       cartItem.quantity = cartItem.quantity! - 1;
       cartItem.subTotalPrice = cartItem.unitPrice! * cartItem.quantity!;
+
       subTotal -= cartItem.unitPrice!;
-      totalPrice -= cartItem.unitPrice!;
+      totalPrice -= subTotal;
     }
 
     updateCart(cartItem);
@@ -201,9 +215,12 @@ class CartViewModel extends ViewModel {
       BaseResponse baseResponse = await cartRepository.deleteCartItem(cartItem.id.toString());
 
       if (baseResponse.isSuccess) {
-        cartItemList.remove(cartItem);
+        int discountAmount = ((cartItem.unitPrice! * cartItem.quantity! * cartItem.discountPercent!) / 100).round();
+        totalDiscount -= discountAmount;
+        subTotal -= (cartItem.quantity! * cartItem.unitPrice!);
         totalPrice -= cartItem.subTotalPrice!;
 
+        cartItemList.remove(cartItem);
         ToastMessages().showSuccessToast(baseResponse.message!);
       } else {
         ToastMessages().showErrorToast(baseResponse.message!);

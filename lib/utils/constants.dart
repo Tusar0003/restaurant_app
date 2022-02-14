@@ -50,6 +50,7 @@ class Constants {
   static const double EXTRA_LARGE_ICON_SIZE = 150;
 
   // STRINGS
+  static const String APP_NAME = 'Food Island';
   static const String MANDATORY = '*';
   static const String WELCOME_TO_RESTAURANT = 'Welcome \nto Tech Island Ltd';
   static const String SIGN_IN_TO_YOUR_ACCOUNT = 'Please provide your mobile number to sign in';

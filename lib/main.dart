@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
+import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/views/apply_promo_code_page.dart';
 import 'package:restaurant_app/views/cart_page.dart';
 import 'package:restaurant_app/views/home_page.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tech Island Restaurant',
+      title: Constants.APP_NAME,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: ColorHelper.PRIMARY_COLOR,

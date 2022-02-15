@@ -241,6 +241,8 @@ class HomeViewModel extends ViewModel {
         baseResponse.data.forEach((element) {
           currentOrderList.add(CurrentOrder.fromJson(element));
         });
+      } else {
+        currentOrderNumber = 0;
       }
     } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);

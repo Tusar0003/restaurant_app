@@ -304,19 +304,25 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   body() {
-    return Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: Constants.SMALL_PADDING,
-              left: Constants.STANDARD_PADDING
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+                top: Constants.SMALL_PADDING,
+                left: Constants.STANDARD_PADDING
+            ),
+            child: viewModel.isRecommendedItemEmpty ?
+            bodyWithoutRecommendedList() :
+            bodyWithRecommendedList(),
           ),
-          child: viewModel.isRecommendedItemEmpty ?
-          bodyWithoutRecommendedList() :
-          bodyWithRecommendedList(),
-        ),
-        viewModel.currentOrderNumber > 0 ? currentOrderSlidingPanel() : Container()
-      ],
+          viewModel.currentOrderNumber > 0 ? currentOrderSlidingPanel() : Container()
+        ],
+      ),
+      onPanDown: (dragStartDetails) {
+        print('onTouch');
+      },
     );
   }
 

@@ -16,6 +16,7 @@ class Constants {
   static const double EXTRA_LARGE_HEIGHT = 300;
   static const double EXTRA_EXTRA_LARGE_HEIGHT = 400;
   static const double RECOMMENDED_IMAGE_HEIGHT = 110;
+  static const double PROFILE_IMAGE_HEIGHT = 140;
 
   // WIDTHS
   static const double EXTRA_EXTRA_SMALL_WIDTH = 15;
@@ -26,6 +27,7 @@ class Constants {
   static const double EXTRA_LARGE_WIDTH = 300;
   static const double EXTRA_EXTRA_LARGE_WIDTH = 750;
   static const double MY_ORDER_IMAGE_SIZE = 80;
+  static const double PROFILE_IMAGE_WIDTH = 140;
 
   // RADIUS
   static const double EXTRA_EXTRA_SMALL_RADIUS = 2;

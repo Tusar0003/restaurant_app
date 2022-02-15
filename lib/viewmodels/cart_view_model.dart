@@ -118,12 +118,13 @@ class CartViewModel extends ViewModel {
 
   totalWithDiscount() {
     CartItem cartItem = cartItemList[0];
-    totalDiscount = (subTotal - totalPrice) + promoDiscount;
     isPromoCodeApplied = cartItem.isPromoCodeApplied == 1 ? true : false;
 
     if (isPromoCodeApplied) {
       promoCode = cartItem.promoCode == null ? '' : cartItem.promoCode!;
       promoDiscount = cartItem.promoCodeAmount == null ? 0 : int.parse(cartItem.promoCodeAmount!);
+      totalDiscount = (subTotal - totalPrice) + promoDiscount;
+      totalPrice -= totalDiscount;
     }
   }
 

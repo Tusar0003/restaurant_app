@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/profile.dart';
@@ -15,6 +19,9 @@ class ProfileViewModel extends ViewModel {
   String mobileNumber = '';
   String email = '';
   String address = '';
+  String profileImagePath = '';
+  XFile? profileImage;
+  bool hasImageChanged = false;
 
   @override
   void init() {
@@ -51,17 +58,31 @@ class ProfileViewModel extends ViewModel {
     notifyListeners();
   }
 
+  setImage(XFile? image) {
+    profileImage = image;
+    hasImageChanged = true;
+    notifyListeners();
+  }
+
   validationProfileData() {
     if (userName.isEmpty) {
       showWarningMessage('User is empty!');
     } else if (mobileNumber.isEmpty) {
       showWarningMessage('Mobile number is empty!');
     } else {
+      var imageBase64 = '';
+
+      if (profileImage != null) {
+        final imageBytes = File(profileImage!.path).readAsBytesSync();
+        imageBase64 = base64Encode(imageBytes);
+      }
+
       Profile profile = Profile(
         mobileNumber: mobileNumber.replaceAll(' ', ''),
         userName: userName,
         email: email,
-        address: address
+        address: address,
+        profileImage: imageBase64
       );
 
       updateProfileData(profile);
@@ -80,6 +101,7 @@ class ProfileViewModel extends ViewModel {
         mobileNumber = profile.mobileNumber ?? '';
         email = profile.email ?? '';
         address = profile.address ?? '';
+        profileImagePath = profile.profileImagePath ?? '';
       } else {
         ToastMessages().showErrorToast(baseResponse.message!);
       }

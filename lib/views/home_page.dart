@@ -36,6 +36,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
 
   late PopupHUD popupHUD;
   bool isPopUpShowed = false;
+  bool isFoodReadyDialogShowed = false;
 
   @override
   Widget render(BuildContext context, HomeViewModel viewModel) {
@@ -47,6 +48,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
       hud: Widgets().progressBar(),
     );
     showPopUpHud();
+    showCompletedDialog();
 
     return WillPopScope(
       onWillPop: () {
@@ -147,6 +149,15 @@ class HomePageView extends StatelessView<HomeViewModel> {
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, AppRoute.NOTIFICATIONS);
+                },
+              ),
+              ListTile(
+                title: const Text(Constants.ABOUT),
+                leading: Icon(
+                    Icons.info_outline_rounded
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoute.ABOUT);
                 },
               ),
               ListTile(
@@ -997,12 +1008,13 @@ class HomePageView extends StatelessView<HomeViewModel> {
                   )
                 ],
               ),
-              onPressed: () {
-                Navigator.pushNamed(
+              onPressed: () async {
+                await Navigator.pushNamed(
                   context,
                   AppRoute.ORDER_DETAILS,
                   arguments: currentOrder
                 );
+                viewModel.getCurrentOrderList();
               },
             ),
           ),
@@ -1010,6 +1022,26 @@ class HomePageView extends StatelessView<HomeViewModel> {
         ],
       )
     );
+  }
+
+  showCompletedDialog() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (viewModel.isFoodReady && !isFoodReadyDialogShowed) {
+        isFoodReadyDialogShowed = true;
+
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          dismissOnTouchOutside: false,
+          title: Constants.PREPARED,
+          desc: 'Your food is ready to serve.\n'
+              'Thanks for staying with us',
+          btnOkText: Constants.OK,
+          btnOkOnPress: () {},
+        ).show();
+      }
+    });
   }
 
   showPopUpHud() {

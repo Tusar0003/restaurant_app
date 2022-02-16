@@ -16,7 +16,8 @@ class HomeViewModel extends ViewModel {
   HomeRepository homeRepository = HomeRepository();
 
   bool isLoading = false;
-  bool isRecommendedItemEmpty = true;
+  bool isRecommendedItemEmpty = false;
+  bool isFoodReady = false;
   int cartItemNumber = 0;
   int currentOrderNumber = 0;
   int categoryIndex = 0;
@@ -88,18 +89,23 @@ class HomeViewModel extends ViewModel {
 
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
+    isFoodReady = false;
 
     if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
-        (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
+        (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
       status = Constants.YOUR_ORDER_IS_PENDING;
     } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
       status = Constants.REJECTED;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 0) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 0) {
       status = Constants.PREPARING_YOUR_FOOD;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
+      status = Constants.YOUR_FOOD_IS_READY;
+      isFoodReady = true;
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
       status = Constants.COMPLETED_ORDER;
     }
 
+    notifyListeners();
     return status;
   }
 

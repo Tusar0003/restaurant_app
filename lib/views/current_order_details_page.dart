@@ -178,6 +178,29 @@ class CurrentOrderDetailsPageView extends StatelessView<CurrentOrderDetailsViewM
           Row(
             children: [
               Text(
+                '${Constants.TOTAL_DISCOUNT}:',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.SMALL_FONT_SIZE,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${Constants.TK_SYMBOL} ${viewModel.currentOrder.totalDiscountAmount}',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: Constants.MEDIUM_FONT_SIZE,
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+          ),
+          Row(
+            children: [
+              Text(
                 '${Constants.TOTAL_PRICE}:',
                 style: GoogleFonts.poppins(
                     color: Colors.black,
@@ -199,7 +222,7 @@ class CurrentOrderDetailsPageView extends StatelessView<CurrentOrderDetailsViewM
           Container(
             width: MediaQuery.of(context).size.width,
             child: Text(
-              'Items',
+              Constants.ITEMS,
               textAlign: TextAlign.start,
               style: GoogleFonts.poppins(
                   color: Colors.black,

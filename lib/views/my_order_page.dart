@@ -60,7 +60,7 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
     return Container(
       height: MediaQuery.of(context).size.height,
       child: ListView.builder(
-        physics: ClampingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: viewModel.orderHistoryList.length,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
+import 'package:restaurant_app/views/about_page.dart';
 import 'package:restaurant_app/views/apply_promo_code_page.dart';
 import 'package:restaurant_app/views/cart_page.dart';
 import 'package:restaurant_app/views/home_page.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         AppRoute.APPLY_PROMO_CODE: (context) => ApplyPromoCodePage(),
         AppRoute.ORDER_DETAILS: (context) => CurrentOrderDetailsPage(),
         AppRoute.SEARCH_ITEM: (context) => SearchItemPage(),
+        AppRoute.ABOUT: (context) => AboutPage(),
       },
     );
   }

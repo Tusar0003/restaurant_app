@@ -10,4 +10,5 @@ class AppRoute {
   static const String APPLY_PROMO_CODE = '/applyPromoCode';
   static const String ORDER_DETAILS = '/orderDetails';
   static const String SEARCH_ITEM = '/searchItem';
+  static const String ABOUT = '/about';
 }

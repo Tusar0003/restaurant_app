@@ -62,6 +62,8 @@ class OrderHistoryViewModel extends ViewModel {
   }
 
   initOrderHistoryList(OrderHistory orderHistory) {
+    orderHistoryList.clear();
+
     orderHistory.pendingData!.forEach((element) {
       orderHistoryList.add(
         OrderData(
@@ -96,6 +98,7 @@ class OrderHistoryViewModel extends ViewModel {
           orderType: element.orderType,
           deliveryCharge: element.deliveryCharge,
           isAccepted: element.isAccepted,
+          isPrepared: element.isPrepared,
           isCompleted: element.isCompleted,
           createdBy: element.createdBy,
           createdTime: element.createdTime,
@@ -111,13 +114,15 @@ class OrderHistoryViewModel extends ViewModel {
     String status = '';
 
     if ((orderData.isAccepted == null || orderData.isAccepted == 0) &&
-        (orderData.isCompleted == null || orderData.isCompleted == 0)) {
+        (orderData.isPrepared == null || orderData.isPrepared == 0)) {
       status = Constants.PENDING;
     } else if (orderData.isAccepted == 0 && orderData.isCompleted == 1) {
       status = Constants.REJECTED;
-    } else if (orderData.isAccepted == 1 && orderData.isCompleted == 0) {
+    } else if (orderData.isAccepted == 1 && orderData.isPrepared == 0) {
       status = Constants.ACCEPTED;
-    } else if (orderData.isAccepted == 1 && orderData.isCompleted == 1) {
+    } else if (orderData.isAccepted == 1 && orderData.isPrepared == 1 && orderData.isCompleted == 0) {
+      status = Constants.PREPARED;
+    } else if (orderData.isAccepted == 1 && orderData.isPrepared == 1 && orderData.isCompleted == 1) {
       status = Constants.COMPLETED;
     }
 
@@ -133,16 +138,19 @@ class OrderHistoryViewModel extends ViewModel {
     String lottie = '';
 
     if ((orderData.isAccepted == null || orderData.isAccepted == 0) &&
-        (orderData.isCompleted == null || orderData.isCompleted == 0)) {
+        (orderData.isPrepared == null || orderData.isPrepared == 0)) {
       lottie = 'assets/lotties/waiting.json';
       orderStatus = Constants.YOUR_ORDER_IS_PENDING;
     } else if (orderData.isAccepted == 0 && orderData.isCompleted == 1) {
       lottie = 'assets/lotties/cancelled.json';
       orderStatus = Constants.REJECTED_ORDER;
-    } else if (orderData.isAccepted == 1 && orderData.isCompleted == 0) {
+    } else if (orderData.isAccepted == 1 && orderData.isPrepared == 0) {
       lottie = 'assets/lotties/preparing_food.json';
       orderStatus = Constants.PREPARING_YOUR_FOOD;
-    } else if (orderData.isAccepted == 1 && orderData.isCompleted == 1) {
+    } else if (orderData.isAccepted == 1 && orderData.isPrepared == 1 && orderData.isCompleted == 0) {
+      lottie = 'assets/lotties/prepared.json';
+      orderStatus = Constants.YOUR_FOOD_IS_READY;
+    } else if (orderData.isAccepted == 1 && orderData.isPrepared == 1 && orderData.isCompleted == 1) {
       lottie = 'assets/lotties/completed.json';
       orderStatus = Constants.COMPLETED_ORDER;
     }

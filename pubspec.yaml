@@ -45,6 +45,7 @@ dependencies:
   lottie: ^1.2.1
   mask_text_input_formatter: ^2.1.0
   image_picker: ^0.8.0+1
+  package_info_plus: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
     - assets/lotties/waiting.json
     - assets/lotties/completed.json
     - assets/lotties/cancelled.json
+    - assets/lotties/prepared.json
     - assets/images/empty.png
     - assets/images/order.png
 

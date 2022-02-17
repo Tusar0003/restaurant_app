@@ -40,7 +40,7 @@ class Widgets {
     );
   }
 
-  noItem(BuildContext context) {
+  noData(BuildContext context) {
     double margin = MediaQuery.of(context).size.height / 5;
 
     return ListView(
@@ -62,7 +62,7 @@ class Widgets {
                   height: Constants.STANDARD_PADDING,
                 ),
                 Text(
-                  'No data found!',
+                  'Nothing to show!',
                   style: GoogleFonts.poppins(),
                 ),
                 Text(

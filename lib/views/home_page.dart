@@ -510,18 +510,20 @@ class HomePageView extends StatelessView<HomeViewModel> {
                             ),
                           )
                         ),
-                        SizedBox(
-                          width: Constants.SMALL_PADDING,
-                        ),
                         Visibility(
                           visible: viewModel.hasDiscount(item),
-                          child: Text(
-                            '${viewModel.getDiscountPrice(item)} TK',
-                            style: GoogleFonts.poppins(
-                              fontSize: Constants.SMALL_FONT_SIZE,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                            )
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: Constants.SMALL_PADDING
+                            ),
+                            child: Text(
+                                '${viewModel.getDiscountPrice(item)} TK',
+                                style: GoogleFonts.poppins(
+                                  fontSize: Constants.SMALL_FONT_SIZE,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black,
+                                )
+                            ),
                           )
                         )
                       ],
@@ -716,18 +718,20 @@ class HomePageView extends StatelessView<HomeViewModel> {
                                       ),
                                     )
                                 ),
-                                SizedBox(
-                                  width: Constants.SMALL_PADDING,
-                                ),
                                 Visibility(
                                     visible: viewModel.hasDiscount(item),
-                                    child: Text(
-                                        '${viewModel.getDiscountPrice(item)} TK',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: Constants.SMALL_FONT_SIZE,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        left: Constants.SMALL_PADDING,
+                                      ),
+                                      child: Text(
+                                          '${viewModel.getDiscountPrice(item)} TK',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: Constants.SMALL_FONT_SIZE,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                          )
+                                      ),
                                     )
                                 )
                               ],
@@ -824,6 +828,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
       ),
       maxHeight: Constants.EXTRA_EXTRA_LARGE_HEIGHT,
       minHeight: Constants.EXTRA_SMALL_HEIGHT,
+      backdropEnabled: true,
       collapsed: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -1025,7 +1030,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   showCompletedDialog() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    Future.delayed(Duration.zero, () async {
       if (viewModel.isFoodReady && !isFoodReadyDialogShowed) {
         isFoodReadyDialogShowed = true;
 
@@ -1035,7 +1040,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           animType: AnimType.BOTTOMSLIDE,
           dismissOnTouchOutside: false,
           title: Constants.PREPARED,
-          desc: 'Your food is ready to serve.\n'
+          desc: 'Your ${viewModel.preparedItemName} is ready to serve.\n'
               'Thanks for staying with us',
           btnOkText: Constants.OK,
           btnOkOnPress: () {},

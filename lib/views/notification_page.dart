@@ -50,7 +50,7 @@ class NotificationPageView extends StatelessView<NotificationViewModel> {
         onRefresh: () async {
           viewModel.getNotificationList();
         },
-        child: viewModel.isNotificationDataFound ? notificationListView() : Widgets().noItem(context),
+        child: viewModel.isNotificationDataFound ? notificationListView() : Widgets().noData(context),
       ),
     );
   }

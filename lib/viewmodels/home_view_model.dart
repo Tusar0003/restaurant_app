@@ -28,6 +28,7 @@ class HomeViewModel extends ViewModel {
   String currentOrderTotalDiscount = '';
   String currentOrderDeliveryCharge = '';
   String currentOrderTotalPrice = '';
+  StringBuffer preparedItemName = StringBuffer('');
 
   List<Item> recommendedItemList = [];
   List<Category> categoryList = [];
@@ -38,11 +39,11 @@ class HomeViewModel extends ViewModel {
   @override
   Future<void> init() async {
     showProgressBar();
-    getCartItemNumber();
-    getCurrentOrderList();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
+    getCartItemNumber();
+    getCurrentOrderList();
     hideProgressBar();
   }
 
@@ -89,7 +90,6 @@ class HomeViewModel extends ViewModel {
 
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
-    isFoodReady = false;
 
     if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
         (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
@@ -100,13 +100,28 @@ class HomeViewModel extends ViewModel {
       status = Constants.PREPARING_YOUR_FOOD;
     } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
       status = Constants.YOUR_FOOD_IS_READY;
-      isFoodReady = true;
+      setPreparedItemNames(currentOrder);
     } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
       status = Constants.COMPLETED_ORDER;
     }
 
-    notifyListeners();
     return status;
+  }
+
+  setPreparedItemNames(CurrentOrder currentOrder) {
+    preparedItemName.clear();
+    isFoodReady = false;
+
+    currentOrder.items!.forEach((element) {
+      if (preparedItemName.isNotEmpty) {
+        preparedItemName.write(', ');
+      }
+
+      preparedItemName.write(element.itemName);
+    });
+
+    isFoodReady = true;
+    notifyListeners();
   }
 
   getRecommendedItemList() async {

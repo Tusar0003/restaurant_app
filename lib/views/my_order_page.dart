@@ -51,7 +51,7 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
         onRefresh: () async {
           viewModel.getOrderList();
         },
-        child: viewModel.isOrderDataFound ? orderListView() : Widgets().noItem(context),
+        child: viewModel.isOrderDataFound ? orderListView() : Widgets().noData(context),
       ),
     );
   }
@@ -347,6 +347,29 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
             Row(
               children: [
                 Text(
+                  '${Constants.TOTAL_DISCOUNT}:',
+                  style: GoogleFonts.poppins(
+                      color: Colors.black,
+                      fontSize: Constants.SMALL_FONT_SIZE,
+                      fontWeight: FontWeight.w600
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  '${Constants.TK_SYMBOL} ${viewModel.orderData.totalDiscountAmount}',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: Constants.MEDIUM_FONT_SIZE,
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
+            ),
+            Row(
+              children: [
+                Text(
                   '${Constants.TOTAL_PRICE}:',
                   style: GoogleFonts.poppins(
                       color: Colors.black,
@@ -416,7 +439,7 @@ class MyOrderPageView extends StatelessView<OrderHistoryViewModel> {
         ),
         Spacer(),
         Text(
-          item.subTotalPrice.toString(),
+          '${Constants.TK_SYMBOL} ${item.subTotalPrice}',
           style: GoogleFonts.poppins(
             color: Colors.black,
             fontSize: Constants.MEDIUM_FONT_SIZE,

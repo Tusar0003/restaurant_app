@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/auth_view_model.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
 
 class SignIn extends StatelessWidget {
@@ -24,14 +27,22 @@ class SignInView extends StatelessView<AuthViewModel> {
   late BuildContext context;
   late AuthViewModel viewModel;
 
+  var maskFormatter = MaskTextInputFormatter(
+      mask: '+88 ### ### #####',
+      type: MaskAutoCompletionType.lazy
+  );
+
   @override
   Widget render(BuildContext context, viewModel) {
-
     this.context = context;
     this.viewModel = viewModel;
 
-    return Scaffold(
-      body: body(),
+    return WidgetHUD(
+      showHUD: viewModel.isLoading,
+      hud: Widgets().progressBar(),
+      builder: (context) => Scaffold(
+        body: body(),
+      )
     );
   }
 
@@ -87,7 +98,7 @@ class SignInView extends StatelessView<AuthViewModel> {
                 SizedBox(
                   height: Constants.LARGE_PADDING,
                 ),
-                signInButton(),
+                sendOtpButton(),
               ],
             ),
           )
@@ -97,11 +108,6 @@ class SignInView extends StatelessView<AuthViewModel> {
   }
 
   mobileNumberField() {
-    // var maskFormatter = MaskTextInputFormatter(
-    //     mask: '+88 ### ### #####',
-    //     filter: {"#": RegExp(r'[0-9]')}
-    // );
-
     return Container(
       width: MediaQuery.of(context).size.width,
       alignment: Alignment.center,
@@ -112,12 +118,12 @@ class SignInView extends StatelessView<AuthViewModel> {
           ),
           borderRadius: BorderRadius.circular(Constants.EXTRA_SMALL_RADIUS)
       ),
-      child: TextField(
-        // controller: phoneNumberTextController,
-        // inputFormatters: [maskFormatter, LengthLimitingTextInputFormatter(18)],
+      child: TextFormField(
+        initialValue: viewModel.mobileNumber,
+        inputFormatters: [maskFormatter],
         textAlign: TextAlign.start,
         cursorColor: Colors.black54,
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.phone,
         style: GoogleFonts.poppins(
           color: Colors.black,
           fontSize: Constants.MEDIUM_FONT_SIZE,
@@ -137,15 +143,13 @@ class SignInView extends StatelessView<AuthViewModel> {
             contentPadding: EdgeInsets.all(Constants.MEDIUM_PADDING)
         ),
         onChanged: (String newVal) {
-//          if (newVal.length > 3) {
-//            _phoneNumberTextController.text = _phoneNumberTextController.text + " ";
-//          }
+          viewModel.setMobileNumber(newVal);
         },
       ),
     );
   }
 
-  signInButton() {
+  sendOtpButton() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: Constants.EXTRA_SMALL_HEIGHT,
@@ -166,11 +170,8 @@ class SignInView extends StatelessView<AuthViewModel> {
               ),
             )
         ),
-        onPressed: () {
-          // String number = phoneNumberTextController.text.toString();
-          // Provider.of<AuthViewModel>(context, listen: false).checkLogIn(number.replaceAll(' ', ''));
-
-          Navigator.pushNamed(context, AppRoute.VERIFICATION);
+        onPressed: () async {
+          viewModel.sendOtp();
         },
       ),
     );

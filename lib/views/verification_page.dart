@@ -1,41 +1,43 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
-import 'package:restaurant_app/viewmodels/auth_view_model.dart';
+import 'package:restaurant_app/viewmodels/verification_view_model.dart';
+import 'package:restaurant_app/widgets/widgets.dart';
 
-
-late BuildContext buildContext;
 
 class Verification extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    buildContext = context;
-
     return MVVM(
       view: (_, __) => VerificationView(),
-      viewModel: AuthViewModel()
+      viewModel: VerificationViewModel()
     );
   }
 }
 
 // ignore: must_be_immutable
-class VerificationView extends StatelessView<AuthViewModel> {
+class VerificationView extends StatelessView<VerificationViewModel> {
 
-  late AuthViewModel viewModel;
+  late BuildContext context;
+  late VerificationViewModel viewModel;
 
   @override
-  Widget render(BuildContext context, viewModel) {
-
+  Widget render(BuildContext context, VerificationViewModel viewModel) {
+    this.context = context;
     this.viewModel = viewModel;
 
-    return Scaffold(
-      body: body(),
+    return WidgetHUD(
+      showHUD: viewModel.isLoading,
+      hud: Widgets().progressBar(),
+      builder: (context) => Scaffold(
+        body: body(),
+      )
     );
   }
 
@@ -51,7 +53,7 @@ class VerificationView extends StatelessView<AuthViewModel> {
             child: Image(
               image: AssetImage('assets/images/sign_in_page_image.jpg'),
               height: Constants.EXTRA_LARGE_HEIGHT,
-              width: MediaQuery.of(buildContext).size.width,
+              width: MediaQuery.of(context).size.width,
               fit: BoxFit.fill,
             ),
           ),
@@ -95,9 +97,9 @@ class VerificationView extends StatelessView<AuthViewModel> {
 
   pinCodeTextField() {
     return Container(
-      width: MediaQuery.of(buildContext).size.width,
+      width: MediaQuery.of(context).size.width,
       child: PinCodeTextField(
-        appContext: buildContext,
+        appContext: context,
         keyboardType: TextInputType.number,
         length: 6,
         obscureText: false,
@@ -119,18 +121,11 @@ class VerificationView extends StatelessView<AuthViewModel> {
         backgroundColor: Colors.transparent,
         enableActiveFill: true,
         // controller: otpTextEditingController,
-        onCompleted: (value) {
-          print("Completed: $value");
-          // otp = value;
-        },
+        onCompleted: (value) {},
         onChanged: (value) {
-          print(value);
-//        setState(() {
-//          currentText = value;
-//        });
+          viewModel.setOtp(value);
         },
         beforeTextPaste: (text) {
-//        print("Allowing to paste $text");
           return true;
         },
       ),
@@ -139,7 +134,7 @@ class VerificationView extends StatelessView<AuthViewModel> {
 
   verifyButton() {
     return Container(
-      width: MediaQuery.of(buildContext).size.width,
+      width: MediaQuery.of(context).size.width,
       height: Constants.EXTRA_SMALL_HEIGHT,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -159,10 +154,7 @@ class VerificationView extends StatelessView<AuthViewModel> {
             )
         ),
         onPressed: () {
-          // String number = phoneNumberTextController.text.toString();
-          // Provider.of<AuthViewModel>(context, listen: false).checkLogIn(number.replaceAll(' ', ''));
-
-          Navigator.pushNamed(buildContext, AppRoute.HOME);
+          viewModel.verifyMobileNumber();
         },
       ),
     );

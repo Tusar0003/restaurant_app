@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:prefs/prefs.dart';
 import 'package:restaurant_app/models/add_to_cart.dart';
@@ -7,6 +10,7 @@ import 'package:restaurant_app/models/current_order.dart';
 import 'package:restaurant_app/models/item.dart';
 import 'package:restaurant_app/repositories/cart_repository.dart';
 import 'package:restaurant_app/repositories/home_repository.dart';
+import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/utils/toast_messages.dart';
 
@@ -37,6 +41,8 @@ class HomeViewModel extends ViewModel {
   @override
   Future<void> init() async {
     showProgressBar();
+    listenToMessage();
+    getFirebaseToken();
     getCartItemNumber();
     getCurrentOrderList();
     await getRecommendedItemList();
@@ -247,5 +253,30 @@ class HomeViewModel extends ViewModel {
     }
 
     notifyListeners();
+  }
+
+  getFirebaseToken() {
+    homeRepository.getFirebaseToken();
+  }
+
+  signOut() async {
+    showProgressBar();
+    await FirebaseAuth.instance.signOut();
+    Navigator.popUntil(context, ModalRoute.withName(AppRoute.SIGN_IN));
+    hideProgressBar();
+  }
+
+  listenToMessage() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+
+        RemoteNotification notification = message.notification!;
+        AndroidNotification android = message.notification!.android!;
+      }
+    });
   }
 }

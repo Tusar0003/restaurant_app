@@ -120,10 +120,13 @@ class Constants {
   static const String COMPLETED = 'Completed';
   static const String REJECTED = 'Rejected';
   static const String OFF = 'OFF';
+  static const String VERIFICATION_ID = 'Verification Id';
   static const String TK_SYMBOL = '\u09F3';
   static const String COPYRIGHTS_SYMBOL = '\u00a9';
 
   static const int TIMEOUT_LIMIT = 20;
+  static const String WEB_PUSH_CERTIFICATE = 'BCPBuJteK91Z56Q9XHvIvQPovQ8DPvTLdIdV1'
+      'Gaephr56vou57dlvh1W2wRRBeuxZ8iMgT0XtwlnVLdtoWQCieA';
 
   static const String DEMO_PIZZA_LINK = 'https://cdn.pixabay.com/photo/2017/'
       '12/09/08/18/pizza-3007395__480.jpg';

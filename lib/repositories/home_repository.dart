@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:prefs/prefs.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant_app/models/base_json_response.dart';
@@ -196,5 +197,14 @@ class HomeRepository {
     } catch (e) {
       return BaseResponse(false, Constants.EXCEPTION_MESSAGE, null);
     }
+  }
+
+  getFirebaseToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // use the returned token to send messages to users from your custom server
+    String? token = await messaging.getToken(
+      vapidKey: Constants.WEB_PUSH_CERTIFICATE,
+    );
   }
 }

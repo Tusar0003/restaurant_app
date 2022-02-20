@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hud/flutter_hud.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,6 +55,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           panelController.close();
           return Future.value(false);
         } else {
+          SystemNavigator.pop();
           return Future.value(true);
         }
       },
@@ -155,7 +157,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                     Icons.exit_to_app
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  viewModel.signOut();
                 },
               ),
             ],

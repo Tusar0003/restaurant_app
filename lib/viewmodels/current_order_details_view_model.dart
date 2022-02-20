@@ -34,16 +34,19 @@ class CurrentOrderDetailsViewModel extends ViewModel {
     String lottie = '';
 
     if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
-        (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
+        (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
       lottie = 'assets/lotties/waiting.json';
       orderStatus = Constants.YOUR_ORDER_IS_PENDING;
     } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
       lottie = 'assets/lotties/cancelled.json';
       orderStatus = Constants.REJECTED_ORDER;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 0) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 0) {
       lottie = 'assets/lotties/preparing_food.json';
       orderStatus = Constants.PREPARING_YOUR_FOOD;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 0) {
+      lottie = 'assets/lotties/prepared.json';
+      orderStatus = Constants.YOUR_FOOD_IS_READY;
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
       lottie = 'assets/lotties/completed.json';
       orderStatus = Constants.COMPLETED_ORDER;
     }
@@ -55,13 +58,15 @@ class CurrentOrderDetailsViewModel extends ViewModel {
     String status = '';
 
     if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
-        (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
+        (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
       status = Constants.PENDING;
     } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
       status = Constants.REJECTED;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 0) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 0) {
       status = Constants.ACCEPTED;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 0) {
+      status = Constants.PREPARED;
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
       status = Constants.COMPLETED;
     }
 

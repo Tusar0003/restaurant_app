@@ -9,6 +9,7 @@ class CurrentOrder {
   String? orderType;
   int? deliveryCharge;
   int? isAccepted;
+  int? isPrepared;
   int? isCompleted;
   String? createdBy;
   String? createdTime;
@@ -27,6 +28,7 @@ class CurrentOrder {
     this.orderType,
     this.deliveryCharge,
     this.isAccepted,
+    this.isPrepared,
     this.isCompleted,
     this.createdBy,
     this.createdTime,
@@ -46,6 +48,7 @@ class CurrentOrder {
     orderType = json['order_type'];
     deliveryCharge = json['delivery_charge'];
     isAccepted = json['is_accepted'];
+    isPrepared = json['is_food_prepared'];
     isCompleted = json['is_completed'];
     createdBy = json['created_by'];
     createdTime = json['created_time'];

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pmvvm/pmvvm.dart';
+import 'package:restaurant_app/utils/api_services.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/profile_view_model.dart';
@@ -100,14 +104,14 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
 
   header() {
     return Container(
-      height: 230,
+      height: 180,
       child: Stack(
         children: [
           Align(
             alignment: Alignment.topCenter,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: Constants.MEDIUM_HEIGHT,
+              height: 110,
               decoration: BoxDecoration(
                   color: ColorHelper.PRIMARY_COLOR,
                   borderRadius: BorderRadius.only(
@@ -125,23 +129,7 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(Constants.EXTRA_LARGE_RADIUS),
-                    child: FadeInImage(
-                      image: NetworkImage(
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
-                      ),
-                      placeholder: AssetImage('assets/images/place_holder.jpg'),
-                      imageErrorBuilder: (context, error, stackTrace) {
-                        return Image(
-                          image: AssetImage('assets/images/place_holder.jpg'),
-                          fit: BoxFit.fill,
-                          height: Constants.MEDIUM_HEIGHT,
-                          width: Constants.MEDIUM_WIDTH,
-                        );
-                      },
-                      fit: BoxFit.fill,
-                      height: Constants.MEDIUM_HEIGHT,
-                      width: Constants.MEDIUM_WIDTH,
-                    ),
+                    child: viewModel.hasImageChanged ? imageFromDevice() : imageFromServer(),
                   ),
                   Positioned(
                       top: Constants.EXTRA_SMALL_PADDING,
@@ -151,7 +139,7 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
                             backgroundColor: ColorHelper.PRIMARY_COLOR,
                             shape: CircleBorder(
                                 side: BorderSide(
-                                    color: ColorHelper.PRIMARY_DARK_COLOR
+                                    color: Colors.white
                                 )
                             ),
                           ),
@@ -159,7 +147,9 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
                             Icons.camera_alt_outlined,
                             color: Colors.black,
                           ),
-                          onPressed: () {}
+                          onPressed: () {
+                            getImageFile();
+                          }
                       )
                   )
                 ],
@@ -408,5 +398,45 @@ class MyProfilePageView extends StatelessView<ProfileViewModel> {
         },
       ),
     );
+  }
+
+  imageFromServer() {
+    return FadeInImage(
+      image: NetworkImage(
+        ApiServices.BASE_URL + viewModel.profileImagePath,
+      ),
+      placeholder: AssetImage('assets/images/place_holder.jpg'),
+      imageErrorBuilder: (context, error, stackTrace) {
+        return Image(
+          image: AssetImage('assets/images/place_holder.jpg'),
+          fit: BoxFit.fill,
+          height: Constants.PROFILE_IMAGE_HEIGHT,
+          width: Constants.PROFILE_IMAGE_WIDTH,
+        );
+      },
+      fit: BoxFit.fill,
+      height: Constants.PROFILE_IMAGE_HEIGHT,
+      width: Constants.PROFILE_IMAGE_WIDTH,
+    );
+  }
+
+  imageFromDevice() {
+    return Image(
+      fit: BoxFit.fill,
+      height: Constants.PROFILE_IMAGE_HEIGHT,
+      width: Constants.PROFILE_IMAGE_WIDTH,
+      image: viewModel.profileImage == null
+          ? AssetImage('assets/images/place_holder.jpg') as ImageProvider
+          : FileImage(File(viewModel.profileImage!.path)),
+    );
+  }
+
+  getImageFile() async {
+    final ImagePicker imagePicker = ImagePicker();
+    final XFile? image = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 25
+    );
+    viewModel.setImage(image);
   }
 }

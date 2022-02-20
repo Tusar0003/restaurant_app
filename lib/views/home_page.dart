@@ -37,6 +37,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
 
   late PopupHUD popupHUD;
   bool isPopUpShowed = false;
+  bool isFoodReadyDialogShowed = false;
 
   @override
   Widget render(BuildContext context, HomeViewModel viewModel) {
@@ -48,6 +49,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
       hud: Widgets().progressBar(),
     );
     showPopUpHud();
+    showCompletedDialog();
 
     return WillPopScope(
       onWillPop: () {
@@ -149,6 +151,15 @@ class HomePageView extends StatelessView<HomeViewModel> {
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, AppRoute.NOTIFICATIONS);
+                },
+              ),
+              ListTile(
+                title: const Text(Constants.ABOUT),
+                leading: Icon(
+                    Icons.info_outline_rounded
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoute.ABOUT);
                 },
               ),
               ListTile(
@@ -306,19 +317,25 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   body() {
-    return Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: Constants.SMALL_PADDING,
-              left: Constants.STANDARD_PADDING
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+                top: Constants.SMALL_PADDING,
+                left: Constants.STANDARD_PADDING
+            ),
+            child: viewModel.isRecommendedItemEmpty ?
+            bodyWithoutRecommendedList() :
+            bodyWithRecommendedList(),
           ),
-          child: viewModel.isRecommendedItemEmpty ?
-          bodyWithoutRecommendedList() :
-          bodyWithRecommendedList(),
-        ),
-        viewModel.currentOrderNumber > 0 ? currentOrderSlidingPanel() : Container()
-      ],
+          viewModel.currentOrderNumber > 0 ? currentOrderSlidingPanel() : Container()
+        ],
+      ),
+      onPanDown: (dragStartDetails) {
+        print('onTouch');
+      },
     );
   }
 
@@ -495,18 +512,20 @@ class HomePageView extends StatelessView<HomeViewModel> {
                             ),
                           )
                         ),
-                        SizedBox(
-                          width: Constants.SMALL_PADDING,
-                        ),
                         Visibility(
                           visible: viewModel.hasDiscount(item),
-                          child: Text(
-                            '${viewModel.getDiscountPrice(item)} TK',
-                            style: GoogleFonts.poppins(
-                              fontSize: Constants.SMALL_FONT_SIZE,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                            )
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: Constants.SMALL_PADDING
+                            ),
+                            child: Text(
+                                '${viewModel.getDiscountPrice(item)} TK',
+                                style: GoogleFonts.poppins(
+                                  fontSize: Constants.SMALL_FONT_SIZE,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black,
+                                )
+                            ),
                           )
                         )
                       ],
@@ -701,18 +720,20 @@ class HomePageView extends StatelessView<HomeViewModel> {
                                       ),
                                     )
                                 ),
-                                SizedBox(
-                                  width: Constants.SMALL_PADDING,
-                                ),
                                 Visibility(
                                     visible: viewModel.hasDiscount(item),
-                                    child: Text(
-                                        '${viewModel.getDiscountPrice(item)} TK',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: Constants.SMALL_FONT_SIZE,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        left: Constants.SMALL_PADDING,
+                                      ),
+                                      child: Text(
+                                          '${viewModel.getDiscountPrice(item)} TK',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: Constants.SMALL_FONT_SIZE,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                          )
+                                      ),
                                     )
                                 )
                               ],
@@ -809,6 +830,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
       ),
       maxHeight: Constants.EXTRA_EXTRA_LARGE_HEIGHT,
       minHeight: Constants.EXTRA_SMALL_HEIGHT,
+      backdropEnabled: true,
       collapsed: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -993,12 +1015,13 @@ class HomePageView extends StatelessView<HomeViewModel> {
                   )
                 ],
               ),
-              onPressed: () {
-                Navigator.pushNamed(
+              onPressed: () async {
+                await Navigator.pushNamed(
                   context,
                   AppRoute.ORDER_DETAILS,
                   arguments: currentOrder
                 );
+                viewModel.getCurrentOrderList();
               },
             ),
           ),
@@ -1006,6 +1029,26 @@ class HomePageView extends StatelessView<HomeViewModel> {
         ],
       )
     );
+  }
+
+  showCompletedDialog() {
+    Future.delayed(Duration.zero, () async {
+      if (viewModel.isFoodReady && !isFoodReadyDialogShowed) {
+        isFoodReadyDialogShowed = true;
+
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          dismissOnTouchOutside: false,
+          title: Constants.PREPARED,
+          desc: 'Your ${viewModel.preparedItemName} is ready to serve.\n'
+              'Thanks for staying with us',
+          btnOkText: Constants.OK,
+          btnOkOnPress: () {},
+        ).show();
+      }
+    });
   }
 
   showPopUpHud() {

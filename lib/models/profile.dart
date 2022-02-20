@@ -17,6 +17,7 @@ class Profile {
         this.email,
         this.address,
         this.profileImagePath,
+        this.profileImage,
         this.isActive,
         this.createdBy,
         this.createdTime,

@@ -20,7 +20,8 @@ class HomeViewModel extends ViewModel {
   HomeRepository homeRepository = HomeRepository();
 
   bool isLoading = false;
-  bool isRecommendedItemEmpty = true;
+  bool isRecommendedItemEmpty = false;
+  bool isFoodReady = false;
   int cartItemNumber = 0;
   int currentOrderNumber = 0;
   int categoryIndex = 0;
@@ -31,6 +32,7 @@ class HomeViewModel extends ViewModel {
   String currentOrderTotalDiscount = '';
   String currentOrderDeliveryCharge = '';
   String currentOrderTotalPrice = '';
+  StringBuffer preparedItemName = StringBuffer('');
 
   List<Item> recommendedItemList = [];
   List<Category> categoryList = [];
@@ -43,11 +45,11 @@ class HomeViewModel extends ViewModel {
     showProgressBar();
     listenToMessage();
     getFirebaseToken();
-    getCartItemNumber();
-    getCurrentOrderList();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
+    getCartItemNumber();
+    getCurrentOrderList();
     hideProgressBar();
   }
 
@@ -96,17 +98,36 @@ class HomeViewModel extends ViewModel {
     String status = '';
 
     if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
-        (currentOrder.isCompleted == null || currentOrder.isCompleted == 0)) {
+        (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
       status = Constants.YOUR_ORDER_IS_PENDING;
     } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
       status = Constants.REJECTED;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 0) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 0) {
       status = Constants.PREPARING_YOUR_FOOD;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isCompleted == 1) {
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
+      status = Constants.YOUR_FOOD_IS_READY;
+      setPreparedItemNames(currentOrder);
+    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
       status = Constants.COMPLETED_ORDER;
     }
 
     return status;
+  }
+
+  setPreparedItemNames(CurrentOrder currentOrder) {
+    preparedItemName.clear();
+    isFoodReady = false;
+
+    currentOrder.items!.forEach((element) {
+      if (preparedItemName.isNotEmpty) {
+        preparedItemName.write(', ');
+      }
+
+      preparedItemName.write(element.itemName);
+    });
+
+    isFoodReady = true;
+    notifyListeners();
   }
 
   getRecommendedItemList() async {
@@ -247,6 +268,8 @@ class HomeViewModel extends ViewModel {
         baseResponse.data.forEach((element) {
           currentOrderList.add(CurrentOrder.fromJson(element));
         });
+      } else {
+        currentOrderNumber = 0;
       }
     } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);

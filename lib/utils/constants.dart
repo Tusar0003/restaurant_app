@@ -16,6 +16,7 @@ class Constants {
   static const double EXTRA_LARGE_HEIGHT = 300;
   static const double EXTRA_EXTRA_LARGE_HEIGHT = 400;
   static const double RECOMMENDED_IMAGE_HEIGHT = 110;
+  static const double PROFILE_IMAGE_HEIGHT = 140;
 
   // WIDTHS
   static const double EXTRA_EXTRA_SMALL_WIDTH = 15;
@@ -26,6 +27,7 @@ class Constants {
   static const double EXTRA_LARGE_WIDTH = 300;
   static const double EXTRA_EXTRA_LARGE_WIDTH = 750;
   static const double MY_ORDER_IMAGE_SIZE = 80;
+  static const double PROFILE_IMAGE_WIDTH = 140;
 
   // RADIUS
   static const double EXTRA_EXTRA_SMALL_RADIUS = 2;
@@ -95,6 +97,7 @@ class Constants {
   static const String UPDATE = 'Update';
   static const String QUANTITY = 'Quantity';
   static const String UNIT_PRICE = 'Unit Price';
+  static const String TOTAL_DISCOUNT = 'Total Discount';
   static const String TOTAL_PRICE = 'Total Price';
   static const String STATUS = 'Status';
   static const String EXCEPTION_MESSAGE = 'Something went wrong! Please try again.';
@@ -111,15 +114,20 @@ class Constants {
   static const String PROMO_CODE = 'Promo Code';
   static const String YOUR_ORDER_IS_PENDING = 'Your Order is Pending';
   static const String PREPARING_YOUR_FOOD = 'Preparing Your Food';
+  static const String YOUR_FOOD_IS_READY = 'Your Food is Ready';
   static const String COMPLETED_ORDER = 'Order is Completed';
   static const String REJECTED_ORDER = 'Order is Rejected';
   static const String SEARCH = 'Search';
   static const String SEARCH_ITEMS = 'Search Items';
+  static const String ITEMS = 'Items';
   static const String ACCEPTED = 'Accepted';
   static const String PENDING = 'Pending';
+  static const String PREPARED = 'Prepared';
   static const String COMPLETED = 'Completed';
   static const String REJECTED = 'Rejected';
   static const String OFF = 'OFF';
+  static const String ABOUT = 'About';
+  static const String VERSION = 'Version';
   static const String VERIFICATION_ID = 'Verification Id';
   static const String TK_SYMBOL = '\u09F3';
   static const String COPYRIGHTS_SYMBOL = '\u00a9';

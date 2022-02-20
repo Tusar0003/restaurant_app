@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:prefs/prefs.dart';
 import 'package:restaurant_app/models/add_to_cart.dart';
@@ -8,10 +9,12 @@ import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/category.dart';
 import 'package:restaurant_app/models/current_order.dart';
 import 'package:restaurant_app/models/item.dart';
+import 'package:restaurant_app/repositories/auth_repository.dart';
 import 'package:restaurant_app/repositories/cart_repository.dart';
 import 'package:restaurant_app/repositories/home_repository.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/constants.dart';
+import 'package:restaurant_app/utils/notification_service.dart';
 import 'package:restaurant_app/utils/toast_messages.dart';
 
 
@@ -25,6 +28,8 @@ class HomeViewModel extends ViewModel {
   int cartItemNumber = 0;
   int currentOrderNumber = 0;
   int categoryIndex = 0;
+  String userName = '';
+  String mobileNumber = '';
   String categoryCode = '';
   String currentOrderNo = '';
   String currentOrderType = '';
@@ -43,13 +48,15 @@ class HomeViewModel extends ViewModel {
   @override
   Future<void> init() async {
     showProgressBar();
-    listenToMessage();
-    getFirebaseToken();
+    await AuthRepository().getToken();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
     getCartItemNumber();
     getCurrentOrderList();
+    getUserInfo();
+    getFirebaseToken();
+    NotificationService().listenToMessage();
     hideProgressBar();
   }
 
@@ -60,6 +67,12 @@ class HomeViewModel extends ViewModel {
 
   hideProgressBar() {
     isLoading = false;
+    notifyListeners();
+  }
+
+  getUserInfo() {
+    mobileNumber = Prefs.getString(Constants.MOBILE_NUMBER, 'N/A');
+    userName = Prefs.getString(Constants.USER_NAME, 'N/A');
     notifyListeners();
   }
 
@@ -287,19 +300,5 @@ class HomeViewModel extends ViewModel {
     await FirebaseAuth.instance.signOut();
     Navigator.popUntil(context, ModalRoute.withName(AppRoute.SIGN_IN));
     hideProgressBar();
-  }
-
-  listenToMessage() async {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-
-        RemoteNotification notification = message.notification!;
-        AndroidNotification android = message.notification!.android!;
-      }
-    });
   }
 }

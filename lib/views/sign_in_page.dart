@@ -4,7 +4,6 @@ import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pmvvm/pmvvm.dart';
-import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/viewmodels/auth_view_model.dart';
@@ -33,7 +32,7 @@ class SignInView extends StatelessView<AuthViewModel> {
   );
 
   @override
-  Widget render(BuildContext context, viewModel) {
+  Widget render(BuildContext context, AuthViewModel viewModel) {
     this.context = context;
     this.viewModel = viewModel;
 

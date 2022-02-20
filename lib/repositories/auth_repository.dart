@@ -37,9 +37,7 @@ class AuthRepository {
       var baseJsonResponse = BaseJsonResponse.fromJson(jsonResponse);
 
       if (response.statusCode == 200 && baseJsonResponse.isSuccess) {
-        // await Prefs.init();
         await Prefs.setString(Constants.TOKEN, baseJsonResponse.data);
-        await Prefs.setString(Constants.MOBILE_NUMBER, '+8801521234567');
 
         return BaseResponse(baseJsonResponse.isSuccess, baseJsonResponse.message, null);
       } else {

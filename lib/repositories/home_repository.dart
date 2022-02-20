@@ -201,10 +201,9 @@ class HomeRepository {
 
   getFirebaseToken() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    // use the returned token to send messages to users from your custom server
     String? token = await messaging.getToken(
       vapidKey: Constants.WEB_PUSH_CERTIFICATE,
     );
+    print(token);
   }
 }

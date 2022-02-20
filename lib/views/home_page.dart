@@ -233,24 +233,50 @@ class HomePageView extends StatelessView<HomeViewModel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Username',
-                    style: GoogleFonts.poppins(
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.person,
                         color: Colors.black,
-                        fontSize: Constants.MEDIUM_FONT_SIZE,
-                        fontWeight: FontWeight.w500
-                    ),
+                        size: Constants.EXTRA_SMALL_ICON_SIZE,
+                      ),
+                      SizedBox(
+                        width: Constants.EXTRA_SMALL_PADDING,
+                      ),
+                      Text(
+                        viewModel.userName,
+                        style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: Constants.MEDIUM_FONT_SIZE,
+                            fontWeight: FontWeight.w500
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: Constants.EXTRA_EXTRA_SMALL_HEIGHT,
                   ),
-                  Text(
-                    '+8801521234567',
-                    style: GoogleFonts.poppins(
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.phone_android,
                         color: Colors.black,
-                        fontSize: Constants.SMALL_FONT_SIZE,
-                        fontWeight: FontWeight.w400
-                    ),
+                        size: Constants.EXTRA_SMALL_ICON_SIZE,
+                      ),
+                      SizedBox(
+                        width: Constants.EXTRA_SMALL_PADDING,
+                      ),
+                      Text(
+                        viewModel.mobileNumber,
+                        style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: Constants.SMALL_FONT_SIZE,
+                            fontWeight: FontWeight.w400
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               )

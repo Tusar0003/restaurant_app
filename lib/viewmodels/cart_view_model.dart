@@ -48,8 +48,10 @@ class CartViewModel extends ViewModel {
   }
 
   setOrderType(bool isSelected, int index) {
+    totalPrice -= deliveryCharge;
     orderTypeIndex = isSelected ? index : 0;
     deliveryCharge = orderTypeList[orderTypeIndex].deliveryCharge!;
+    totalPrice += deliveryCharge;
     notifyListeners();
   }
 

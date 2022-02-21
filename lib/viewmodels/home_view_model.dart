@@ -107,37 +107,45 @@ class HomeViewModel extends ViewModel {
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
 
-    if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
-        (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
-      status = Constants.YOUR_ORDER_IS_PENDING;
-    } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
-      status = Constants.REJECTED;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 0) {
-      status = Constants.PREPARING_YOUR_FOOD;
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
-      status = Constants.YOUR_FOOD_IS_READY;
-      setPreparedItemNames(currentOrder);
-    } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
-      status = Constants.COMPLETED_ORDER;
+    try {
+      if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
+          (currentOrder.isPrepared == null || currentOrder.isPrepared == 0)) {
+        status = Constants.YOUR_ORDER_IS_PENDING;
+      } else if (currentOrder.isAccepted == 0 && currentOrder.isCompleted == 1) {
+        status = Constants.REJECTED;
+      } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 0) {
+        status = Constants.PREPARING_YOUR_FOOD;
+      } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
+        status = Constants.YOUR_FOOD_IS_READY;
+        setPreparedItemNames(currentOrder);
+      } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
+        status = Constants.COMPLETED_ORDER;
+      }
+    } catch (e) {
+      print(e);
     }
 
     return status;
   }
 
   setPreparedItemNames(CurrentOrder currentOrder) {
-    preparedItemName.clear();
-    isFoodReady = false;
+    try {
+      preparedItemName.clear();
+      isFoodReady = false;
 
-    currentOrder.items!.forEach((element) {
-      if (preparedItemName.isNotEmpty) {
-        preparedItemName.write(', ');
-      }
+      currentOrder.items!.forEach((element) {
+        if (preparedItemName.isNotEmpty) {
+          preparedItemName.write(', ');
+        }
 
-      preparedItemName.write(element.itemName);
-    });
+        preparedItemName.write(element.itemName);
+      });
 
-    isFoodReady = true;
-    notifyListeners();
+      isFoodReady = true;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
 
   getRecommendedItemList() async {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hud/flutter_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/utils/color_helper.dart';
 import 'package:restaurant_app/utils/constants.dart';
@@ -98,6 +99,10 @@ class SignInView extends StatelessView<AuthViewModel> {
                   height: Constants.LARGE_PADDING,
                 ),
                 sendOtpButton(),
+                SizedBox(
+                  height: Constants.LARGE_PADDING,
+                ),
+                version()
               ],
             ),
           )
@@ -173,6 +178,30 @@ class SignInView extends StatelessView<AuthViewModel> {
           viewModel.sendOtp();
         },
       ),
+    );
+  }
+
+  version() {
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                '${Constants.VERSION}: ${snapshot.data!.version}',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                    fontSize: Constants.MEDIUM_FONT_SIZE,
+                    fontWeight: FontWeight.w500
+                ),
+              ),
+            );
+          default:
+            return const SizedBox();
+        }
+      },
     );
   }
 }

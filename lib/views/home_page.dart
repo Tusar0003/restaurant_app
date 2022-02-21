@@ -38,6 +38,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
   late PopupHUD popupHUD;
   bool isPopUpShowed = false;
   bool isFoodReadyDialogShowed = false;
+  bool isOrderCompletedDialogShowed = false;
 
   @override
   Widget render(BuildContext context, HomeViewModel viewModel) {
@@ -49,7 +50,8 @@ class HomePageView extends StatelessView<HomeViewModel> {
       hud: Widgets().progressBar(),
     );
     showPopUpHud();
-    showCompletedDialog();
+    showPreparedDialog();
+    // showCompletedDialog();
 
     return WillPopScope(
       onWillPop: () {
@@ -1057,7 +1059,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
     );
   }
 
-  showCompletedDialog() {
+  showPreparedDialog() {
     Future.delayed(Duration.zero, () async {
       if (viewModel.isFoodReady && !isFoodReadyDialogShowed) {
         isFoodReadyDialogShowed = true;
@@ -1069,6 +1071,26 @@ class HomePageView extends StatelessView<HomeViewModel> {
           dismissOnTouchOutside: false,
           title: Constants.PREPARED,
           desc: 'Your ${viewModel.preparedItemName} is ready to serve.\n'
+              'Thanks for staying with us',
+          btnOkText: Constants.OK,
+          btnOkOnPress: () {},
+        ).show();
+      }
+    });
+  }
+
+  showCompletedDialog() {
+    Future.delayed(Duration.zero, () async {
+      if (viewModel.currentOrderNumber == 0 && !isOrderCompletedDialogShowed) {
+        isOrderCompletedDialogShowed = true;
+
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          dismissOnTouchOutside: false,
+          title: Constants.PREPARED,
+          desc: 'Your order is completed successfully.\n'
               'Thanks for staying with us',
           btnOkText: Constants.OK,
           btnOkOnPress: () {},

@@ -43,9 +43,15 @@ class VerificationViewModel extends ViewModel {
     );
   }
 
-  onAuthComplete(BaseResponse baseResponse) {
+  onAuthComplete(BaseResponse baseResponse) async {
     if (baseResponse.isSuccess) {
-      Navigator.pushNamed(context, AppRoute.HOME);
+      BaseResponse baseResponse = await authRepository.signUp();
+
+      if (baseResponse.isSuccess) {
+        Navigator.pushNamed(context, AppRoute.HOME);
+      } else {
+        ToastMessages().showErrorToast(baseResponse.message!);
+      }
     } else {
       ToastMessages().showErrorToast(baseResponse.message!);
     }

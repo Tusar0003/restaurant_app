@@ -210,7 +210,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
                 borderRadius: BorderRadius.circular(Constants.LARGE_RADIUS),
                 child: FadeInImage(
                   image: NetworkImage(
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/285px-RedDot_Burger.jpg',
+                    ApiServices.BASE_URL + viewModel.profileImagePath,
                   ),
                   placeholder: AssetImage('assets/images/place_holder.jpg'),
                   imageErrorBuilder: (context, error, stackTrace) {

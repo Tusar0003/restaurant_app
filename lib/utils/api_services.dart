@@ -4,6 +4,7 @@ class ApiServices {
   // static const String BASE_URL = 'http://192.168.0.107:5000/';
 
   static const String GET_TOKEN = BASE_URL + 'api/admin/auth/get/token';
+  static const String SIGN_UP = BASE_URL + 'api/customer/auth/sign/up';
   static const String RECOMMENDED_ITEM_LIST = BASE_URL + 'api/customer/recommended/item/list';
   static const String CATEGORY_LIST = BASE_URL + 'api/admin/category/list';
   static const String ITEM_LIST = BASE_URL + 'api/customer/category/wise/item/list';
@@ -22,4 +23,5 @@ class ApiServices {
   static const String SEARCH_ITEM_LIST = BASE_URL + 'api/customer/search/item/list';
   static const String PROFILE_UPDATE = BASE_URL + 'api/customer/update/profile';
   static const String GET_PROFILE_DATA = BASE_URL + 'api/customer/get/profile/data';
+  static const String UPDATE_FIREBASE_TOKEN = BASE_URL + 'api/customer/update/firebase/token';
 }

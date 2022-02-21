@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:pmvvm/pmvvm.dart';
+import 'package:prefs/prefs.dart';
 import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/profile.dart';
 import 'package:restaurant_app/repositories/profile_repository.dart';
@@ -103,6 +104,7 @@ class ProfileViewModel extends ViewModel {
         address = profile.address ?? '';
         profileImagePath = profile.profileImagePath ?? '';
       } else {
+        mobileNumber = Prefs.get(Constants.MOBILE_NUMBER);
         ToastMessages().showErrorToast(baseResponse.message!);
       }
 

@@ -20,7 +20,8 @@ class ProfileRepository {
         'Content-Type': 'application/json',
         HttpHeaders.authorizationHeader: 'Bearer ' + token
       };
-      var url = Uri.parse(ApiServices.GET_PROFILE_DATA + '?mobile_number=+8801521234567');
+      var url = Uri.parse(ApiServices.GET_PROFILE_DATA + '?'
+          'mobile_number=${Prefs.get(Constants.MOBILE_NUMBER)}');
 
       final response = await http.get(
         url,

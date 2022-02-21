@@ -9,9 +9,11 @@ import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/category.dart';
 import 'package:restaurant_app/models/current_order.dart';
 import 'package:restaurant_app/models/item.dart';
+import 'package:restaurant_app/models/profile.dart';
 import 'package:restaurant_app/repositories/auth_repository.dart';
 import 'package:restaurant_app/repositories/cart_repository.dart';
 import 'package:restaurant_app/repositories/home_repository.dart';
+import 'package:restaurant_app/repositories/profile_repository.dart';
 import 'package:restaurant_app/utils/app_route.dart';
 import 'package:restaurant_app/utils/constants.dart';
 import 'package:restaurant_app/utils/notification_service.dart';
@@ -30,6 +32,7 @@ class HomeViewModel extends ViewModel {
   int categoryIndex = 0;
   String userName = '';
   String mobileNumber = '';
+  String profileImagePath = '';
   String categoryCode = '';
   String currentOrderNo = '';
   String currentOrderType = '';
@@ -54,7 +57,7 @@ class HomeViewModel extends ViewModel {
     await getItemList();
     getCartItemNumber();
     getCurrentOrderList();
-    getUserInfo();
+    getProfileData();
     getFirebaseToken();
     NotificationService().listenToMessage();
     hideProgressBar();
@@ -67,12 +70,6 @@ class HomeViewModel extends ViewModel {
 
   hideProgressBar() {
     isLoading = false;
-    notifyListeners();
-  }
-
-  getUserInfo() {
-    mobileNumber = Prefs.getString(Constants.MOBILE_NUMBER, 'N/A');
-    userName = Prefs.getString(Constants.USER_NAME, 'N/A');
     notifyListeners();
   }
 
@@ -202,6 +199,31 @@ class HomeViewModel extends ViewModel {
           itemList.add(Item.fromJson(value));
         });
       } else {
+        ToastMessages().showErrorToast(baseResponse.message!);
+      }
+
+      hideProgressBar();
+    } catch(e) {
+      hideProgressBar();
+      ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
+    }
+
+    notifyListeners();
+  }
+
+  getProfileData() async {
+    try {
+      showProgressBar();
+
+      BaseResponse baseResponse = await ProfileRepository().getProfileData();
+
+      if (baseResponse.isSuccess && baseResponse.data != null) {
+        Profile profile = Profile.fromJson(baseResponse.data[0]);
+        userName = profile.userName ?? '';
+        mobileNumber = profile.mobileNumber ?? '';
+        profileImagePath = profile.profileImagePath ?? '';
+      } else {
+        mobileNumber = Prefs.get(Constants.MOBILE_NUMBER);
         ToastMessages().showErrorToast(baseResponse.message!);
       }
 

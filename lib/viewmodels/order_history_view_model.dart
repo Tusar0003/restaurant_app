@@ -44,8 +44,8 @@ class OrderHistoryViewModel extends ViewModel {
       BaseResponse baseResponse = await OrderRepository().getOrderList();
 
       if (baseResponse.isSuccess && baseResponse.data != null) {
-        isOrderDataFound = true;
-        initOrderHistoryList(OrderHistory.fromJson(baseResponse.data!));
+        await initOrderHistoryList(OrderHistory.fromJson(baseResponse.data!));
+        orderHistoryList.length > 0 ? isOrderDataFound = true : isOrderDataFound = false;
       } else {
         isOrderDataFound = false;
         ToastMessages().showErrorToast(baseResponse.message!);
@@ -61,10 +61,10 @@ class OrderHistoryViewModel extends ViewModel {
     notifyListeners();
   }
 
-  initOrderHistoryList(OrderHistory orderHistory) {
+  initOrderHistoryList(OrderHistory orderHistory) async {
     orderHistoryList.clear();
 
-    orderHistory.pendingData!.forEach((element) {
+    orderHistory.pendingData!.forEach((element) async {
       orderHistoryList.add(
         OrderData(
           orderNo: element.orderNo,
@@ -85,7 +85,7 @@ class OrderHistoryViewModel extends ViewModel {
       );
     });
 
-    orderHistory.confirmedData!.forEach((element) {
+    orderHistory.confirmedData!.forEach((element) async {
       orderHistoryList.add(
         OrderData(
           orderNo: element.orderNo,

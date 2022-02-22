@@ -1,10 +1,64 @@
 {
   "project_info": {
     "project_number": "236619159336",
+    "firebase_url": "https://food-island-802f3-default-rtdb.firebaseio.com",
     "project_id": "food-island-802f3",
     "storage_bucket": "food-island-802f3.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236619159336:android:3ced162ff3b3e3f918221d",
+        "android_client_info": {
+          "package_name": "com.techisland.admin_restaurant_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236619159336-4oleoqv5ufkkfub6unubdta79e1g17de.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techisland.admin_restaurant_app",
+            "certificate_hash": "5477eae48e17124f019aa17430e8f93d238a3c73"
+          }
+        },
+        {
+          "client_id": "236619159336-87qbd4h42chigheoq2abk0sbvs6jrade.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techisland.admin_restaurant_app",
+            "certificate_hash": "f3e21f389b5dda55b6c29910f9f32b5edd432a3a"
+          }
+        },
+        {
+          "client_id": "236619159336-hqrris87t9ha24cm366r7p0g53sfdns9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techisland.admin_restaurant_app",
+            "certificate_hash": "8de0a807e7eee97404544e9e611bc48171ceb53d"
+          }
+        },
+        {
+          "client_id": "236619159336-86nf438vib6v4glhuer9d1ubkcl8e1k8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgnmLamYj44UPAu49EKXt6UEc-c_axcGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236619159336-86nf438vib6v4glhuer9d1ubkcl8e1k8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:236619159336:android:08a995d1f842e49218221d",
@@ -13,6 +67,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "236619159336-jde5ovhsjq3vrlghrdbcjie4k59amjsg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techisland.restaurant_app",
+            "certificate_hash": "3b43b4941e12b0b5c63280167c1ea6c518ed6d1e"
+          }
+        },
         {
           "client_id": "236619159336-k7gptlrfag8d6djva0sj2n6tva49030n.apps.googleusercontent.com",
           "client_type": 1,

@@ -55,12 +55,17 @@ class HomePageView extends StatelessView<HomeViewModel> {
 
     return WillPopScope(
       onWillPop: () {
-        if (panelController.isPanelOpen) {
-          panelController.close();
-          return Future.value(false);
-        } else {
+        try {
+          if (panelController.isPanelOpen) {
+            panelController.close();
+            return Future.value(false);
+          } else {
+            SystemNavigator.pop();
+            return Future.value(false);
+          }
+        } catch (e) {
           SystemNavigator.pop();
-          return Future.value(true);
+          return Future.value(false);
         }
       },
       child: Scaffold(

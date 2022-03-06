@@ -1,7 +1,6 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:prefs/prefs.dart';
 import 'package:restaurant_app/models/add_to_cart.dart';
@@ -26,7 +25,6 @@ class HomeViewModel extends ViewModel {
 
   bool isLoading = false;
   bool isRecommendedItemEmpty = false;
-  bool isFoodReady = false;
   int cartItemNumber = 0;
   int currentOrderNumber = 0;
   int categoryIndex = 0;
@@ -42,6 +40,7 @@ class HomeViewModel extends ViewModel {
   String currentOrderTotalPrice = '';
   StringBuffer preparedItemName = StringBuffer('');
 
+  late CurrentOrder currentOrder;
   List<Item> recommendedItemList = [];
   List<Category> categoryList = [];
   List<Item> itemList = [];
@@ -55,11 +54,12 @@ class HomeViewModel extends ViewModel {
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
-    getCartItemNumber();
     getCurrentOrderList();
+    getCartItemNumber();
     getProfileData();
     getFirebaseToken();
     NotificationService().listenToMessage();
+
     hideProgressBar();
   }
 
@@ -106,6 +106,7 @@ class HomeViewModel extends ViewModel {
 
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
+    this.currentOrder = currentOrder;
 
     try {
       if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
@@ -117,7 +118,6 @@ class HomeViewModel extends ViewModel {
         status = Constants.PREPARING_YOUR_FOOD;
       } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
         status = Constants.YOUR_FOOD_IS_READY;
-        setPreparedItemNames(currentOrder);
       } else if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1 && currentOrder.isCompleted == 1) {
         status = Constants.COMPLETED_ORDER;
       }
@@ -128,11 +128,10 @@ class HomeViewModel extends ViewModel {
     return status;
   }
 
-  setPreparedItemNames(CurrentOrder currentOrder) {
-    try {
-      preparedItemName.clear();
-      isFoodReady = false;
+  StringBuffer getPreparedItemNames() {
+    StringBuffer preparedItemName = StringBuffer('');
 
+    try {
       currentOrder.items!.forEach((element) {
         if (preparedItemName.isNotEmpty) {
           preparedItemName.write(', ');
@@ -140,12 +139,11 @@ class HomeViewModel extends ViewModel {
 
         preparedItemName.write(element.itemName);
       });
-
-      isFoodReady = true;
-      notifyListeners();
     } catch (e) {
       print(e);
     }
+
+    return preparedItemName;
   }
 
   getRecommendedItemList() async {
@@ -321,7 +319,7 @@ class HomeViewModel extends ViewModel {
     notifyListeners();
   }
 
-  getFirebaseToken() {
+  getFirebaseToken() async {
     homeRepository.getFirebaseToken();
   }
 

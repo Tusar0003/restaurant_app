@@ -60,7 +60,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
             panelController.close();
             return Future.value(false);
           } else {
-            SystemNavigator.pop();
+            showExitDialog();
             return Future.value(false);
           }
         } catch (e) {
@@ -1065,8 +1065,10 @@ class HomePageView extends StatelessView<HomeViewModel> {
   }
 
   showPreparedDialog() {
-    Future.delayed(Duration.zero, () async {
-      if (viewModel.isFoodReady && !isFoodReadyDialogShowed) {
+    Future.delayed(Duration(seconds: 10), () {
+      StringBuffer preparedItemName = viewModel.getPreparedItemNames();
+
+      if (preparedItemName.isNotEmpty && !isFoodReadyDialogShowed) {
         isFoodReadyDialogShowed = true;
 
         AwesomeDialog(
@@ -1075,7 +1077,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           animType: AnimType.BOTTOMSLIDE,
           dismissOnTouchOutside: false,
           title: Constants.PREPARED,
-          desc: 'Your ${viewModel.preparedItemName} is ready to serve.\n'
+          desc: 'Your $preparedItemName is ready to serve.\n'
               'Thanks for staying with us',
           btnOkText: Constants.OK,
           btnOkOnPress: () {},
@@ -1094,7 +1096,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
           dialogType: DialogType.SUCCES,
           animType: AnimType.BOTTOMSLIDE,
           dismissOnTouchOutside: false,
-          title: Constants.PREPARED,
+          title: Constants.COMPLETED,
           desc: 'Your order is completed successfully.\n'
               'Thanks for staying with us',
           btnOkText: Constants.OK,
@@ -1102,6 +1104,23 @@ class HomePageView extends StatelessView<HomeViewModel> {
         ).show();
       }
     });
+  }
+
+  showExitDialog() {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.QUESTION,
+      animType: AnimType.BOTTOMSLIDE,
+      dismissOnTouchOutside: false,
+      title: Constants.EXIT,
+      desc: 'Do you really want to exit?',
+      btnCancelText: Constants.NO,
+      btnOkText: Constants.YES,
+      btnOkOnPress: () {
+        SystemNavigator.pop();
+      },
+      btnCancelOnPress: () {}
+    ).show();
   }
 
   showPopUpHud() {

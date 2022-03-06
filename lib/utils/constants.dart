@@ -107,8 +107,8 @@ class Constants {
   static const String DELETE = 'Delete';
   static const String REMOVE = 'Remove';
   static const String NO = 'No';
-  static const String YES = 'Yes';
   static const String OK = 'Ok';
+  static const String YES = 'Yes';
   static const String APPLY_PROMO_CODE = 'Apply Promo Code';
   static const String APPLY = 'Apply';
   static const String PROMO_CODE = 'Promo Code';
@@ -125,6 +125,7 @@ class Constants {
   static const String PREPARED = 'Prepared';
   static const String COMPLETED = 'Completed';
   static const String REJECTED = 'Rejected';
+  static const String EXIT = 'Exit';
   static const String OFF = 'OFF';
   static const String ABOUT = 'About';
   static const String VERSION = 'Version';

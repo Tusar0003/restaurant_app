@@ -50,7 +50,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
       hud: Widgets().progressBar(),
     );
     showPopUpHud();
-    showPreparedDialog();
+    viewModel.initCallBack(showPreparedDialog, showCompletedDialog);
     // showCompletedDialog();
 
     return WillPopScope(
@@ -1064,47 +1064,58 @@ class HomePageView extends StatelessView<HomeViewModel> {
     );
   }
 
-  showPreparedDialog() {
-    Future.delayed(Duration(seconds: 10), () {
-      StringBuffer preparedItemName = viewModel.getPreparedItemNames();
+  showPreparedDialog(StringBuffer preparedItemName) {
+    if (preparedItemName.isNotEmpty) {
+      isFoodReadyDialogShowed = true;
 
-      if (preparedItemName.isNotEmpty && !isFoodReadyDialogShowed) {
-        isFoodReadyDialogShowed = true;
-
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.SUCCES,
-          animType: AnimType.BOTTOMSLIDE,
-          dismissOnTouchOutside: false,
-          title: Constants.PREPARED,
-          desc: 'Your $preparedItemName is ready to serve.\n'
-              'Thanks for staying with us',
-          btnOkText: Constants.OK,
-          btnOkOnPress: () {},
-        ).show();
-      }
-    });
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.SUCCES,
+        animType: AnimType.BOTTOMSLIDE,
+        dismissOnTouchOutside: false,
+        title: Constants.PREPARED,
+        desc: 'Your $preparedItemName is ready to serve.\n'
+            'Thanks for staying with us',
+        btnOkText: Constants.OK,
+        btnOkOnPress: () {},
+      ).show();
+    }
   }
 
-  showCompletedDialog() {
-    Future.delayed(Duration.zero, () async {
-      if (viewModel.currentOrderNumber == 0 && !isOrderCompletedDialogShowed) {
-        isOrderCompletedDialogShowed = true;
-
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.SUCCES,
-          animType: AnimType.BOTTOMSLIDE,
-          dismissOnTouchOutside: false,
-          title: Constants.COMPLETED,
-          desc: 'Your order is completed successfully.\n'
-              'Thanks for staying with us',
-          btnOkText: Constants.OK,
-          btnOkOnPress: () {},
-        ).show();
-      }
-    });
+  showCompletedDialog(List<String> orderDetails) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.SUCCES,
+      animType: AnimType.BOTTOMSLIDE,
+      dismissOnTouchOutside: false,
+      title: Constants.COMPLETED,
+      desc: '${orderDetails[0]}\n'
+          'Your order(${orderDetails[1]}) is completed successfully.\n'
+          'Thanks for staying with us',
+      btnOkText: Constants.OK,
+      btnOkOnPress: () {},
+    ).show();
   }
+
+  // showCompletedDialog() {
+  //   Future.delayed(Duration.zero, () async {
+  //     if (viewModel.currentOrderNumber == 0 && !isOrderCompletedDialogShowed) {
+  //       isOrderCompletedDialogShowed = true;
+  //
+  //       AwesomeDialog(
+  //         context: context,
+  //         dialogType: DialogType.SUCCES,
+  //         animType: AnimType.BOTTOMSLIDE,
+  //         dismissOnTouchOutside: false,
+  //         title: Constants.COMPLETED,
+  //         desc: 'Your order is completed successfully.\n'
+  //             'Thanks for staying with us',
+  //         btnOkText: Constants.OK,
+  //         btnOkOnPress: () {},
+  //       ).show();
+  //     }
+  //   });
+  // }
 
   showExitDialog() {
     AwesomeDialog(

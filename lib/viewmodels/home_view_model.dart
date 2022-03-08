@@ -47,6 +47,9 @@ class HomeViewModel extends ViewModel {
   List<CurrentOrder> currentOrderList = [];
   List<CurrentOrderItems> currentOrderItemList = [];
 
+  late ValueChanged<StringBuffer> onOrderPrepared;
+  late ValueChanged<List<String>> onOrderCompleted;
+
   @override
   Future<void> init() async {
     showProgressBar();
@@ -61,6 +64,14 @@ class HomeViewModel extends ViewModel {
     NotificationService().listenToMessage();
 
     hideProgressBar();
+  }
+
+  initCallBack(
+      ValueChanged<StringBuffer> onOrderPrepared,
+      ValueChanged<List<String>> onOrderCompleted
+  ) {
+    this.onOrderPrepared = onOrderPrepared;
+    this.onOrderCompleted = onOrderCompleted;
   }
 
   showProgressBar() {
@@ -106,7 +117,6 @@ class HomeViewModel extends ViewModel {
 
   String getStatus(CurrentOrder currentOrder) {
     String status = '';
-    this.currentOrder = currentOrder;
 
     try {
       if ((currentOrder.isAccepted == null || currentOrder.isAccepted == 0) &&
@@ -128,22 +138,20 @@ class HomeViewModel extends ViewModel {
     return status;
   }
 
-  StringBuffer getPreparedItemNames() {
-    StringBuffer preparedItemName = StringBuffer('');
+  String getItemNames(CurrentOrder currentOrder) {
+    StringBuffer itemNames = StringBuffer('');
 
-    try {
-      currentOrder.items!.forEach((element) {
-        if (preparedItemName.isNotEmpty) {
-          preparedItemName.write(', ');
+    currentOrder.items!.forEach((element) {
+      if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
+        if (itemNames.isNotEmpty) {
+          itemNames.write(', ');
         }
 
-        preparedItemName.write(element.itemName);
-      });
-    } catch (e) {
-      print(e);
-    }
+        itemNames.write(element.itemName);
+      }
+    });
 
-    return preparedItemName;
+    return itemNames.toString();
   }
 
   getRecommendedItemList() async {
@@ -301,16 +309,42 @@ class HomeViewModel extends ViewModel {
   getCurrentOrderList() async {
     try {
       BaseResponse baseResponse = await homeRepository.getCurrentOrderList();
-
       if (baseResponse.isSuccess && baseResponse.data.length > 0) {
-        currentOrderNumber = baseResponse.data.length;
+        StringBuffer preparedItemName = StringBuffer('');
+        this.currentOrderNumber = baseResponse.data.length;
         currentOrderList.clear();
 
         baseResponse.data.forEach((element) {
-          currentOrderList.add(CurrentOrder.fromJson(element));
+          CurrentOrder currentOrder = CurrentOrder.fromJson(element);
+
+          currentOrder.items!.forEach((element) {
+            if (currentOrder.isAccepted == 1 && currentOrder.isPrepared == 1) {
+              if (preparedItemName.isNotEmpty) {
+                preparedItemName.write(', ');
+              }
+
+              preparedItemName.write(element.itemName);
+              Prefs.setStringList(
+                  Constants.ORDER_DETAILS,
+                  [currentOrder.orderNo!, preparedItemName.toString()]
+              );
+            }
+          });
+
+          currentOrderList.add(currentOrder);
         });
+
+        if (this.preparedItemName.toString() != preparedItemName.toString()) {
+          this.preparedItemName = preparedItemName;
+          onOrderPrepared(preparedItemName);
+        }
       } else {
-        currentOrderNumber = 0;
+        if (Prefs.containsKey(Constants.ORDER_DETAILS)) {
+          onOrderCompleted(Prefs.getStringList(Constants.ORDER_DETAILS));
+          Prefs.remove(Constants.ORDER_DETAILS);
+        }
+
+        this.currentOrderNumber = 0;
       }
     } catch(e) {
       ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);

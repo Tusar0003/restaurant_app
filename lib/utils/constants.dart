@@ -133,7 +133,7 @@ class Constants {
   static const String TK_SYMBOL = '\u09F3';
   static const String COPYRIGHTS_SYMBOL = '\u00a9';
 
-  static const int TIMEOUT_LIMIT = 20;
+  static const int TIMEOUT_LIMIT = 30;
   static const String WEB_PUSH_CERTIFICATE = 'BCPBuJteK91Z56Q9XHvIvQPovQ8DPvTLdIdV1'
       'Gaephr56vou57dlvh1W2wRRBeuxZ8iMgT0XtwlnVLdtoWQCieA';
 

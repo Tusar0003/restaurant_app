@@ -419,7 +419,7 @@ class HomePageView extends StatelessView<HomeViewModel> {
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: viewModel.recommendedItemList.length,
+        itemCount: viewModel.homeItem.recommendedItemList?.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             behavior: HitTestBehavior.opaque,

@@ -1,10 +1,11 @@
 class ApiServices {
 
-  static const String BASE_URL = 'http://demo.restaurant.techisland.xyz/';
+  static const String BASE_URL = 'https://demo.orderapp.techislandbd.com/';
   // static const String BASE_URL = 'http://192.168.0.107:5000/';
 
   static const String GET_TOKEN = BASE_URL + 'api/admin/auth/get/token';
   static const String SIGN_UP = BASE_URL + 'api/customer/auth/sign/up';
+  static const String HOME_ITEM_LIST = BASE_URL + 'api/customer/home/item/list';
   static const String RECOMMENDED_ITEM_LIST = BASE_URL + 'api/customer/recommended/item/list';
   static const String CATEGORY_LIST = BASE_URL + 'api/admin/category/list';
   static const String ITEM_LIST = BASE_URL + 'api/customer/category/wise/item/list';

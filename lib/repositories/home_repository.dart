@@ -12,6 +12,43 @@ import 'package:restaurant_app/utils/constants.dart';
 
 class HomeRepository {
 
+  getHomeItemList() async {
+    try {
+      await Prefs.init();
+      var token = Prefs.getString(Constants.TOKEN);
+
+      final Map<String, String> header = {
+        'Content-Type': 'application/json',
+        HttpHeaders.authorizationHeader: 'Bearer ' + token
+      };
+      var url = Uri.parse(ApiServices.HOME_ITEM_LIST);
+
+      final response = await http.get(
+          url,
+          headers: header
+      ).timeout(
+          Duration(seconds: Constants.TIMEOUT_LIMIT)
+      ).onError((error, stackTrace) {
+        return Future.error(error!);
+      });
+
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      var baseJsonResponse = BaseJsonResponse.fromJson(jsonResponse);
+
+      if (response.statusCode == 200) {
+        return BaseResponse(
+            baseJsonResponse.isSuccess,
+            baseJsonResponse.message,
+            baseJsonResponse.data
+        );
+      } else {
+        return BaseResponse(false, Constants.CONNECTION_MESSAGE, null);
+      }
+    } catch (e) {
+      return BaseResponse(false, Constants.EXCEPTION_MESSAGE, null);
+    }
+  }
+
   getRecommendedItemList() async {
     try {
       await Prefs.init();

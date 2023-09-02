@@ -7,6 +7,7 @@ import 'package:restaurant_app/models/add_to_cart.dart';
 import 'package:restaurant_app/models/base_response.dart';
 import 'package:restaurant_app/models/category.dart';
 import 'package:restaurant_app/models/current_order.dart';
+import 'package:restaurant_app/models/home_item.dart';
 import 'package:restaurant_app/models/item.dart';
 import 'package:restaurant_app/models/profile.dart';
 import 'package:restaurant_app/repositories/auth_repository.dart';
@@ -41,6 +42,7 @@ class HomeViewModel extends ViewModel {
   StringBuffer preparedItemName = StringBuffer('');
 
   late CurrentOrder currentOrder;
+  late HomeItem homeItem;
   List<Item> recommendedItemList = [];
   List<Category> categoryList = [];
   List<Item> itemList = [];
@@ -54,6 +56,7 @@ class HomeViewModel extends ViewModel {
   Future<void> init() async {
     showProgressBar();
     await AuthRepository().getToken();
+    await getHomeItemList();
     await getRecommendedItemList();
     await getCategoryList();
     await getItemList();
@@ -152,6 +155,23 @@ class HomeViewModel extends ViewModel {
     });
 
     return itemNames.toString();
+  }
+
+  getHomeItemList() async {
+    try {
+      BaseResponse baseResponse = await homeRepository.getRecommendedItemList();
+
+      if (baseResponse.isSuccess && baseResponse.data != null) {
+        homeItem = HomeItem.fromJson(baseResponse.data);
+      } else {
+        ToastMessages().showErrorToast(baseResponse.message!);
+      }
+    } catch(e) {
+      hideProgressBar();
+      ToastMessages().showErrorToast(Constants.EXCEPTION_MESSAGE);
+    }
+
+    notifyListeners();
   }
 
   getRecommendedItemList() async {
